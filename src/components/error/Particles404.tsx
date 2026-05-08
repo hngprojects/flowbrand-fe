@@ -1,51 +1,28 @@
-import React, { useEffect } from "react";
+"use client";
 
-import useWindowWidth from "~/hooks/use-window-width";
-import { handleMouseEnter } from "~/lib/utils";
-import { particlesCanvas } from "./particles";
-
-const Particles404 = () => {
-  const canvaReference = React.useRef<HTMLCanvasElement>(null);
-  const { winWidth } = useWindowWidth();
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (!canvaReference.current) return;
-      particlesCanvas(canvaReference.current);
-    }, 500);
-  }, [winWidth]);
+export default function Particles404() {
   return (
-    <div className="absolute left-0 top-0 mx-auto h-full w-full max-w-[1440px] overflow-hidden">
-      <canvas
-        ref={canvaReference}
-        id="particles_404"
-        className="absolute left-0 top-0 h-[100dvh] w-full"
-      />
-      <header className="absolute left-0 top-0 w-full bg-white px-10 py-8 font-medium uppercase text-[#f97415] md:text-3xl">
-        <h1
-          className=""
-          // @ts-expect-error Hacking the type
-          onMouseEnter={handleMouseEnter}
-          data-value="HNG-BOILERPLATE"
-        >
-          Hng-boilerplate
-        </h1>
-      </header>
-      <div className="absolute bottom-10 left-10 font-sans text-2xl uppercase">
-        <p
-          className="font-bold text-[#f97415] md:text-6xl lg:text-9xl xl:text-[10rem]"
-          // @ts-expect-error Hacking the type
-          onMouseEnter={handleMouseEnter}
-          data-value="404!!"
-        >
-          404
-        </p>
-        <p className="font-medium md:text-3xl lg:text-4xl">
-          This is not the page <br /> you are looking for
-        </p>
-      </div>
+    <div className="absolute inset-0 overflow-hidden">
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+        .particle {
+          animation: float 4s ease-in-out infinite;
+          opacity: 0.5;
+        }
+      `}</style>
+      
+      <div className="particle absolute left-[10%] top-[20%] h-2 w-2 rounded-full bg-orange-400" style={{ animationDelay: "0s" }} />
+      <div className="particle absolute right-[15%] top-[30%] h-1 w-1 rounded-full bg-orange-300" style={{ animationDelay: "1s" }} />
+      <div className="particle absolute left-[20%] bottom-[40%] h-1.5 w-1.5 rounded-full bg-orange-200" style={{ animationDelay: "2s" }} />
+      <div className="particle absolute right-[25%] bottom-[30%] h-2 w-2 rounded-full bg-orange-400" style={{ animationDelay: "3s" }} />
+      <div className="particle absolute left-[50%] bottom-[20%] h-1 w-1 rounded-full bg-orange-300" style={{ animationDelay: "1.5s" }} />
     </div>
   );
-};
-
-export default Particles404;
+}

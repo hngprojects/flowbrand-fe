@@ -14,6 +14,7 @@ const NotFoundPage = () => {
     <section className="grid h-screen w-full place-items-center bg-white">
       <div className="fixed left-0 top-0 min-h-[100dvh] w-screen bg-white" />
       <Particles404 />
+      
       <div className="pointer-events-none relative z-30 flex flex-col gap-y-6">
         <p className="text-center font-medium uppercase text-[#f97415] sm:text-2xl md:text-3xl lg:text-4xl lg:font-bold xl:font-bold">
           Page Not Found
