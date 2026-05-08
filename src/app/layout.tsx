@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "~/styles/globals.css";
 
 import { Toaster } from "~/components/ui/toaster";
+import QueryProvider from "~/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
@@ -19,10 +20,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="mx-auto h-full w-full max-w-[1920px]">
-          {children}
-          <Toaster />
-        </div>
+        <QueryProvider>
+          <div className="mx-auto h-full w-full max-w-[1920px]">
+            {children}
+            <Toaster />
+          </div>
+        </QueryProvider>
       </body>
     </html>
   );
