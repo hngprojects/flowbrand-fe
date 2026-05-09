@@ -111,7 +111,7 @@ export const OtpFormSchema = z.object({
   d5: z.string().length(1).regex(/^\d$/),
 })
 
-export const ResetPasswordSchema = z
+export const CreateNewPasswordFormSchema = z
   .object({
     password: registrationPasswordField,
     confirmPassword: registrationPasswordField,
@@ -120,3 +120,6 @@ export const ResetPasswordSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+/** @deprecated Prefer CreateNewPasswordFormSchema — same shape */
+export const ResetPasswordSchema = CreateNewPasswordFormSchema
