@@ -1,5 +1,12 @@
 import Image from 'next/image'
 
+/**
+ * HomeHero component displays the main hero section of the landing page.
+ * It includes a background image, a promotional badge, a primary heading,
+ * a subtitle, and a call-to-action button.
+ *
+ * @returns {JSX.Element} The rendered hero section.
+ */
 const HomeHero = () => {
   return (
     <section

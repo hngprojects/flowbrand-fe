@@ -1,5 +1,12 @@
 import Image from 'next/image'
 
+/**
+ * WelcomeSection component displays an introductory section about Flowbrand.
+ * It features a split layout with a mission statement and a high-quality
+ * visual representation of a business owner.
+ *
+ * @returns {JSX.Element} The rendered welcome section.
+ */
 const WelcomeSection = () => {
   return (
     <section className="mx-auto w-full py-16">
