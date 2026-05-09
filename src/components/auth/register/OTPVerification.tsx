@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next-nprogress-bar'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -53,7 +53,7 @@ export default function OTPVerification({
     return () => clearInterval(id)
   }, [secondsLeft])
 
-  const otpValues = form.watch()
+  const otpValues = useWatch({ control: form.control })
   const isOtpComplete = OtpFormSchema.safeParse(otpValues).success
 
   const focusDigit = useCallback((index: number) => {
