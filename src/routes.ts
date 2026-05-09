@@ -3,18 +3,7 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes: string[] = [
-  '/',
-  '/career',
-  '/faqs',
-  'privacy-policy',
-  '/terms',
-  '/about-us',
-  '/pricing',
-  '/contact-us',
-  '/waitlist',
-  '/blog',
-]
+export const publicRoutes: string[] = ['/']
 
 export const authRoutes = [
   '/register',
@@ -22,10 +11,9 @@ export const authRoutes = [
   '/forgot-password',
   '/reset-password',
   '/verify-otp',
-  '/recovery',
 ]
 
-export const superAdminRoutes = ['dashboard/admin/faqs']
+export const superAdminRoutes = ['dashboard/admin/']
 
 export const apiAuthPrefix = '/api/auth'
 
