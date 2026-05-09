@@ -117,8 +117,8 @@ export default function PricingPage() {
             <span className="text-orange-500">Business</span>
           </h1>
           <p className="mb-8 text-gray-600 dark:text-gray-400">
-            Whether you&apos;re just figuring things out or ready to scale,
-            FlowBrand gives you exactly what you need at every stage.
+            Whether you're just figuring things out or ready to scale, FlowBrand
+            gives you exactly what you need at every stage.
           </p>
 
           {/* Billing Toggle */}
@@ -247,7 +247,7 @@ export default function PricingPage() {
             Compare Plans
           </h2>
           <p className="mb-8 text-center text-gray-600 dark:text-gray-400">
-            Find the right plan for where your business is now—and where
+            Find the right plan for where your business is now and where
             you&apos;re going.
           </p>
 
