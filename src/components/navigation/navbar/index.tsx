@@ -38,7 +38,10 @@ const Navbar = () => {
                 <Link
                   href={link.path}
                   className={`hover:text-primary text-base leading-6 font-medium text-[#565D69] transition-colors ${
-                    pathname === link.path ? 'text-primary font-semibold' : ''
+                    pathname === link.path ||
+                    (link.path !== '/' && pathname.startsWith(link.path))
+                      ? 'text-primary font-semibold'
+                      : ''
                   }`}
                 >
                   {link.label}
@@ -67,13 +70,13 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
       <div
         className={`bg-background absolute top-full left-0 flex w-full flex-col gap-4 overflow-hidden text-sm font-semibold transition-all duration-300 ease-in-out lg:hidden ${
           isOpen
             ? 'max-h-96 py-6 opacity-100'
             : 'pointer-events-none max-h-0 opacity-0'
         }`}
+        inert={!isOpen ? true : undefined}
       >
         {navLinks.map((link) => (
           <Link
