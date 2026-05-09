@@ -288,7 +288,8 @@ const RegistrationForm = () => {
                         aria-hidden={!showPasswordGuide}
                       >
                         <p className="text-foreground/50 mt-2 text-xs">
-                          Use 8+ characters with a mix of letters & numbers
+                          Use 8+ characters with uppercase, lowercase, and a
+                          symbol from @, #, $, or %
                         </p>
                         <ul className="mt-3 space-y-2 pt-3">
                           {PASSWORD_RULE_ROWS.map(({ key, label }) => {
