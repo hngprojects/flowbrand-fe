@@ -16,9 +16,10 @@ export const privateApi = axios.create({
 
 privateApi.interceptors.request.use(
   (config) => {
-    const token = typeof window !== 'undefined' 
-      ? localStorage.getItem('access_token')
-      : null
+    const token =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('access_token')
+        : null
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -32,8 +33,6 @@ privateApi.interceptors.request.use(
 privateApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      if (typeof window !== 'undefined') {
     if (typeof window !== 'undefined' && error.response?.status === 401) {
       localStorage.removeItem('access_token')
       window.location.href = '/login'

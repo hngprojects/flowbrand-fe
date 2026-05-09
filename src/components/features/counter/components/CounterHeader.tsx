@@ -5,7 +5,7 @@ const CounterHeader = () => {
         Interactive Counter
       </h3>
       {/* Architecture: hooks (logic) → small components (UI) → composed view → page */}
-      <p className="text-sm text-muted-foreground">
+      <p className="text-muted-foreground text-sm">
         A simple interactive counter demonstrating component composition.
       </p>
     </div>
