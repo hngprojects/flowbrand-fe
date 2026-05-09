@@ -19,7 +19,8 @@ export default function ContactUsView() {
 
         <Image
           src="/images/full-cloud.png"
-          alt="Cloud"
+          alt=""
+          aria-hidden="true"
           width={447}
           height={445}
           className="absolute top-0 left-0"
@@ -27,7 +28,8 @@ export default function ContactUsView() {
 
         <Image
           src="/images/half-cloud.png"
-          alt="Cloud"
+          alt=""
+          aria-hidden="true"
           width={447}
           height={445}
           className="absolute top-0 right-0"
