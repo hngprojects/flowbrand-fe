@@ -34,9 +34,9 @@ privateApi.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('access_token')
-        window.location.href = '/login'
-      }
+    if (typeof window !== 'undefined' && error.response?.status === 401) {
+      localStorage.removeItem('access_token')
+      window.location.href = '/login'
     }
     return Promise.reject(error)
   }
