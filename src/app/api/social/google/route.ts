@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSubdomain, ROOT_DOMAIN } from '~/utils'
 import { envConfig } from '~/config/env.config'
 import { createFetchUtil, HttpError } from '~/actions/fetchutil'
 import { z } from 'zod'
@@ -31,19 +30,6 @@ interface LoginResponse {
 }
 
 export async function POST(request: NextRequest) {
-  let hostname = request.headers
-    .get('host')!
-    .replace(/\.localhost(:\d+)?/, `.${ROOT_DOMAIN}`)
-  hostname = hostname.replace('www.', '')
-  const subdomain = getSubdomain(hostname, ROOT_DOMAIN) as
-    | 'php'
-    | 'java'
-    | 'nestjs'
-    | 'csharp'
-    | 'python-fastapi'
-    | 'golang'
-    | ''
-
   const { id_token } = await request.json()
 
   if (!id_token) {
@@ -53,32 +39,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  let baseurl
-  switch (subdomain) {
-    case 'php':
-      baseurl = envConfig.PHP_BASE_URL
-      break
-    case 'java':
-      baseurl = envConfig.JAVA_BASE_URL
-      break
-    case 'nestjs':
-      baseurl = envConfig.NESTJS_BASE_URL
-      break
-    case 'csharp':
-      baseurl = envConfig.CSHARP_BASE_URL
-      break
-    case 'python-fastapi':
-      baseurl = envConfig.PYTHON_BASE_URL
-      break
-    case 'golang':
-      baseurl = envConfig.GOLANG_BASE_URL
-      break
-    case '':
-      baseurl = envConfig.BASEURL
-      break
-    default:
-      baseurl = envConfig.BASEURL
-  }
+  const baseurl = envConfig.BASEURL
 
   if (!baseurl) {
     return NextResponse.json(
@@ -109,7 +70,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           message: 'Invalid form data',
-          errors: error.errors,
+          errors: error.issues,
         },
         { status: 400 }
       )

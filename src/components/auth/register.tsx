@@ -46,34 +46,35 @@ const Register = () => {
   })
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
-    startTransition(async () => {
-      await registerUser(values).then(async (data) => {
-        console.log(data)
-        toast[data.status === 201 ? 'success' : 'error'](
-          data.status === 201
-            ? 'Account created successfully'
-            : 'an error occurred',
-          {
-            description:
-              data.status === 201 ? 'verify your account' : data.error,
-          }
-        )
-      })
-    })
+    const data = await registerUser(values)
+    console.log(data)
+
+    const isSuccess = data.status === 201
+
+    toast[isSuccess ? 'success' : 'error'](
+      isSuccess ? 'Account created successfully' : 'An error occurred',
+      {
+        description: isSuccess ? 'Verify your account' : data.error,
+      }
+    )
+
+    if (isSuccess) {
+      startTransition(() => {})
+    }
   }
 
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h1 className="font-inter text-neutralColor-dark-2 mb-5 text-center text-2xl font-semibold leading-tight">
+          <h1 className="font-inter text-neutralColor-dark-2 mb-5 text-center text-2xl leading-tight font-semibold">
             Sign Up
           </h1>
-          <p className="font-inter text-neutralColor-dark-2 mt-2 text-center text-sm font-normal leading-6">
+          <p className="font-inter text-neutralColor-dark-2 mt-2 text-center text-sm leading-6 font-normal">
             Create an account to get started with us.
           </p>
         </div>
-        <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
+        <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
           <Button
             onClick={async () => {
               signIn('google', { redirectTo: '/' })
@@ -89,7 +90,7 @@ const Register = () => {
         </div>
         <div className="flex items-center justify-center">
           <hr className="w-full border-t border-gray-300" />
-          <span className="font-inter text-neutralColor-dark-1 px-3 text-xs font-normal leading-tight">
+          <span className="font-inter text-neutralColor-dark-1 px-3 text-xs leading-tight font-normal">
             OR
           </span>
           <hr className="w-full border-t border-gray-300" />
@@ -111,7 +112,7 @@ const Register = () => {
                       placeholder="Enter your first name"
                       {...field}
                       className={cn(
-                        'font-inter w-full rounded-md border px-3 py-6 text-sm font-normal leading-[21.78px] transition duration-150 ease-in-out focus:outline-none',
+                        'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
                         form.formState.errors.first_name && 'border-destructive'
                       )}
                     />
@@ -135,7 +136,7 @@ const Register = () => {
                       placeholder="Enter your last name"
                       {...field}
                       className={cn(
-                        'font-inter w-full rounded-md border px-3 py-6 text-sm font-normal leading-[21.78px] transition duration-150 ease-in-out focus:outline-none',
+                        'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
                         form.formState.errors.last_name && 'border-destructive'
                       )}
                     />
@@ -159,7 +160,7 @@ const Register = () => {
                       placeholder="Enter Email Address"
                       {...field}
                       className={cn(
-                        'font-inter w-full rounded-md border px-3 py-6 text-sm font-normal leading-[21.78px] transition duration-150 ease-in-out focus:outline-none',
+                        'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
                         form.formState.errors.email && 'border-destructive'
                       )}
                     />
@@ -184,7 +185,7 @@ const Register = () => {
                         placeholder="Enter Password"
                         {...field}
                         className={cn(
-                          'font-inter w-full rounded-md border px-3 py-6 text-sm font-normal leading-[21.78px] transition duration-150 ease-in-out focus:outline-none',
+                          'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
                           form.formState.errors.password && 'border-destructive'
                         )}
                       />
@@ -235,11 +236,11 @@ const Register = () => {
           </form>
         </Form>
 
-        <p className="font-inter text-neutralColor-dark-1 mt-5 text-center text-sm font-normal leading-[15.6px]">
+        <p className="font-inter text-neutralColor-dark-1 mt-5 text-center text-sm leading-[15.6px] font-normal">
           Already Have An Account?{' '}
           <Link
             href="/login"
-            className="font-inter ms-1 text-left text-base font-bold leading-[19.2px] text-primary hover:text-orange-400"
+            className="font-inter text-primary ms-1 text-left text-base leading-[19.2px] font-bold hover:text-orange-400"
             data-testid="link"
           >
             Login

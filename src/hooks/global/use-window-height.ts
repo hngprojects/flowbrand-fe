@@ -1,43 +1,31 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 
-interface DimensionProperties {
-  scrollY: number
-  totalHeight: number
-  winHeight: number
-}
-const useWindowHeight = () => {
-  const [dimensions, setDimensions] = useState<DimensionProperties>({
-    scrollY: 0,
-    totalHeight: 0,
-    winHeight: 0,
-  })
-
-  useEffect(() => {
-    setDimensions({
+export default function useWindowHeight() {
+  const dimensions = useSyncExternalStore(
+    // 1. Subscribe function
+    (callback) => {
+      window.addEventListener('scroll', callback)
+      window.addEventListener('resize', callback)
+      return () => {
+        window.removeEventListener('scroll', callback)
+        window.removeEventListener('resize', callback)
+      }
+    },
+    // 2. Client snapshot (runs in browser)
+    () => ({
       scrollY: window.scrollY,
       totalHeight: document.documentElement.scrollHeight,
       winHeight: window.innerHeight,
+    }),
+    // 3. Server snapshot (runs during build/SSR)
+    () => ({
+      scrollY: 0,
+      totalHeight: 0,
+      winHeight: 0,
     })
-    const handleScroll = () => {
-      setDimensions({
-        scrollY: window.scrollY,
-        totalHeight: document.documentElement.scrollHeight,
-        winHeight: window.innerHeight,
-      })
-    }
-
-    window.addEventListener('scroll', handleScroll)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-
-  // console.log(scrollY);
+  )
 
   return dimensions
 }
-
-export default useWindowHeight

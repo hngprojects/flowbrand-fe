@@ -31,7 +31,7 @@ const Heading = (properties: Properties) => {
       </p>
 
       <h2
-        className="font-inter mb-6 text-center text-3xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl"
+        className="font-inter mb-6 text-center text-3xl leading-none font-bold tracking-tight text-gray-900 md:text-5xl"
         data-testid="pricing-title"
       >
         {renderTitle(properties.title)}

@@ -49,26 +49,28 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     const { email, password } = values
 
-    startTransition(async () => {
-      await credentialsAuth(values).then(async (result) => {
-        console.log(result)
-        if (result.success) {
-          await signIn('credentials', {
-            email,
-            password,
-            redirect: false,
-          })
-          toast.success('Login success', {
-            description: 'Redirecting',
-          })
-          router.push('/')
-        } else {
-          toast.error('Login failed', {
-            description: result.message || 'An error occurred during login',
-          })
-        }
+    const result = await credentialsAuth(values)
+    console.log(result)
+
+    if (result.success) {
+      await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       })
-    })
+
+      toast.success('Login success', {
+        description: 'Redirecting',
+      })
+
+      startTransition(() => {
+        router.push('/')
+      })
+    } else {
+      toast.error('Login failed', {
+        description: result.message || 'An error occurred during login',
+      })
+    }
   }
 
   const togglePasswordVisibility = () => {
@@ -79,14 +81,14 @@ const Login = () => {
     <div className="flex min-h-full items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h1 className="font-inter text-neutralColor-dark-2 mb-5 text-center text-2xl font-semibold leading-tight">
+          <h1 className="font-inter text-neutralColor-dark-2 mb-5 text-center text-2xl leading-tight font-semibold">
             Login
           </h1>
-          <p className="font-inter text-neutralColor-dark-2 mt-2 text-center text-sm font-normal leading-6">
+          <p className="font-inter text-neutralColor-dark-2 mt-2 text-center text-sm leading-6 font-normal">
             Welcome back, you&apos;ve been missed!
           </p>
         </div>
-        <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
+        <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
           <Button
             onClick={async () => {
               signIn('google', { redirectTo: '/' })
@@ -102,7 +104,7 @@ const Login = () => {
         </div>
         <div className="flex items-center justify-center">
           <hr className="w-full border-t border-gray-300" />
-          <span className="font-inter text-neutralColor-dark-1 px-3 text-xs font-normal leading-tight">
+          <span className="font-inter text-neutralColor-dark-1 px-3 text-xs leading-tight font-normal">
             OR
           </span>
           <hr className="w-full border-t border-gray-300" />
@@ -123,7 +125,7 @@ const Login = () => {
                       placeholder="Enter Email Address"
                       {...field}
                       className={cn(
-                        'font-inter w-full rounded-md border px-3 py-6 text-sm font-normal leading-[21.78px] transition duration-150 ease-in-out focus:outline-none',
+                        'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
                         form.formState.errors.email && 'border-destructive'
                       )}
                     />
@@ -148,7 +150,7 @@ const Login = () => {
                         placeholder="Enter Password"
                         {...field}
                         className={cn(
-                          'font-inter w-full rounded-md border px-3 py-6 text-sm font-normal leading-[21.78px] transition duration-150 ease-in-out focus:outline-none',
+                          'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
                           form.formState.errors.password && 'border-destructive'
                         )}
                       />
@@ -180,7 +182,7 @@ const Login = () => {
                 control={form.control}
                 name="rememberMe"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-start space-y-0 space-x-2">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -220,11 +222,11 @@ const Login = () => {
           <Link href="/login/magic-link">Sign in with magic link</Link>
         </Button>
 
-        <p className="font-inter text-neutralColor-dark-1 mt-5 text-center text-sm font-normal leading-[15.6px]">
+        <p className="font-inter text-neutralColor-dark-1 mt-5 text-center text-sm leading-[15.6px] font-normal">
           Don&apos;t Have An Account?{' '}
           <Link
             href="/register"
-            className="font-inter ms-1 text-left text-base font-bold leading-[19.2px] text-primary hover:text-orange-400"
+            className="font-inter text-primary ms-1 text-left text-base leading-[19.2px] font-bold hover:text-orange-400"
             data-testid="link"
           >
             Sign Up
@@ -236,14 +238,14 @@ const Login = () => {
           By logging in, you agree to the{' '}
           <a
             href="/terms-and-conditions"
-            className="text-sm font-bold text-primary hover:text-orange-500"
+            className="text-primary text-sm font-bold hover:text-orange-500"
           >
             Terms of Service
           </a>{' '}
           and{' '}
           <a
             href="/privacy-policy"
-            className="text-sm font-bold text-primary hover:text-orange-500"
+            className="text-primary text-sm font-bold hover:text-orange-500"
           >
             Privacy Policy
           </a>
