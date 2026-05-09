@@ -20,15 +20,12 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
-import { getPasswordChecks, ResetPasswordSchema } from '~/schemas'
+import {
+  getPasswordChecks,
+  PASSWORD_RULE_ROWS,
+  ResetPasswordSchema,
+} from '~/schemas'
 import { cn } from '~/utils'
-
-const PASSWORD_RULE_ROWS = [
-  { key: 'minLength' as const, label: 'At least 8 characters' },
-  { key: 'uppercase' as const, label: 'Uppercase letter (A–Z)' },
-  { key: 'lowercase' as const, label: 'Lowercase letter (a–z)' },
-  { key: 'symbol' as const, label: 'One symbol (@, #, $, %)' },
-] as const
 
 const inputClassWithError = (hasError: boolean) => {
   return cn(
@@ -38,10 +35,22 @@ const inputClassWithError = (hasError: boolean) => {
   )
 }
 
-const CreateNewPassword = () => {
+const InvalidResetLink = () => (
+  <div className="space-y-4 py-8 sm:space-y-5">
+    <div className="space-y-1.5 sm:space-y-2">
+      <h2 className="text-xl font-medium text-[#152D58] sm:text-4xl">
+        Invalid reset link
+      </h2>
+      <p className="text-foreground/70 text-sm sm:text-[15px]">
+        This password reset link is invalid or has expired. Please request a new
+        one.
+      </p>
+    </div>
+  </div>
+)
+
+const CreateNewPasswordForm = ({ token }: Readonly<{ token: string }>) => {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token') ?? ''
 
   const [showNewPasswordPlain, setShowNewPasswordPlain] = useState(false)
   const [showConfirmPasswordPlain, setShowConfirmPasswordPlain] =
@@ -269,6 +278,17 @@ const CreateNewPassword = () => {
       </Form>
     </div>
   )
+}
+
+const CreateNewPassword = () => {
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')?.trim() ?? ''
+
+  if (!token) {
+    return <InvalidResetLink />
+  }
+
+  return <CreateNewPasswordForm token={token} />
 }
 
 export default CreateNewPassword

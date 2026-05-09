@@ -24,6 +24,7 @@ import { Input } from '~/components/ui/input'
 import { Select } from '~/components/ui/select'
 import {
   getPasswordChecks,
+  PASSWORD_RULE_ROWS,
   RegistrationFormSchema,
   splitFullNameForRegister,
 } from '~/schemas'
@@ -43,13 +44,6 @@ const COUNTRIES = [
   { value: 'DE', label: 'Germany' },
   { value: 'FR', label: 'France' },
 ] as const
-
-const PASSWORD_RULE_ROWS = [
-  { key: 'minLength' as const, label: 'At least 8 characters' },
-  { key: 'uppercase' as const, label: 'Uppercase letter (A–Z)' },
-  { key: 'lowercase' as const, label: 'Lowercase letter (a–z)' },
-  { key: 'symbol' as const, label: 'One symbol (@, #, $, %)' },
-]
 
 const inputClassWithError = (hasError: boolean) => {
   return cn(

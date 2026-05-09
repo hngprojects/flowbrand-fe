@@ -146,10 +146,18 @@ const resetPasswordWithToken = async (input: {
   token: string
   password: string
 }): Promise<ResetPasswordResult> => {
+  if (typeof input.token !== 'string' || typeof input.password !== 'string') {
+    return { ok: false, error: 'Invalid request payload.' }
+  }
+
   const trimmed = input.token.trim()
   if (!trimmed) {
     return { ok: false, error: 'Reset link is invalid or expired.' }
   }
+  if (input.password.trim().length === 0) {
+    return { ok: false, error: 'Password is required.' }
+  }
+
   const baseURL = envConfig.BASEURL
   try {
     await axios.post(`${baseURL}/auth/password/reset`, {
