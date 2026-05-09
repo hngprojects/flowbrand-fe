@@ -1,1 +1,72 @@
 @import 'tailwindcss';
+@import '../../node_modules/tw-animate-css/dist/tw-animate.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+}
+
+:root {
+  /* Primary */
+  --primary: #326ad1;
+  --primary-foreground: #ffffff;
+
+  --secondary: #d1be32;
+
+  /* Accent */
+  --accent: #5a81ca;
+  --accent-foreground: #ffffff;
+
+  /* Status */
+  --success: #57d132;
+  --error: #d13232;
+
+  /* Neutral */
+  --background: #fcfdff;
+  --foreground: #030d1f;
+  --muted-foreground: #e4e4e4;
+  --border: #e5e5e5;
+}
+
+/* I hardcoded  dark mode colors until further notice */
+.dark {
+  --primary: #326ad1;
+  --primary-foreground: #ffffff;
+
+  --secondary: #d1be32;
+
+  /* Accent */
+  --accent: #5a81ca;
+  --accent-foreground: #ffffff;
+
+  /* Status */
+  --success: #57d132;
+  --error: #d13232;
+
+  /* Neutral */
+  --background: #fcfdff;
+  --foreground: #030d1f;
+  --muted-foreground: #e4e4e4;
+  --border: #e5e5e5;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
