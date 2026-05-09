@@ -8,7 +8,9 @@ export default function LandingLayout({
 }>) {
   return (
     <div className="flex min-h-screen w-full flex-col justify-between">
+      <Navbar />
       <div className="flex-1">{children}</div>
+      <Footer />
     </div>
   )
 }

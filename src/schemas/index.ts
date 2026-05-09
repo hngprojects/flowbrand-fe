@@ -15,6 +15,38 @@ export const LoginSchema = z.object({
   rememberMe: z.boolean().default(false).optional(),
 })
 
+/** Shared password rules for registration (UI checklist + API payload). */
+export const registrationPasswordField = z
+  .string()
+  .min(8, { message: 'Password must be at least 8 characters' })
+  .regex(/[A-Z]/, {
+    message: 'Include an uppercase letter (A–Z)',
+  })
+  .regex(/[a-z]/, {
+    message: 'Include a lowercase letter (a–z)',
+  })
+  .regex(/[@#$%]/, {
+    message: 'Include a symbol (@, #, $, %)',
+  })
+
+export type RegistrationPasswordChecks = {
+  minLength: boolean
+  uppercase: boolean
+  lowercase: boolean
+  symbol: boolean
+}
+
+export function getRegistrationPasswordChecks(
+  password: string
+): RegistrationPasswordChecks {
+  return {
+    minLength: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    symbol: /[@#$%]/.test(password),
+  }
+}
+
 export const RegisterSchema = z.object({
   first_name: z.string().min(1, { message: 'First name is required.' }).min(3, {
     message: 'First name must be at least 3 characters',
@@ -25,9 +57,8 @@ export const RegisterSchema = z.object({
   email: z.string().min(1, { message: 'Field is required' }).email({
     message: 'Invalid email address',
   }),
-  password: z.string().min(8, {
-    message: 'Password is required',
-  }),
+  country: z.string().min(1, { message: 'Country is required' }),
+  password: registrationPasswordField,
 })
 
 const RegisterNameSchema = RegisterSchema.pick({
@@ -44,7 +75,7 @@ export function splitFullNameForRegister(fullName: string): {
     return { first_name: '', last_name: '' }
   }
   if (parts.length === 1) {
-    return { first_name: parts[0], last_name: parts[0] }
+    return { first_name: parts[0], last_name: '' }
   }
   return { first_name: parts[0], last_name: parts.slice(1).join(' ') }
 }
@@ -55,16 +86,9 @@ export const RegistrationFormSchema = z
     email: z
       .string()
       .min(1, { message: 'Email is required' })
-      .email({ message: 'Invalid email address' }),
+      .email({ message: 'Enter a valid email address' }),
     country: z.string().min(1, { message: 'Please select a country' }),
-    password: z
-      .string()
-      .min(8, {
-        message: 'Use 8+ characters with a mix of letters & numbers',
-      })
-      .regex(/^(?=.*[A-Za-z])(?=.*\d)/, {
-        message: 'Include at least one letter and one number',
-      }),
+    password: registrationPasswordField,
   })
   .superRefine((data, ctx) => {
     const names = splitFullNameForRegister(data.full_name)
