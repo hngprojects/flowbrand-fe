@@ -50,7 +50,6 @@ const Login = () => {
     const { email, password } = values
 
     const result = await credentialsAuth(values)
-    console.log(result)
 
     if (result.success) {
       await signIn('credentials', {
@@ -226,7 +225,7 @@ const Login = () => {
           Don&apos;t Have An Account?{' '}
           <Link
             href="/register"
-            className="font-inter text-primary ms-1 text-left text-base leading-[19.2px] font-bold hover:text-orange-400"
+            className="font-inter text-primary hover:text-primary/90 ms-1 text-left text-base leading-[19.2px] font-bold"
             data-testid="link"
           >
             Sign Up
@@ -238,14 +237,14 @@ const Login = () => {
           By logging in, you agree to the{' '}
           <a
             href="/terms-and-conditions"
-            className="text-primary text-sm font-bold hover:text-orange-500"
+            className="text-primary hover:text-primary/90 text-sm font-bold"
           >
             Terms of Service
           </a>{' '}
           and{' '}
           <a
             href="/privacy-policy"
-            className="text-primary text-sm font-bold hover:text-orange-500"
+            className="text-primary hover:text-primary/90 text-sm font-bold"
           >
             Privacy Policy
           </a>

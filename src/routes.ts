@@ -7,6 +7,7 @@ export const publicRoutes: string[] = ['/']
 
 export const authRoutes = [
   '/register',
+  '/register/verify',
   '/login',
   '/forgot-password',
   '/reset-password',

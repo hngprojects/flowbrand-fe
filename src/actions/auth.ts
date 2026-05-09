@@ -3,6 +3,13 @@
 import axios from 'axios'
 import * as z from 'zod'
 import { envConfig } from '~/config/env.config'
+import type {
+  RegisterUserResult,
+  ResendOtpResult,
+  ResendOtpSuccess,
+  VerifyOtpResult,
+  VerifyOtpSuccess,
+} from '~/lib/auth-action-results'
 import { LoginSchema, RegisterSchema } from '~/schemas'
 import { AuthResponse, ErrorResponse } from '~/types'
 
@@ -45,11 +52,14 @@ const credentialsAuth = async (
   }
 }
 
-export const registerUser = async (values: z.infer<typeof RegisterSchema>) => {
+const registerUser = async (
+  values: z.infer<typeof RegisterSchema>
+): Promise<RegisterUserResult> => {
   const validatedFields = RegisterSchema.safeParse(values)
   const baseURL = envConfig.BASEURL
   if (!validatedFields.success) {
     return {
+      ok: false,
       error: 'registration  Failed. Please check your inputs.',
     }
   }
@@ -60,36 +70,40 @@ export const registerUser = async (values: z.infer<typeof RegisterSchema>) => {
     )
 
     return {
+      ok: true,
       status: response.status,
       data: response.data,
     }
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
+          ok: false,
           error: error.response.data.message || 'Registration failed.',
           status: error.response.status,
         }
       : {
+          ok: false,
           error: 'An unexpected error occurred.',
         }
   }
 }
 
-export const resendOtp = async (email: string) => {
-  const baseURL = process.env.BASEURL
+const resendOtp = async (email: string): Promise<ResendOtpResult> => {
+  const baseURL = envConfig.BASEURL
   try {
     const response = await axios.post(`${baseURL}/auth/request/token`, {
       email,
     })
 
-    return {
+    const success: ResendOtpSuccess = {
       status: response.status,
-      message: response.data.message,
+      message: response.data?.message,
     }
+    return success
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
-          error: error.response.data.message || 'Resend OTP failed.',
+          error: error.response.data?.message || 'Resend OTP failed.',
           status: error.response.status,
         }
       : {
@@ -98,4 +112,33 @@ export const resendOtp = async (email: string) => {
   }
 }
 
-export { credentialsAuth }
+const verifyOtp = async (
+  email: string,
+  code: string
+): Promise<VerifyOtpResult> => {
+  const baseURL = envConfig.BASEURL
+  try {
+    const response = await axios.post(`${baseURL}/auth/verify/otp`, {
+      email,
+      code,
+    })
+    const success: VerifyOtpSuccess = {
+      status: response.status,
+      message: response.data?.message,
+    }
+    return success
+  } catch (error) {
+    return axios.isAxiosError(error) && error.response
+      ? {
+          error:
+            error.response.data?.message ||
+            'Invalid or expired verification code.',
+          status: error.response.status,
+        }
+      : {
+          error: 'An unexpected error occurred.',
+        }
+  }
+}
+
+export { credentialsAuth, registerUser, resendOtp, verifyOtp }

@@ -11,7 +11,7 @@ const renderTitle = (title: string) => {
     if (part.startsWith('{{') && part.endsWith('}}')) {
       const styledText = part.slice(2, -2)
       return (
-        <span key={index} className="text-orange-500">
+        <span key={index} className="text-primary">
           {styledText}
         </span>
       )
