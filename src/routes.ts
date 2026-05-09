@@ -13,7 +13,7 @@ export const authRoutes = [
   '/verify-otp',
 ]
 
-export const superAdminRoutes = ['dashboard/admin/']
+export const superAdminRoutes = ['/dashboard/admin/']
 
 export const apiAuthPrefix = '/api/auth'
 
