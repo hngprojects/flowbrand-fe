@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 /**
  * HomeHero component displays the main hero section of the landing page.
@@ -62,9 +63,12 @@ const HomeHero = () => {
         </p>
 
         {/* CTA Button */}
-        <button className="bg-primary hover:bg-primary/90 text-primary-foreground mb-12 rounded-lg px-6 py-3 text-[16px] font-semibold transition-colors duration-200 sm:mb-16 sm:px-8 sm:py-4 sm:text-base md:text-[18px]">
+        <Link
+          href="/register"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground mb-12 inline-block rounded-lg px-6 py-3 text-[16px] font-semibold transition-colors duration-200 sm:mb-16 sm:px-8 sm:py-4 sm:text-base md:text-[18px]"
+        >
           Create a free account
-        </button>
+        </Link>
 
         {/* Desktop Image */}
         <div className="flex w-full justify-center">

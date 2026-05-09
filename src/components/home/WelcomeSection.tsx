@@ -20,7 +20,6 @@ const WelcomeSection = () => {
               style={{
                 fontFamily: 'Inter',
                 fontWeight: 500,
-                fontStyle: 'Medium',
                 fontSize: '18px',
                 lineHeight: '150%',
                 letterSpacing: 0,
@@ -34,7 +33,6 @@ const WelcomeSection = () => {
               style={{
                 fontFamily: 'Inter',
                 fontWeight: 500,
-                fontStyle: 'Medium',
                 lineHeight: '110.00000000000001%',
                 letterSpacing: '0%',
                 verticalAlign: 'middle',
@@ -52,7 +50,6 @@ const WelcomeSection = () => {
               style={{
                 fontFamily: 'Inter',
                 fontWeight: 400,
-                fontStyle: 'Regular',
                 fontSize: '16px',
                 lineHeight: '175%',
                 letterSpacing: '0%',
@@ -75,7 +72,6 @@ const WelcomeSection = () => {
             width={1186}
             height={640}
             className="h-auto w-full rounded-xl object-cover"
-            priority
           />
         </div>
       </div>
