@@ -29,16 +29,14 @@ export const registrationPasswordField = z
     message: 'Include a symbol (@, #, $, %)',
   })
 
-export type RegistrationPasswordChecks = {
+export type PasswordChecks = {
   minLength: boolean
   uppercase: boolean
   lowercase: boolean
   symbol: boolean
 }
 
-export function getRegistrationPasswordChecks(
-  password: string
-): RegistrationPasswordChecks {
+export function getPasswordChecks(password: string): PasswordChecks {
   return {
     minLength: password.length >= 8,
     uppercase: /[A-Z]/.test(password),
@@ -115,12 +113,8 @@ export const OtpFormSchema = z.object({
 
 export const ResetPasswordSchema = z
   .object({
-    password: z.string().min(8, {
-      message: 'Password is required',
-    }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: 'Confirm Password is required' }),
+    password: registrationPasswordField,
+    confirmPassword: registrationPasswordField,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',

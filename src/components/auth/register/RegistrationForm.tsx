@@ -23,7 +23,7 @@ import {
 import { Input } from '~/components/ui/input'
 import { Select } from '~/components/ui/select'
 import {
-  getRegistrationPasswordChecks,
+  getPasswordChecks,
   RegistrationFormSchema,
   splitFullNameForRegister,
 } from '~/schemas'
@@ -229,7 +229,7 @@ const RegistrationForm = () => {
             name="password"
             render={({ field }) => {
               const pwd = field.value ?? ''
-              const checks = getRegistrationPasswordChecks(pwd)
+              const checks = getPasswordChecks(pwd)
               const showPasswordGuide = passwordFocused || pwd.length > 0
 
               return (
