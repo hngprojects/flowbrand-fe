@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { CheckCircle } from 'lucide-react'
 import Image from 'next/image'
+import Logo from '~/public/images/logo-blue.png'
 
 const AuthSplitLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
@@ -9,7 +10,7 @@ const AuthSplitLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
       <div className="bg-primary/10 hidden w-1/2 max-w-none flex-col justify-between p-6 pr-8 pl-10 lg:flex xl:p-8 xl:pl-14 2xl:p-10 2xl:pl-16">
         <div className="flex shrink-0 items-center">
           <Image
-            src="/images/logo-blue.png"
+            src={Logo}
             alt="FlowBrand"
             width={115}
             height={21}
