@@ -117,8 +117,8 @@ export default function PricingPage() {
             <span className="text-orange-500">Business</span>
           </h1>
           <p className="mb-8 text-gray-600 dark:text-gray-400">
-            Whether you're just figuring things out or ready to scale, FlowBrand
-            gives you exactly what you need at every stage.
+            Whether you&apos;re just figuring things out or ready to scale,
+            FlowBrand gives you exactly what you need at every stage.
           </p>
 
           {/* Billing Toggle */}
