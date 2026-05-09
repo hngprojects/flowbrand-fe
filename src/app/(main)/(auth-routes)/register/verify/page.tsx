@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import OTPVerification from '~/components/auth/register/OTPVerification'
 import { REGISTER_VERIFY_EMAIL_STORAGE_KEY } from '~/lib/register-verify-storage'
 
-function RegisterVerifyPageContent() {
+const RegisterVerifyPageContent = () => {
   const router = useRouter()
   const [email] = useState(
     () =>
@@ -27,7 +27,9 @@ function RegisterVerifyPageContent() {
   return <OTPVerification email={email} />
 }
 
-export default dynamic(
+const RegisterVerifyPage = dynamic(
   () => Promise.resolve({ default: RegisterVerifyPageContent }),
   { ssr: false }
 )
+
+export default RegisterVerifyPage

@@ -1,15 +1,18 @@
+import type { ReactNode } from 'react'
 import { Suspense } from 'react'
 
 import RegisterPage from '~/components/auth/register/page'
 
-export default function AuthRoutesLayout({
+const AuthRoutesLayout = ({
   children,
 }: Readonly<{
-  children: React.ReactNode
-}>) {
+  children: ReactNode
+}>) => {
   return (
     <RegisterPage>
       <Suspense>{children}</Suspense>
     </RegisterPage>
   )
 }
+
+export default AuthRoutesLayout

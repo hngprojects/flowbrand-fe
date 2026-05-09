@@ -51,7 +51,7 @@ const PASSWORD_RULE_ROWS = [
   { key: 'symbol' as const, label: 'One symbol (@, #, $, %)' },
 ]
 
-function inputClassWithError(hasError: boolean) {
+const inputClassWithError = (hasError: boolean) => {
   return cn(
     'rounded-lg px-2.5 py-2 text-sm sm:px-3 sm:py-2.5',
     hasError &&
@@ -59,7 +59,7 @@ function inputClassWithError(hasError: boolean) {
   )
 }
 
-export default function RegistrationForm() {
+const RegistrationForm = () => {
   const router = useRouter()
   const { status } = useSession()
   const [showPasswordPlain, setShowPasswordPlain] = useState(false)
@@ -383,3 +383,5 @@ export default function RegistrationForm() {
     </div>
   )
 }
+
+export default RegistrationForm

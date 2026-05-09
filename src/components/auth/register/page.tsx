@@ -3,11 +3,7 @@ import type { ReactNode } from 'react'
 import { CheckCircle } from 'lucide-react'
 import Image from 'next/image'
 
-export default function RegisterPage({
-  children,
-}: Readonly<{
-  children: ReactNode
-}>) {
+const RegisterPage = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
     <div className="bg-background flex min-h-screen w-full">
       <div className="bg-primary/10 hidden w-1/2 max-w-none flex-col justify-between p-6 pr-8 pl-10 lg:flex xl:p-8 xl:pl-14 2xl:p-10 2xl:pl-16">
@@ -67,3 +63,5 @@ export default function RegisterPage({
     </div>
   )
 }
+
+export default RegisterPage

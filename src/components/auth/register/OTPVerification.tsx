@@ -23,17 +23,13 @@ import { cn } from '~/utils'
 
 const OTP_FIELDS = ['d0', 'd1', 'd2', 'd3', 'd4', 'd5'] as const
 
-function formatTimer(seconds: number) {
+const formatTimer = (seconds: number) => {
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-export default function OTPVerification({
-  email,
-}: Readonly<{
-  email: string
-}>) {
+const OTPVerification = ({ email }: { email: string }) => {
   const router = useRouter()
   const [secondsLeft, setSecondsLeft] = useState(30)
   const [isVerifying, setIsVerifying] = useState(false)
@@ -234,3 +230,5 @@ export default function OTPVerification({
     </div>
   )
 }
+
+export default OTPVerification
