@@ -82,12 +82,13 @@ export function splitFullNameForRegister(fullName: string): {
 
 export const RegistrationFormSchema = z
   .object({
-    full_name: z.string().min(1, { message: 'Full name is required' }),
+    full_name: z.string().trim().min(1, { message: 'Full name is required' }),
     email: z
       .string()
+      .trim()
       .min(1, { message: 'Email is required' })
       .email({ message: 'Enter a valid email address' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
+    country: z.string().trim().min(1, { message: 'Please select a country' }),
     password: registrationPasswordField,
   })
   .superRefine((data, ctx) => {

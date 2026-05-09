@@ -4,6 +4,7 @@ import axios from 'axios'
 import * as z from 'zod'
 import { envConfig } from '~/config/env.config'
 import type {
+  RegisterUserResult,
   ResendOtpResult,
   ResendOtpSuccess,
   VerifyOtpResult,
@@ -51,11 +52,14 @@ const credentialsAuth = async (
   }
 }
 
-const registerUser = async (values: z.infer<typeof RegisterSchema>) => {
+const registerUser = async (
+  values: z.infer<typeof RegisterSchema>
+): Promise<RegisterUserResult> => {
   const validatedFields = RegisterSchema.safeParse(values)
   const baseURL = envConfig.BASEURL
   if (!validatedFields.success) {
     return {
+      ok: false,
       error: 'registration  Failed. Please check your inputs.',
     }
   }
@@ -66,16 +70,19 @@ const registerUser = async (values: z.infer<typeof RegisterSchema>) => {
     )
 
     return {
+      ok: true,
       status: response.status,
       data: response.data,
     }
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
+          ok: false,
           error: error.response.data.message || 'Registration failed.',
           status: error.response.status,
         }
       : {
+          ok: false,
           error: 'An unexpected error occurred.',
         }
   }

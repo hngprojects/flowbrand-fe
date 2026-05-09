@@ -10,7 +10,15 @@ const AuthRoutesLayout = ({
 }>) => {
   return (
     <RegisterPage>
-      <Suspense>{children}</Suspense>
+      <Suspense
+        fallback={
+          <div className="text-foreground/60 flex min-h-[240px] items-center justify-center text-sm">
+            Loading…
+          </div>
+        }
+      >
+        {children}
+      </Suspense>
     </RegisterPage>
   )
 }

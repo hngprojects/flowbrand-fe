@@ -80,6 +80,10 @@ const OTPVerification = ({ email }: { email: string }) => {
           })
           router.push('/login')
         }
+      } catch {
+        toast.error('Verification failed', {
+          description: 'Network error. Please try again.',
+        })
       } finally {
         setIsVerifying(false)
       }
@@ -93,21 +97,27 @@ const OTPVerification = ({ email }: { email: string }) => {
       })
       return
     }
-    const result = await resendOtp(email)
-    if (
-      isResendOtpSuccess(result) &&
-      result.status >= 200 &&
-      result.status < 300
-    ) {
-      toast.success('Code sent', {
-        description: result.message,
-      })
-      setSecondsLeft(30)
-    } else {
+    try {
+      const result = await resendOtp(email)
+      if (
+        isResendOtpSuccess(result) &&
+        result.status >= 200 &&
+        result.status < 300
+      ) {
+        toast.success('Code sent', {
+          description: result.message,
+        })
+        setSecondsLeft(30)
+      } else {
+        toast.error('Could not resend', {
+          description: isResendOtpSuccess(result)
+            ? 'Please try again later.'
+            : result.error,
+        })
+      }
+    } catch {
       toast.error('Could not resend', {
-        description: isResendOtpSuccess(result)
-          ? 'Please try again later.'
-          : result.error,
+        description: 'Network error. Please try again later.',
       })
     }
   }

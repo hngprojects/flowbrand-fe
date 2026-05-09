@@ -9,10 +9,18 @@ import { REGISTER_VERIFY_EMAIL_STORAGE_KEY } from '~/lib/register-verify-storage
 
 const RegisterVerifyPageContent = () => {
   const router = useRouter()
-  const [email] = useState(
-    () =>
-      sessionStorage.getItem(REGISTER_VERIFY_EMAIL_STORAGE_KEY)?.trim() ?? ''
-  )
+  const [email] = useState(() => {
+    try {
+      if (typeof window === 'undefined') {
+        return ''
+      }
+      return (
+        sessionStorage.getItem(REGISTER_VERIFY_EMAIL_STORAGE_KEY)?.trim() ?? ''
+      )
+    } catch {
+      return ''
+    }
+  })
 
   useEffect(() => {
     if (!email) {

@@ -97,16 +97,19 @@ const RegistrationForm = () => {
         country: values.country,
         password: values.password,
       })
-      const isSuccess = 'status' in data && data.status === 201
+      const isSuccess = data.ok && data.status === 201
+      const errorDescription = !data.ok
+        ? data.error
+        : !isSuccess
+          ? 'Registration could not be completed.'
+          : undefined
 
       toast[isSuccess ? 'success' : 'error'](
         isSuccess ? 'Account created successfully' : 'An error occurred',
         {
           description: isSuccess
             ? 'Verify your email with the code we sent'
-            : 'error' in data
-              ? data.error
-              : undefined,
+            : errorDescription,
         }
       )
 
@@ -346,7 +349,7 @@ const RegistrationForm = () => {
         type="button"
         variant="outline"
         disabled={isSubmitting || status === 'authenticated'}
-        onClick={() => signIn('google', { redirectTo: '/' })}
+        onClick={() => signIn('google', { redirectTo: '/dashboard' })}
         className="h-auto w-full gap-2 rounded-lg py-2.5 text-sm font-semibold sm:py-3"
       >
         <GoogleLogo className="size-4" />

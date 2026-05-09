@@ -1,3 +1,17 @@
+export type RegisterUserSuccess = {
+  ok: true
+  status: number
+  data: unknown
+}
+
+export type RegisterUserFailure = {
+  ok: false
+  error: string
+  status?: number
+}
+
+export type RegisterUserResult = RegisterUserSuccess | RegisterUserFailure
+
 export type ResendOtpSuccess = { status: number; message?: string }
 
 export type ResendOtpFailure = { error: string; status?: number }
