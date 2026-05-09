@@ -113,16 +113,15 @@ export const OtpFormSchema = z.object({
   d5: z.string().length(1).regex(/^\d$/),
 })
 
-export const ResetPasswordSchema = z
+export const CreateNewPasswordFormSchema = z
   .object({
-    password: z.string().min(8, {
-      message: 'Password is required',
-    }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: 'Confirm Password is required' }),
+    password: registrationPasswordField,
+    confirmPassword: registrationPasswordField,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+/** @deprecated Prefer CreateNewPasswordFormSchema — same shape */
+export const ResetPasswordSchema = CreateNewPasswordFormSchema

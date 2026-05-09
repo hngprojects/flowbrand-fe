@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Suspense } from 'react'
 
-import RegisterPage from '~/components/auth/register/page'
+import AuthSplitLayout from '~/components/auth/auth-split-layout'
 
 const AuthRoutesLayout = ({
   children,
@@ -9,7 +9,7 @@ const AuthRoutesLayout = ({
   children: ReactNode
 }>) => {
   return (
-    <RegisterPage>
+    <AuthSplitLayout>
       <Suspense
         fallback={
           <div className="text-foreground/60 flex min-h-[240px] items-center justify-center text-sm">
@@ -19,7 +19,7 @@ const AuthRoutesLayout = ({
       >
         {children}
       </Suspense>
-    </RegisterPage>
+    </AuthSplitLayout>
   )
 }
 

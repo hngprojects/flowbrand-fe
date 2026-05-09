@@ -7,6 +7,7 @@ import type {
   RegisterUserResult,
   ResendOtpResult,
   ResendOtpSuccess,
+  ResetPasswordResult,
   VerifyOtpResult,
   VerifyOtpSuccess,
 } from '~/lib/auth-action-results'
@@ -141,4 +142,41 @@ const verifyOtp = async (
   }
 }
 
-export { credentialsAuth, registerUser, resendOtp, verifyOtp }
+/**
+ * Completes password reset. Backend route (placeholder): POST {BASE_URL}/auth/password/reset
+ * Body: { token, password }.
+ */
+const resetPasswordWithToken = async (input: {
+  token: string
+  password: string
+}): Promise<ResetPasswordResult> => {
+  const trimmed = input.token.trim()
+  if (!trimmed) {
+    return { ok: false, error: 'Reset link is invalid or expired.' }
+  }
+  const baseURL = envConfig.BASEURL
+  try {
+    await axios.post(`${baseURL}/auth/password/reset`, {
+      token: trimmed,
+      password: input.password,
+    })
+    return { ok: true }
+  } catch (error) {
+    return axios.isAxiosError(error) && error.response
+      ? {
+          ok: false,
+          error:
+            error.response.data?.message ||
+            'Could not reset password. Please try again.',
+        }
+      : { ok: false, error: 'An unexpected error occurred.' }
+  }
+}
+
+export {
+  credentialsAuth,
+  registerUser,
+  resendOtp,
+  resetPasswordWithToken,
+  verifyOtp,
+}
