@@ -1,20 +1,22 @@
-name: Build, Lint and Test
+name: Build and Upload
 
 on:
-  pull_request
+  push:
+    branches: [staging, main]
 
 jobs:
-  build_lint_test:
+  build:
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "23"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -24,8 +26,27 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint code
-        run: pnpm lint
-
-      - name: Build project
+      - name: Build Next.js application
         run: pnpm build
+
+      - name: Archive production artifacts
+        run: tar -czf boilerplate.tar.gz .next node_modules package.json
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: |
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "${{ secrets.USERNAME }}@${{ secrets.HOST }}:/flowbrand/staging/frontend"
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "${{ secrets.USERNAME }}@${{ secrets.HOST }}:/flowbrand/production/frontend"
+
+      - name: Delete zip file
+        run: rm -f boilerplate.tar.gz
