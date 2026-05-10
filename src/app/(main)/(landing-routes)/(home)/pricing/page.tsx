@@ -110,8 +110,14 @@ export default function PricingPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-black">
       {/* Header Section */}
-      <section className="px-4 py-16 sm:py-20">
-        <div className="mx-auto max-w-4xl text-center">
+      <section className="relative overflow-hidden bg-sky-100/40 px-4 py-16 sm:py-20 dark:bg-slate-900/20">
+        {/* Decorative background elements */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-20 -left-20 h-64 w-64 rounded-full bg-sky-200/20 blur-3xl" />
+          <div className="absolute -right-32 -bottom-20 h-96 w-96 rounded-full bg-sky-200/20 blur-3xl" />
+          <div className="absolute top-1/3 right-1/4 h-80 w-80 rounded-full bg-sky-100/30 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="mb-2 text-4xl font-bold sm:text-5xl">
             Affordable Pricing for your{' '}
             <span className="text-orange-500">Business</span>
@@ -122,23 +128,23 @@ export default function PricingPage() {
           </p>
 
           {/* Billing Toggle */}
-          <div className="mb-12 flex items-center justify-center gap-4">
+          <div className="mt-12 flex items-center justify-center gap-4">
             <button
               onClick={() => setBillingCycle('monthly')}
-              className={`px-4 py-2 font-medium transition-all ${
+              className={`rounded-lg px-6 py-2 font-medium transition-all ${
                 billingCycle === 'monthly'
-                  ? 'rounded-md bg-orange-500 text-white'
-                  : 'text-gray-600 dark:text-gray-400'
+                  ? 'border-2 border-orange-500 bg-orange-500 text-white'
+                  : 'border-2 border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400'
               }`}
             >
               Monthly Pricing
             </button>
             <button
               onClick={() => setBillingCycle('annual')}
-              className={`px-4 py-2 font-medium transition-all ${
+              className={`rounded-lg px-6 py-2 font-medium transition-all ${
                 billingCycle === 'annual'
-                  ? 'rounded-md bg-orange-500 text-white'
-                  : 'text-gray-600 dark:text-gray-400'
+                  ? 'border-2 border-orange-500 bg-orange-500 text-white'
+                  : 'border-2 border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400'
               }`}
             >
               Annual Pricing
@@ -282,8 +288,13 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-3xl">
+      <section className="relative overflow-hidden bg-slate-50/60 px-4 py-16 dark:bg-amber-900/10">
+        {/* Decorative background elements */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute top-1/2 -left-32 h-80 w-80 rounded-full bg-yellow-200/20 blur-3xl" />
+          <div className="absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-yellow-200/15 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-4xl">
           <div className="mb-12 text-center">
             <div className="mb-4 inline-block rounded bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-600 dark:bg-orange-900 dark:text-orange-200">
               FAQ
@@ -296,10 +307,18 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <Accordion type="single" collapsible className="space-y-4">
+          <Accordion
+            type="single"
+            collapsible
+            className="grid gap-4 md:grid-cols-2"
+          >
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left text-sm font-medium hover:text-orange-500">
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="rounded-lg border border-gray-200 bg-white px-4 py-2 dark:border-gray-700 dark:bg-gray-900"
+              >
+                <AccordionTrigger className="text-left text-sm font-medium hover:text-orange-500 [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-orange-500">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-sm text-gray-600 dark:text-gray-400">
