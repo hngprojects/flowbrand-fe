@@ -5,13 +5,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { Fade as Hamburger } from 'hamburger-react'
-
+import MobileLogoIcon from '~/components/icons/navbar/mobile-logo'
 import logoBlue from '~public/images/logo-blue.png'
 
 const navLinks = [
   { label: 'Home', path: '/' },
   { label: 'How it works', path: '/how-it-works' },
-  { label: 'About Us', path: '/about' },
+  { label: 'About Us', path: '/about-us' },
   { label: 'Pricing', path: '/pricing' },
 ]
 
@@ -20,10 +20,13 @@ const Navbar = () => {
   const pathname = usePathname()
 
   return (
-    <nav className="bg-background border-border sticky top-0 z-50 border-b">
-      <div className="flex h-20 w-full items-center p-4 lg:pr-20">
-        <div className="flex w-full items-center justify-between">
-          <Link href="/">
+    <nav className="bg-background border-border font-inter sticky top-0 z-50 border-b">
+      <div className="mx-auto flex h-[83px] w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-18">
+        <Link href="/">
+          <span className="lg:hidden">
+            <MobileLogoIcon />
+          </span>
+          <span className="hidden lg:block">
             <Image
               src={logoBlue}
               alt="FlowBrand logo"
@@ -31,46 +34,47 @@ const Navbar = () => {
               height={51}
               className="cursor-pointer"
             />
+          </span>
+        </Link>
+
+        <ul className="hidden items-center lg:flex">
+          {navLinks.map((link) => (
+            <li key={link.label}>
+              <Link
+                href={link.path}
+                className={`hover:text-primary flex h-12 w-[132px] items-center justify-center px-4 py-3 text-base font-medium text-[#565D69] transition-colors ${
+                  pathname === link.path ||
+                  (link.path !== '/' && pathname.startsWith(link.path))
+                    ? 'text-primary font-semibold'
+                    : ''
+                }`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="hidden items-center gap-4 lg:flex">
+          <Link
+            href="/login"
+            className="text-foreground hover:text-primary flex h-[51px] items-center justify-center px-6 py-3 text-base font-medium transition-colors"
+          >
+            Log In
           </Link>
+          <Link
+            href="/get-started"
+            className="bg-primary text-primary-foreground flex h-[51px] items-center justify-center rounded-[10px] px-6 py-3 font-semibold transition-opacity hover:opacity-90"
+          >
+            Get started
+          </Link>
+        </div>
 
-          <ul className="hidden items-center gap-10 lg:flex">
-            {navLinks.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={link.path}
-                  className={`hover:text-primary text-base leading-6 font-medium text-[#565D69] transition-colors ${
-                    pathname === link.path ||
-                    (link.path !== '/' && pathname.startsWith(link.path))
-                      ? 'text-primary font-semibold'
-                      : ''
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="hidden items-center gap-4 lg:flex">
-            <Link
-              href="/login"
-              className="text-foreground hover:text-primary text-base font-medium transition-colors"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/get-started"
-              className="bg-primary text-primary-foreground flex h-12 w-34 items-center justify-center gap-2 rounded-[10px] px-6 py-3 font-semibold transition-opacity hover:opacity-90"
-            >
-              Get started
-            </Link>
-          </div>
-
-          <div className="z-50 lg:hidden">
-            <Hamburger toggled={isOpen} toggle={setIsOpen} size={23} />
-          </div>
+        <div className="z-50 lg:hidden">
+          <Hamburger toggled={isOpen} toggle={setIsOpen} size={23} />
         </div>
       </div>
+
       <div
         className={`bg-background absolute top-full left-0 flex w-full flex-col gap-4 overflow-hidden text-sm font-semibold transition-all duration-300 ease-in-out lg:hidden ${
           isOpen
@@ -83,7 +87,7 @@ const Navbar = () => {
           <Link
             key={link.label}
             href={link.path}
-            className={`hover:text-primary px-5 py-2 text-[#565D69] ${
+            className={`hover:text-primary px-4 py-2 text-[#565D69] ${
               pathname === link.path ? 'text-primary' : ''
             }`}
             onClick={() => setIsOpen(false)}
@@ -92,7 +96,7 @@ const Navbar = () => {
           </Link>
         ))}
 
-        <div className="flex flex-col gap-3 px-5 pt-2">
+        <div className="flex flex-col gap-3 px-4 pt-2">
           <Link
             href="/login"
             className="border-primary text-primary rounded-lg border py-2.5 text-center font-semibold"
