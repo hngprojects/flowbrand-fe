@@ -72,13 +72,19 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
         {items.map((t) => (
           <Card
             key={t.name}
-            className="flex h-[247px] w-[506px] flex-shrink-0 flex-col justify-evenly gap-10 px-8 py-[23.5px] text-left"
+            className="flex h-[247px] w-[85vw] max-w-[506px] flex-shrink-0 flex-col justify-evenly gap-10 px-8 py-[23.5px] text-left sm:w-[506px]"
           >
-            <p className="w-[442px] text-[20px] leading-[130%] font-normal">
+            <p className="w-full text-[20px] leading-[130%] font-normal">
               “{t.quote}”
             </p>
             <div className="flex items-center justify-center gap-2">
-              <Image src={t.image} alt={t.alt} />
+              <Image
+                src={t.image}
+                alt={t.alt}
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
               <span>{t.name}</span>
             </div>
           </Card>
