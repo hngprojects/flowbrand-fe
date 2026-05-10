@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-background border-border sticky top-0 z-50 border-b">
-      <div className="mx-auto flex h-20 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+      <div className="flex h-20 w-full items-center p-4 lg:pr-20">
         <div className="flex w-full items-center justify-between">
           <Link href="/">
             <Image
