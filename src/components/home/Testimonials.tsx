@@ -1,11 +1,11 @@
 import Image, { type StaticImageData } from 'next/image'
 import { Card } from '../ui/card'
-import Chef from '~public/images/chef.png'
+import chef from '~public/images/chef.png'
 import david from '~public/images/david.png'
 import bright from '~public/images/bright.png'
-import ellipse1 from '~public/images/Ellipse 46.png'
-import ellipse2 from '~public/images/Ellipse 46 (1).png'
-import ellipse3 from '~public/images/Ellipse 46 (2).png'
+import ellipse1 from '~public/images/ellipse-1.png'
+import ellipse2 from '~public/images/ellipse-2.png'
+import ellipse3 from '~public/images/ellipse-3.png'
 
 type Testimonial = {
   quote: string
@@ -19,7 +19,7 @@ const row1: Testimonial[] = [
     quote:
       'I used to just post on Instagram and hope for the best. FlowBrand actually tells me what to do on Monday morning. It gave our team of 3 a real system.',
     name: 'Sarah Nnaji',
-    image: Chef,
+    image: chef,
     alt: 'Sarah Nnaji testimonial',
   },
   {
