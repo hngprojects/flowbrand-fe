@@ -1,6 +1,5 @@
 'use client'
 
-import CounterView from '~/views/CounterView'
 import WaitlistView from '~/views/WaitlistView'
 
 const LandingPage = () => {

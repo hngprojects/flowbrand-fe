@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import logoBlue from '~public/images/logo-blue.png'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
 
 const WaitlistNavbar = () => {
   return (
@@ -23,8 +21,7 @@ const WaitlistNavbar = () => {
 
           <div className="flex items-center justify-between gap-4">
             <Link
-              href="#"
-              //   href="/community"
+              href="/community"
               className="bg-primary-foreground flex items-center justify-center gap-2 rounded-4xl px-6 py-3 font-semibold transition-opacity hover:opacity-90"
             >
               Join Community

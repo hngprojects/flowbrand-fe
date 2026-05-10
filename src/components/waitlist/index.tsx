@@ -13,7 +13,8 @@ export default function WaitlistBody() {
   const [error, setError] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleJoin = async () => {
+  const handleJoin: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault()
     const isValid = /^\S+@\S+\.\S+$/.test(email)
     setError(!isValid)
     if (!isValid) return
@@ -46,7 +47,10 @@ export default function WaitlistBody() {
         </p>
 
         <div className="mb-5 flex flex-col gap-1.5 pr-4">
-          <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
+          <form
+            onSubmit={handleJoin}
+            className="flex flex-col gap-4 lg:flex-row lg:justify-between"
+          >
             <Input
               type="email"
               placeholder="example@gmail.com"
@@ -61,10 +65,10 @@ export default function WaitlistBody() {
                   : 'border-foreground/30 text-foreground placeholder:text-foreground/60'
               }`}
             />
-            <Button className="pt-5 pb-5" onClick={handleJoin}>
+            <Button type="submit" className="pt-5 pb-5">
               Join Waitlist
             </Button>
-          </div>
+          </form>
           {error && (
             <p className="text-error text-sm font-medium">
               Enter a valid email address
