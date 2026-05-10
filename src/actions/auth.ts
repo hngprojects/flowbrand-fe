@@ -7,11 +7,28 @@ import type {
   RegisterUserResult,
   ResendOtpResult,
   ResendOtpSuccess,
+  ResetPasswordResult,
   VerifyOtpResult,
   VerifyOtpSuccess,
 } from '~/lib/auth-action-results'
 import { LoginSchema, RegisterSchema } from '~/schemas'
 import { AuthResponse, ErrorResponse } from '~/types'
+
+/** Safe string from API error payloads; avoids showing objects in the UI. */
+function messageFromAxiosData(data: unknown, fallback: string): string {
+  if (
+    data &&
+    typeof data === 'object' &&
+    'message' in data &&
+    typeof (data as { message: unknown }).message === 'string'
+  ) {
+    const text = (data as { message: string }).message.trim()
+    if (text.length > 0) {
+      return text
+    }
+  }
+  return fallback
+}
 
 const credentialsAuth = async (
   values: z.infer<typeof LoginSchema>
@@ -39,10 +56,8 @@ const credentialsAuth = async (
     return {
       success: false,
       message:
-        axios.isAxiosError(error) &&
-        error.response &&
-        error.response.data.message
-          ? error.response.data.message
+        axios.isAxiosError(error) && error.response
+          ? messageFromAxiosData(error.response.data, 'Something went wrong')
           : 'Something went wrong',
       status_code:
         axios.isAxiosError(error) && error.response
@@ -78,7 +93,10 @@ const registerUser = async (
     return axios.isAxiosError(error) && error.response
       ? {
           ok: false,
-          error: error.response.data.message || 'Registration failed.',
+          error: messageFromAxiosData(
+            error.response.data,
+            'Registration failed.'
+          ),
           status: error.response.status,
         }
       : {
@@ -103,7 +121,10 @@ const resendOtp = async (email: string): Promise<ResendOtpResult> => {
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
-          error: error.response.data?.message || 'Resend OTP failed.',
+          error: messageFromAxiosData(
+            error.response.data,
+            'Resend OTP failed.'
+          ),
           status: error.response.status,
         }
       : {
@@ -130,9 +151,10 @@ const verifyOtp = async (
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
-          error:
-            error.response.data?.message ||
-            'Invalid or expired verification code.',
+          error: messageFromAxiosData(
+            error.response.data,
+            'Invalid or expired verification code.'
+          ),
           status: error.response.status,
         }
       : {
@@ -141,4 +163,57 @@ const verifyOtp = async (
   }
 }
 
-export { credentialsAuth, registerUser, resendOtp, verifyOtp }
+const resetPasswordWithToken = async (input: {
+  token: string
+  password: string
+}): Promise<ResetPasswordResult> => {
+  if (typeof input.token !== 'string' || typeof input.password !== 'string') {
+    return { ok: false, error: 'Invalid request payload.' }
+  }
+
+  const trimmed = input.token.trim()
+  if (!trimmed) {
+    return { ok: false, error: 'Reset link is invalid or expired.' }
+  }
+  if (input.password.trim().length === 0) {
+    return { ok: false, error: 'Password is required.' }
+  }
+
+  const baseURL = envConfig.BASEURL
+  try {
+    await axios.post(
+      `${baseURL}/auth/password/reset`,
+      {
+        token: trimmed,
+        password: input.password,
+      },
+      { timeout: 30_000 }
+    )
+    return { ok: true }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
+      return {
+        ok: false,
+        error:
+          'The password reset service did not respond in time. Please try again.',
+      }
+    }
+    return axios.isAxiosError(error) && error.response
+      ? {
+          ok: false,
+          error: messageFromAxiosData(
+            error.response.data,
+            'Could not reset password. Please try again.'
+          ),
+        }
+      : { ok: false, error: 'An unexpected error occurred.' }
+  }
+}
+
+export {
+  credentialsAuth,
+  registerUser,
+  resendOtp,
+  resetPasswordWithToken,
+  verifyOtp,
+}

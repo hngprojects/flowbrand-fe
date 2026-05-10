@@ -2,18 +2,19 @@ import type { ReactNode } from 'react'
 
 import { CheckCircle } from 'lucide-react'
 import Image from 'next/image'
+import Logo from '../../../public/images/logo-blue.png'
 
-const RegisterPage = ({ children }: Readonly<{ children: ReactNode }>) => {
+const AuthSplitLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
     <div className="bg-background flex min-h-screen w-full">
       <div className="bg-primary/10 hidden w-1/2 max-w-none flex-col justify-between p-6 pr-8 pl-10 lg:flex xl:p-8 xl:pl-14 2xl:p-10 2xl:pl-16">
         <div className="flex shrink-0 items-center">
           <Image
-            src="/images/logo-blue.png"
+            src={Logo}
             alt="FlowBrand"
-            width={140}
-            height={36}
-            className="h-8 w-auto object-contain xl:h-9"
+            width={115}
+            height={21}
+            className="object-contain"
           />
         </div>
 
@@ -42,7 +43,6 @@ const RegisterPage = ({ children }: Readonly<{ children: ReactNode }>) => {
             ))}
           </ul>
         </div>
-        {/* Flex spacer: pushes hero content up so the column uses space-between cleanly */}
         <div />
       </div>
 
@@ -51,9 +51,9 @@ const RegisterPage = ({ children }: Readonly<{ children: ReactNode }>) => {
           <Image
             src="/images/logo-blue.png"
             alt="FlowBrand"
-            width={140}
-            height={36}
-            className="h-8 w-auto object-contain"
+            width={115}
+            height={21}
+            className="object-contain"
           />
         </div>
         <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center lg:flex-none">
@@ -64,4 +64,4 @@ const RegisterPage = ({ children }: Readonly<{ children: ReactNode }>) => {
   )
 }
 
-export default RegisterPage
+export default AuthSplitLayout
