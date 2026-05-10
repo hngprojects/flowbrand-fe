@@ -1,6 +1,6 @@
 const logos = [
-  { label: 'Repair Sevice', icon: <RepairIcon /> },
-  { label: 'Beauty SAlon', icon: <BeautyIcon />, serif: true },
+  { label: 'Repair Service', icon: <RepairIcon /> },
+  { label: 'Beauty Salon', icon: <BeautyIcon />, serif: true },
   { label: 'Bakery', icon: <BakeryIcon />, serif: true },
   { label: 'Small Retail', icon: <RetailIcon /> },
   { label: 'Agency', icon: <AgencyIcon /> },
