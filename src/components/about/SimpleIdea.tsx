@@ -17,8 +17,8 @@ export default function SimpleIdea() {
 
         <div className="rounded-2xl border border-[#E2E8F0] bg-[#FCFDFF] px-8 py-8 md:px-12 md:py-10">
           <p className="text-center text-[14px] leading-[1.9] text-gray-500 md:text-[16px]">
-            what if we could ask someone a few questions about their business, and
-            give them back a marketing strategy that actually fits, built in
+            what if we could ask someone a few questions about their business,
+            and give them back a marketing strategy that actually fits, built in
             plain English, one step at a time?
           </p>
         </div>
