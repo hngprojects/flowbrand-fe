@@ -7,6 +7,9 @@ import ellipse1 from '~public/images/ellipse-1.png'
 import ellipse2 from '~public/images/ellipse-2.png'
 import ellipse3 from '~public/images/ellipse-3.png'
 
+const BADGE_BG = '#fcf4e8'
+const BADGE_FG = '#e58f17'
+
 type Testimonial = {
   quote: string
   name: string
@@ -69,14 +72,12 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >
       <div className="flex min-w-max gap-6 px-2">
-        {items.map((t) => (
+        {items.map((t, index) => (
           <Card
-            key={t.name}
-            className="flex h-[247px] w-[85vw] max-w-[506px] flex-shrink-0 flex-col justify-evenly gap-10 px-8 py-[23.5px] text-left sm:w-[506px]"
+            key={index}
+            className="flex min-h-[247px] w-[80vw] max-w-[506px] flex-shrink-0 flex-col justify-evenly gap-10 px-8 py-[23.5px] text-left sm:w-[506px]"
           >
-            <p className="w-full text-[20px] leading-[130%] font-normal">
-              “{t.quote}”
-            </p>
+            <p className="w-full text-[20px] leading-[130%]">“{t.quote}”</p>
             <div className="flex items-center justify-center gap-2">
               <Image
                 src={t.image}
@@ -96,11 +97,17 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
 
 export default function Testimonials() {
   return (
-    <section className="min-h-screen py-16">
+    <section className="py-16">
       <div className="flex flex-col items-center justify-center text-center">
-        <div className="mb-2 flex items-center gap-2 rounded-xl bg-[#fcf4e8] px-4 py-2">
-          <div className="h-4 w-4 rounded-full bg-[#e58f17]"></div>
-          <p className="text-[#e58f17]">Testimonials</p>
+        <div
+          className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2"
+          style={{ backgroundColor: BADGE_BG }}
+        >
+          <div
+            className="h-4 w-4 rounded-full"
+            style={{ backgroundColor: BADGE_FG }}
+          ></div>
+          <p style={{ color: BADGE_FG }}>Testimonials</p>
         </div>
         <h2 className="mb-8 text-4xl">Trusted by growing businesses</h2>
         <div className="w-full space-y-8">
