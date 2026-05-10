@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="max-w-[440px]">
             <Image className="mb-4" src={logoLight} alt="logo light" />
 
-            <p className="text-muted-foreground/80 text-[18px] leading-[150%] font-normal tracking-normal">
+            <p className="text-muted-foreground/80 text-[14px] leading-[150%] font-normal tracking-normal sm:text-[16px] lg:text-[18px]">
               Build smarter marketing strategy without the guesswork and helping
               small and growing business turn attention into real customers.
             </p>
@@ -19,10 +19,10 @@ const Footer = () => {
 
           <div className="flex flex-wrap gap-14 sm:gap-20">
             <div>
-              <h2 className="mb-4 text-2xl leading-1.5 font-semibold">
+              <h2 className="mb-4 text-lg leading-[150%] font-semibold sm:text-xl lg:text-2xl">
                 Product
               </h2>
-              <ul className="text-muted-foreground/80 flex flex-col gap-2 text-[20px] leading-[130%] tracking-normal">
+              <ul className="text-muted-foreground/80 flex flex-col gap-2 text-[14px] leading-[130%] tracking-normal sm:text-[16px] lg:text-[20px]">
                 <li>
                   <a href="#" className="hover:text-white">
                     Home
@@ -57,8 +57,12 @@ const Footer = () => {
             </div>
 
             <div>
-              <h2 className="mb-4 text-2xl leading-1.5 font-semibold">Legal</h2>
-              <ul className="text-muted-foreground/80 flex flex-col gap-2 text-[20px] leading-[130%] tracking-normal">
+              <h2 className="mb-4 text-lg leading-[150%] font-semibold sm:text-xl lg:text-2xl">
+                {' '}
+                Legal
+              </h2>
+
+              <ul className="text-muted-foreground/80 flex flex-col gap-2 text-[14px] leading-[130%] tracking-normal sm:text-[16px] lg:text-[20px]">
                 <li>
                   <a href="#" className="hover:text-white">
                     Terms of use
