@@ -1,7 +1,8 @@
-name: Build, Lint and Test
+name: Build, Lint, Test and Security Scan
 
 on:
-  pull_request
+  pull_request:
+    branches: [dev, staging, main]
 
 jobs:
   build_lint_test:
@@ -14,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "23"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -29,3 +30,21 @@ jobs:
 
       - name: Build project
         run: pnpm build
+
+      - name: Security scan with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          format: json
+          output: trivy-report.json
+
+      - name: Upload Trivy report as artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-security-report
+          path: trivy-report.json
+          retention-days: 7

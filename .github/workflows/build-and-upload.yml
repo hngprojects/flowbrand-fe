@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    if: github.event.repository.fork == false
+    # if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -15,30 +15,42 @@ jobs:
       PASSWORD: ${{ secrets.PASSWORD }}
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: "23"
+      - uses: actions/checkout@v4
 
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 10
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "23"
 
-    - name: Install dependencies
-      run: pnpm install
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
-    - name: Build Next.js application
-      run: pnpm build
+      - name: Install dependencies
+        run: pnpm install
 
-    - name: Archive production artifacts
-      run: tar -czf boilerplate.tar.gz .next
+      - name: Build Next.js application
+        run: pnpm build
 
-    - name: Copy Artifacts to server
-      run: |
-        sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no boilerplate.tar.gz "$USERNAME@$HOST:~/build-artifacts"
-        
-    - name: Delete zip file
-      run: rm -f boilerplate.tar.gz
+      - name: Archive production artifacts
+        run: tar -czf boilerplate.tar.gz .next node_modules package.json
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: |
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "${{ secrets.USERNAME }}@${{ secrets.HOST }}:/flowbrand/staging/frontend"
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "${{ secrets.USERNAME }}@${{ secrets.HOST }}:/flowbrand/production/frontend"
+
+      - name: Delete zip file
+        run: rm -f boilerplate.tar.gz
