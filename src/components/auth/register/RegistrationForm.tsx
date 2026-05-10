@@ -23,7 +23,8 @@ import {
 import { Input } from '~/components/ui/input'
 import { Select } from '~/components/ui/select'
 import {
-  getRegistrationPasswordChecks,
+  getPasswordChecks,
+  PASSWORD_RULE_ROWS,
   RegistrationFormSchema,
   splitFullNameForRegister,
 } from '~/schemas'
@@ -43,13 +44,6 @@ const COUNTRIES = [
   { value: 'DE', label: 'Germany' },
   { value: 'FR', label: 'France' },
 ] as const
-
-const PASSWORD_RULE_ROWS = [
-  { key: 'minLength' as const, label: 'At least 8 characters' },
-  { key: 'uppercase' as const, label: 'Uppercase letter (A–Z)' },
-  { key: 'lowercase' as const, label: 'Lowercase letter (a–z)' },
-  { key: 'symbol' as const, label: 'One symbol (@, #, $, %)' },
-]
 
 const inputClassWithError = (hasError: boolean) => {
   return cn(
@@ -229,7 +223,7 @@ const RegistrationForm = () => {
             name="password"
             render={({ field }) => {
               const pwd = field.value ?? ''
-              const checks = getRegistrationPasswordChecks(pwd)
+              const checks = getPasswordChecks(pwd)
               const showPasswordGuide = passwordFocused || pwd.length > 0
 
               return (
@@ -288,7 +282,8 @@ const RegistrationForm = () => {
                         aria-hidden={!showPasswordGuide}
                       >
                         <p className="text-foreground/50 mt-2 text-xs">
-                          Use 8+ characters with a mix of letters & numbers
+                          Use 8+ characters with uppercase, lowercase, and a
+                          symbol from @, #, $, or %
                         </p>
                         <ul className="mt-3 space-y-2 pt-3">
                           {PASSWORD_RULE_ROWS.map(({ key, label }) => {

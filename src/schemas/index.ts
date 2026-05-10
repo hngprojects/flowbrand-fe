@@ -29,16 +29,22 @@ export const registrationPasswordField = z
     message: 'Include a symbol (@, #, $, %)',
   })
 
-export type RegistrationPasswordChecks = {
+export type PasswordChecks = {
   minLength: boolean
   uppercase: boolean
   lowercase: boolean
   symbol: boolean
 }
 
-export function getRegistrationPasswordChecks(
-  password: string
-): RegistrationPasswordChecks {
+/** Shared labels for password rule checklists (registration, reset password). */
+export const PASSWORD_RULE_ROWS = [
+  { key: 'minLength' as const, label: 'At least 8 characters' },
+  { key: 'uppercase' as const, label: 'Uppercase letter (A–Z)' },
+  { key: 'lowercase' as const, label: 'Lowercase letter (a–z)' },
+  { key: 'symbol' as const, label: 'One symbol (@, #, $, %)' },
+] as const
+
+export function getPasswordChecks(password: string): PasswordChecks {
   return {
     minLength: password.length >= 8,
     uppercase: /[A-Z]/.test(password),
@@ -115,12 +121,10 @@ export const OtpFormSchema = z.object({
 
 export const ResetPasswordSchema = z
   .object({
-    password: z.string().min(8, {
-      message: 'Password is required',
-    }),
+    password: registrationPasswordField,
     confirmPassword: z
       .string()
-      .min(8, { message: 'Confirm Password is required' }),
+      .min(1, { message: 'Please confirm your password' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
