@@ -5,7 +5,12 @@ import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next-nprogress-bar'
-import { type ChangeEventHandler, useEffect, useState, useTransition } from 'react'
+import {
+  type ChangeEventHandler,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form'
 import * as z from 'zod'
 import { LoginSchema } from '~/schemas'
@@ -59,7 +64,7 @@ function AuthField({
     <div className="space-y-2">
       <label
         htmlFor={id}
-        className="block text-sm font-medium leading-[150%] text-[#152D58] sm:text-base"
+        className="block text-sm leading-[150%] font-medium text-[#152D58] sm:text-base"
       >
         {label}
       </label>
@@ -104,7 +109,7 @@ function AuthField({
       {error ? (
         <p
           id={`${id}-error`}
-          className="text-sm font-normal leading-[20px] text-[#D13232] sm:text-xs sm:font-medium sm:leading-[18px]"
+          className="text-sm leading-[20px] font-normal text-[#D13232] sm:text-xs sm:leading-[18px] sm:font-medium"
         >
           {error}
         </p>
@@ -117,7 +122,7 @@ function SocialDivider() {
   return (
     <div className="flex items-center gap-5">
       <span className="h-px flex-1 bg-[#CFCFCF]" />
-      <span className="text-sm font-normal leading-[21px] text-[#565D69]">
+      <span className="text-sm leading-[21px] font-normal text-[#565D69]">
         OR
       </span>
       <span className="h-px flex-1 bg-[#CFCFCF]" />
@@ -203,7 +208,7 @@ export default function Login() {
         <h1 className="text-xl font-medium text-[#152D58] sm:text-4xl">
           Welcome back
         </h1>
-        <p className="text-sm text-foreground/70 sm:text-[24px]">
+        <p className="text-foreground/70 text-sm sm:text-[24px]">
           Log in to keep building your marketing strategy.
         </p>
       </div>
@@ -244,7 +249,7 @@ export default function Login() {
           />
 
           <div className="flex items-center justify-between gap-4">
-            <label className="flex items-center gap-2 text-sm text-foreground/70">
+            <label className="text-foreground/70 flex items-center gap-2 text-sm">
               <Checkbox
                 checked={rememberMe}
                 disabled={isBusy}
@@ -258,7 +263,7 @@ export default function Login() {
             </label>
 
             <Link
-              href="/forgot-password"
+              href="/reset-password"
               className="text-sm font-medium text-[#2E60BE]"
             >
               Forgot password?
@@ -269,7 +274,7 @@ export default function Login() {
         {rootError ? (
           <p
             role="alert"
-            className="text-sm font-normal leading-[20px] text-[#D13232] sm:text-xs sm:font-medium sm:leading-[18px]"
+            className="text-sm leading-[20px] font-normal text-[#D13232] sm:text-xs sm:leading-[18px] sm:font-medium"
           >
             {rootError}
           </p>
@@ -308,7 +313,7 @@ export default function Login() {
         Continue with Google
       </Button>
 
-      <p className="text-center text-xs text-foreground/70 sm:text-sm">
+      <p className="text-foreground/70 text-center text-xs sm:text-sm">
         Don&apos;t have an account?{' '}
         <Link
           href="/register"
@@ -318,12 +323,9 @@ export default function Login() {
         </Link>
       </p>
 
-      <p className="px-4 text-center text-[10px] text-foreground/50">
+      <p className="text-foreground/50 px-4 text-center text-[10px]">
         By logging in, you agree to our{' '}
-        <Link
-          href="/terms-and-conditions"
-          className="text-primary underline"
-        >
+        <Link href="/terms-and-conditions" className="text-primary underline">
           Terms of Service
         </Link>{' '}
         and{' '}

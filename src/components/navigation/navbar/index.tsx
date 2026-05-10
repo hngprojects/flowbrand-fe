@@ -9,8 +9,8 @@ import { Menu, X } from 'lucide-react'
 
 const navLinks = [
   { label: 'Home', path: '/' },
-  { label: 'How it works', path: '/how-it-works' },
-  { label: 'About Us', path: '/about' },
+  // { label: 'How it works', path: '/how-it-works' },
+  { label: 'Contact Us', path: '/contact-us' },
   { label: 'Pricing', path: '/pricing' },
 ]
 
@@ -58,7 +58,7 @@ const Navbar = () => {
               Log In
             </Link>
             <Link
-              href="/get-started"
+              href="/register"
               className="bg-primary text-primary-foreground flex h-12 w-34 items-center justify-center gap-2 rounded-[10px] px-6 py-3 font-semibold transition-opacity hover:opacity-90"
             >
               Get started
@@ -106,7 +106,7 @@ const Navbar = () => {
             Log In
           </Link>
           <Link
-            href="/get-started"
+            href="/register"
             className="bg-primary text-primary-foreground rounded-[10px] py-2.5 text-center font-semibold"
             onClick={() => setIsOpen(false)}
           >
