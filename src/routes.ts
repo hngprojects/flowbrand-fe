@@ -3,10 +3,11 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes: string[] = ['/']
+export const publicRoutes: string[] = ['/', '/pricing']
 
 export const authRoutes = [
   '/register',
+  '/register/verify',
   '/login',
   '/forgot-password',
   '/reset-password',

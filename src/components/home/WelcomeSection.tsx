@@ -1,17 +1,24 @@
 import Image from 'next/image'
 
+/**
+ * WelcomeSection component displays an introductory section about Flowbrand.
+ * It features a split layout with a mission statement and a high-quality
+ * visual representation of a business owner.
+ *
+ * @returns {JSX.Element} The rendered welcome section.
+ */
 const WelcomeSection = () => {
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-16">
-      <div className="p-8 shadow-lg md:p-12 lg:p-20">
+    <section className="mx-auto w-full py-16">
+      <div className="p-7 md:p-[24px] lg:p-20">
         {/* Header Content */}
         <div className="mb-12 flex flex-col items-start justify-between gap-10 md:mb-16 lg:flex-row lg:items-end">
           {/* Left Column */}
           <div className="w-full lg:w-[60%]">
-            <span className="mb-6 block text-sm font-bold tracking-widest text-[#326ad1] uppercase md:text-base">
+            <span className="mb-6 block align-middle text-[18px] leading-[1.5] font-medium tracking-normal text-[#2E60BE]">
               Welcome to Flowbrand
             </span>
-            <h2 className="text-3xl leading-[1.1] font-bold tracking-tighter text-[#0D0D0D] md:text-5xl lg:text-6xl">
+            <h2 className="align-middle text-[24px] leading-[1.1] font-medium tracking-normal md:text-[48px]">
               We help you attract the right customers and convert them into
               paying buyers
             </h2>
@@ -19,24 +26,23 @@ const WelcomeSection = () => {
 
           {/* Right Column */}
           <div className="w-full lg:w-[35%]">
-            <p className="text-lg leading-relaxed font-medium text-[#333333] md:text-xl">
+            <p className="align-middle text-base leading-[1.75] font-normal tracking-normal text-[#565D69]">
               We built Flowbrand because we kept seeing the same thing:
               brilliant business owners with no clear path to getting customers
-              consistently. Not because they&apos;re not capable, but because
-              every tool out there assumed they already knew what to do.
+              consistently. Not because they were not capable, but because every
+              tool out there assumed they already knew what to do.
             </p>
           </div>
         </div>
 
         {/* Image Section */}
-        <div className="relative w-full overflow-hidden rounded-[2rem] bg-white/20 shadow-2xl backdrop-blur-sm md:rounded-[3.5rem]">
+        <div className="relative w-full overflow-hidden">
           <Image
-            src="/images/dark-skin-girl.jpg"
+            src="/images/dark-skin-girl-1.jpg"
             alt="A woman working on her business"
-            width={1400}
-            height={700}
-            className="h-auto w-full object-cover"
-            priority
+            width={1186}
+            height={640}
+            className="h-auto w-full rounded-xl object-cover"
           />
         </div>
       </div>
