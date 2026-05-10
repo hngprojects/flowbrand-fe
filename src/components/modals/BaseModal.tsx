@@ -6,7 +6,6 @@ import {
   DialogOverlay,
   DialogTitle,
 } from '~/components/ui/dialog'
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
 interface BaseModalProps {
   isOpen: boolean
@@ -44,9 +43,7 @@ const BaseModal = ({
         }}
         className="w-[90%] border-[0.5px] md:w-120.75"
       >
-        <VisuallyHidden>
-          <DialogTitle>{title ?? 'Modal'}</DialogTitle>
-        </VisuallyHidden>
+        <DialogTitle className="sr-only">{title ?? 'Modal'}</DialogTitle>
 
         {children ? (
           children
