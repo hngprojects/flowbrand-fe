@@ -6,14 +6,24 @@ import windowPopImg from '~public/images/waitlis-widows-pop.png'
 import waitlistUsers from '~public/images/waitlist-users.png'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
+import WaitlistModal from '~/components/modals/waitlist'
 
 export default function WaitlistBody() {
   const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     const isValid = /^\S+@\S+\.\S+$/.test(email)
     setError(!isValid)
+    if (!isValid) return
+
+    try {
+      setIsModalOpen(true)
+      setEmail('')
+    } catch {
+      setError(true)
+    }
   }
 
   return (
@@ -75,6 +85,10 @@ export default function WaitlistBody() {
           alt="screen window laptop and popups"
         />
       </div>
+      <WaitlistModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   )
 }

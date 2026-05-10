@@ -21,10 +21,10 @@ import {
 } from '~/components/ui/form'
 import { cn } from '~/utils'
 import { LoginSchema } from '~/schemas'
-import { Input } from '../ui/input'
-import GoogleLogo from '../icons/google-logo'
-import { Button } from '../ui/button'
-import FramerButton from '../ui/framer-button'
+import { Input } from '~/components/ui/input'
+import GoogleLogo from '~/components/icons/google-logo'
+import { Button } from '~/components/ui/button'
+import FramerButton from '~/components/ui/framer-button'
 
 const Login = () => {
   const router = useRouter()
