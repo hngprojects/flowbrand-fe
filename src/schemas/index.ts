@@ -10,7 +10,7 @@ export const LoginSchema = z.object({
       message: 'Email is required',
     })
     .email({
-      message: 'Invalid email address',
+      message: 'Enter a valid email address',
     }),
   rememberMe: z.boolean().default(false).optional(),
 })

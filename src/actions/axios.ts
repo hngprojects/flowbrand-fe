@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from 'axios'
+import { envConfig } from '~/config/env.config'
 
 const Calls = (): AxiosInstance => {
-  const baseURL = process.env.BASEURL
+  const baseURL = envConfig.BASEURL
   return axios.create({
     baseURL,
     headers: {

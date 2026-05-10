@@ -76,7 +76,7 @@ export const registerUser = async (values: z.infer<typeof RegisterSchema>) => {
 }
 
 export const resendOtp = async (email: string) => {
-  const baseURL = process.env.BASEURL
+  const baseURL = envConfig.BASEURL
   try {
     const response = await axios.post(`${baseURL}/auth/request/token`, {
       email,
