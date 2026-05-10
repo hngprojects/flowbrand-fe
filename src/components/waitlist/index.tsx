@@ -28,7 +28,7 @@ export default function WaitlistBody() {
 
   return (
     <div className="items-between flex flex-col-reverse lg:flex-row">
-      <div className="flex max-w-[540px] flex-col pl-4">
+      <div className="flex max-w-[540px] flex-col pl-4 lg:pt-20">
         <div className="bg-primary-foreground flex w-fit items-center gap-2 rounded-xl px-3 py-1 lg:mb-8">
           <div className="bg-primary h-4 w-4 rounded-full"></div>
           <p className="text-primary text-sm font-medium">AVAILABLE SOON</p>
