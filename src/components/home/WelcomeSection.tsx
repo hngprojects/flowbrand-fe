@@ -16,7 +16,7 @@ const WelcomeSection = () => {
           {/* Left Column */}
           <div className="w-full lg:w-[60%]">
             <span className="mb-6 block align-middle text-[18px] leading-[1.5] font-medium tracking-normal text-[#2E60BE]">
-              Welcome to FlowBrand
+              Welcome to Flowbrand
             </span>
             <h2 className="align-middle text-[24px] leading-[1.1] font-medium tracking-normal md:text-[48px]">
               We help you attract the right customers and convert them into
@@ -27,7 +27,7 @@ const WelcomeSection = () => {
           {/* Right Column */}
           <div className="w-full lg:w-[35%]">
             <p className="align-middle text-base leading-[1.75] font-normal tracking-normal text-[#565D69]">
-              We built FlowBrand because we kept seeing the same thing:
+              We built Flowbrand because we kept seeing the same thing:
               brilliant business owners with no clear path to getting customers
               consistently. Not because they were not capable, but because every
               tool out there assumed they already knew what to do.
