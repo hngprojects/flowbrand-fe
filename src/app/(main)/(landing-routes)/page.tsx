@@ -1,13 +1,9 @@
-import CounterView from '~/views/CounterView'
+import FAQSection from '~/components/landing/faq-section'
 
-const LandingPage = () => {
+export default function LandingPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 p-4 dark:bg-black">
-      <div className="w-full max-w-4xl">
-        <CounterView />
-      </div>
+    <main className="min-h-screen bg-white">
+      <FAQSection />
     </main>
   )
 }
-
-export default LandingPage

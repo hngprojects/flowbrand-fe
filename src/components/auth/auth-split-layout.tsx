@@ -57,7 +57,7 @@ const AuthSplitLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
           />
         </div>
         <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center lg:flex-none">
-          <div className="h-full w-full max-w-xl md:w-[90%]">{children}</div>
+          <div className="h-screen w-full max-w-xl md:w-[90%]">{children}</div>
         </div>
       </div>
     </div>
