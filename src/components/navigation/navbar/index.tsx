@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { Fade as Hamburger } from 'hamburger-react'
 
-const LOGO_SRC = '/images/logo(large).svg'
+import logoBlue from '~public/images/logo-blue.png'
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -25,7 +25,7 @@ const Navbar = () => {
         <div className="flex w-full items-center justify-between">
           <Link href="/">
             <Image
-              src={LOGO_SRC}
+              src={logoBlue}
               alt="FlowBrand logo"
               width={188}
               height={51}
