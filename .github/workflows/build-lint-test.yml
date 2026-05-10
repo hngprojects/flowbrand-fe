@@ -1,22 +1,28 @@
-name: Build and Upload
+name: Build, Lint, Test and Security Scan
 
 on:
-  push:
-    branches: [staging, main]
+  pull_request:
+    branches: [dev, staging, main]
+
+# FIX: cancel stale runs when new commits are pushed to the same PR
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    if: github.event.repository.fork == false
+  build_lint_test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15                          # FIX: prevent hung steps consuming minutes for hours
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "23"
+          cache: "pnpm"                          # FIX: cache pnpm deps to speed up installs
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -24,29 +30,31 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build Next.js application
+      - name: Lint code
+        run: pnpm lint
+
+      - name: Run tests                          # FIX: added missing test step (was in the workflow name but absent)
+        run: pnpm test
+
+      - name: Build project
         run: pnpm build
 
-      - name: Archive production artifacts
-        run: tar -czf boilerplate.tar.gz .next node_modules package.json
+      - name: Security scan with Trivy
+        uses: aquasecurity/trivy-action@0.28.0  # FIX: pin to a specific release — @master is unstable and a supply-chain risk
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          format: json
+          output: trivy-report.json
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-
-      - name: Deploy to Staging
-        if: github.ref == 'refs/heads/staging'
-        run: |
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "${{ secrets.USERNAME }}@${{ secrets.HOST }}:/flowbrand/staging/frontend"
-
-      - name: Deploy to Production
-        if: github.ref == 'refs/heads/main'
-        run: |
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "${{ secrets.USERNAME }}@${{ secrets.HOST }}:/flowbrand/production/frontend"
-
-      - name: Delete zip file
-        run: rm -f boilerplate.tar.gz
+      - name: Upload Trivy report as artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-security-report
+          path: trivy-report.json
+          retention-days: 7

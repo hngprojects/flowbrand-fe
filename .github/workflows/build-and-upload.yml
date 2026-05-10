@@ -1,13 +1,18 @@
-name: Build, Lint, Test and Security Scan
+name: Build and Upload
 
 on:
-  pull_request:
-    branches: [dev, staging, main]
+  push:
+    branches: [staging, main]
 
 jobs:
-  build_lint_test:
+  build:
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      HOST: ${{ secrets.HOST }}
+      USERNAME: ${{ secrets.USERNAME }}
 
     steps:
       - name: Checkout code
@@ -17,6 +22,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "23"
+          cache: "pnpm"                          # FIX: cache pnpm deps to speed up installs
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -24,28 +30,48 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint code
-        run: pnpm lint
-
-      - name: Build project
+      - name: Build Next.js application
         run: pnpm build
 
-      - name: Security scan with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: CRITICAL,HIGH
-          exit-code: 1
-          format: json
-          output: trivy-report.json
+      - name: Archive production artifacts
+        run: |
+          # FIX: exclude node_modules — install on the server instead to keep the tarball lean
+          tar -czf boilerplate.tar.gz .next package.json pnpm-lock.yaml
 
-      - name: Upload Trivy report as artifact
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-security-report
-          path: trivy-report.json
-          retention-days: 7
+      - name: Setup SSH key and known hosts
+        run: |
+          # FIX: use key-based auth — no plaintext passwords in process args or logs
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # FIX: verify the server fingerprint — no StrictHostKeyChecking=no
+          echo "${{ secrets.SSH_KNOWN_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: |
+          scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/staging/frontend/boilerplate.tar.gz"
+          # FIX: extract and restart the app after upload so the deploy is actually applied
+          ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
+            "cd /flowbrand/staging/frontend \
+             && tar -xzf boilerplate.tar.gz \
+             && pnpm install --prod --frozen-lockfile \
+             && pm2 restart app \
+             && rm -f boilerplate.tar.gz"
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/production/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
+            "cd /flowbrand/production/frontend \
+             && tar -xzf boilerplate.tar.gz \
+             && pnpm install --prod --frozen-lockfile \
+             && pm2 restart app \
+             && rm -f boilerplate.tar.gz"
+
+      - name: Delete local archive
+        if: always()                             # FIX: always run cleanup, even if a deploy step fails
+        run: rm -f boilerplate.tar.gz
