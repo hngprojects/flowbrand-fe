@@ -1,257 +1,331 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
+import Link from 'next/link'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next-nprogress-bar'
-import Link from 'next/link'
-import { useEffect, useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import * as z from 'zod'
-import { credentialsAuth } from '~/actions/auth'
-import { Checkbox } from '~/components/ui/checkbox'
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '~/components/ui/form'
-import { cn } from '~/utils'
+  type ChangeEventHandler,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
+import { useForm, useWatch, type UseFormRegisterReturn } from 'react-hook-form'
+import * as z from 'zod'
 import { LoginSchema } from '~/schemas'
+import { DEFAULT_LOGIN_REDIRECT } from '~/routes'
+import { cn } from '~/utils'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import GoogleLogo from '~/components/icons/google-logo'
-import { Button } from '~/components/ui/button'
-import FramerButton from '~/components/ui/framer-button'
 
-const Login = () => {
+type LoginValues = z.infer<typeof LoginSchema>
+
+const PASSWORD_ERROR_MESSAGE = "The password you've entered is incorrect"
+const LOGIN_ERROR_MESSAGE = 'Unable to sign in. Please try again.'
+
+function isCredentialsSigninError(
+  response: { error?: string; code?: string } | undefined
+) {
+  return (
+    response?.error === 'CredentialsSignin' || response?.code === 'credentials'
+  )
+}
+
+function AuthField({
+  id,
+  label,
+  placeholder,
+  type,
+  error,
+  showToggle,
+  showPassword,
+  onTogglePassword,
+  register,
+  onChange,
+}: {
+  id: string
+  label: string
+  placeholder: string
+  type: 'email' | 'password' | 'text'
+  error?: string
+  showToggle?: boolean
+  showPassword?: boolean
+  onTogglePassword?: () => void
+  register: UseFormRegisterReturn
+  onChange?: ChangeEventHandler<HTMLInputElement>
+}) {
+  const resolvedType =
+    type === 'password' ? (showPassword ? 'text' : 'password') : type
+
+  return (
+    <div className="space-y-2">
+      <label
+        htmlFor={id}
+        className="block text-sm leading-[150%] font-medium text-[#152D58] sm:text-base"
+      >
+        {label}
+      </label>
+
+      <div
+        className={cn(
+          'flex h-11 items-center rounded-lg border border-[#CFCFCF] bg-white px-2.5 transition-colors focus-within:border-[#326AD1] sm:px-4',
+          error && 'border-[#D13232] focus-within:border-[#D13232]'
+        )}
+      >
+        <Input
+          id={id}
+          type={resolvedType}
+          autoComplete={type === 'email' ? 'email' : 'current-password'}
+          placeholder={placeholder}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className="h-full w-full border-0 bg-transparent p-0 text-sm leading-[150%] text-[#030D1F] outline-none placeholder:text-[#A2A2A2] focus-visible:ring-0 focus-visible:ring-offset-0"
+          {...register}
+          onChange={(event) => {
+            register.onChange(event)
+            onChange?.(event)
+          }}
+        />
+
+        {showToggle ? (
+          <button
+            type="button"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            onClick={onTogglePassword}
+            className="ml-2 flex size-6 shrink-0 items-center justify-center text-[#CFCFCF]"
+          >
+            {showPassword ? (
+              <Eye className="size-6" strokeWidth={1.8} />
+            ) : (
+              <EyeOff className="size-6" strokeWidth={1.8} />
+            )}
+          </button>
+        ) : null}
+      </div>
+
+      {error ? (
+        <p
+          id={`${id}-error`}
+          className="text-sm leading-[20px] font-normal text-[#D13232] sm:text-xs sm:leading-[18px] sm:font-medium"
+        >
+          {error}
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
+export default function Login() {
   const router = useRouter()
-  const [isLoading, startTransition] = useTransition()
-  const [showPassword, setShowPassword] = useState(false)
   const { status } = useSession()
+  const [showPassword, setShowPassword] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      router.push('/')
-    }
-  }, [status, router])
-
-  const form = useForm<z.infer<typeof LoginSchema>>({
+  const form = useForm<LoginValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: '',
       password: '',
       rememberMe: false,
     },
+    mode: 'onSubmit',
   })
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    const { email, password } = values
 
-    const result = await credentialsAuth(values)
+  const isBusy =
+    isPending || form.formState.isSubmitting || status === 'authenticated'
+  const rememberMe =
+    useWatch({
+      control: form.control,
+      name: 'rememberMe',
+    }) ?? false
 
-    if (result.success) {
-      await signIn('credentials', {
-        email,
-        password,
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push(DEFAULT_LOGIN_REDIRECT)
+    }
+  }, [router, status])
+
+  const onSubmit = async (values: LoginValues) => {
+    form.clearErrors('password')
+    form.clearErrors('root')
+
+    try {
+      const response = await signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        rememberMe: values.rememberMe ?? false,
         redirect: false,
       })
 
-      toast.success('Login success', {
-        description: 'Redirecting',
-      })
+      if (!response?.ok) {
+        if (!isCredentialsSigninError(response)) {
+          form.setError('root', {
+            type: 'server',
+            message: LOGIN_ERROR_MESSAGE,
+          })
+          return
+        }
+
+        form.setError('password', {
+          type: 'server',
+          message: PASSWORD_ERROR_MESSAGE,
+        })
+        return
+      }
 
       startTransition(() => {
-        router.push('/')
+        router.push(DEFAULT_LOGIN_REDIRECT)
       })
-    } else {
-      toast.error('Login failed', {
-        description: result.message || 'An error occurred during login',
+    } catch (error) {
+      console.error('Login failed', error)
+      form.setError('root', {
+        type: 'server',
+        message: LOGIN_ERROR_MESSAGE,
       })
     }
   }
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+  const emailRegistration = form.register('email')
+  const passwordRegistration = form.register('password')
+  const emailError = form.formState.errors.email?.message
+  const passwordError = form.formState.errors.password?.message
+  const rootError = form.formState.errors.root?.message
 
   return (
-    <div className="flex min-h-full items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="font-inter text-neutralColor-dark-2 mb-5 text-center text-2xl leading-tight font-semibold">
-            Login
-          </h1>
-          <p className="font-inter text-neutralColor-dark-2 mt-2 text-center text-sm leading-6 font-normal">
-            Welcome back, you&apos;ve been missed!
-          </p>
-        </div>
-        <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
-          <Button
-            onClick={async () => {
-              signIn('google', { redirectTo: '/' })
-            }}
-            disabled={isLoading || status === 'authenticated'}
-            variant="outline"
-            className="h-10 w-full gap-x-3"
-          >
-            <GoogleLogo />
-            <span className="h-full w-px bg-gray-300 dark:bg-gray-600" />
-            <span>Continue with Google</span>
-          </Button>
-        </div>
-        <div className="flex items-center justify-center">
-          <hr className="w-full border-t border-gray-300" />
-          <span className="font-inter text-neutralColor-dark-1 px-3 text-xs leading-tight font-normal">
-            OR
-          </span>
-          <hr className="w-full border-t border-gray-300" />
-        </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-neutralColor-dark-2">
-                    Email
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="Enter Email Address"
-                      {...field}
-                      className={cn(
-                        'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
-                        form.formState.errors.email && 'border-destructive'
-                      )}
-                    />
-                  </FormControl>
-                  <FormMessage data-testid="email-error" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-neutralColor-dark-2">
-                    Password
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        disabled={isLoading}
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter Password"
-                        {...field}
-                        className={cn(
-                          'font-inter w-full rounded-md border px-3 py-6 text-sm leading-[21.78px] font-normal transition duration-150 ease-in-out focus:outline-none',
-                          form.formState.errors.password && 'border-destructive'
-                        )}
-                      />
-                      <button
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                        className="absolute inset-y-0 right-0 flex items-center pr-3"
-                      >
-                        {showPassword ? (
-                          <Eye
-                            className="h-5 w-5 text-gray-400"
-                            data-testid="eye-icon"
-                          />
-                        ) : (
-                          <EyeOff
-                            className="h-5 w-5 text-gray-400"
-                            data-testid="eye-off-icon"
-                          />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage data-testid="password-error" />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-center justify-between">
-              <FormField
-                control={form.control}
-                name="rememberMe"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-y-0 space-x-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Remember me</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <div className="text-sm">
-                <Link
-                  href="/forgot-password"
-                  className="text-neutral Color-dark-2 text-sm font-medium"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-            </div>
-            <FramerButton
-              isLoading={isLoading}
-              disabled={isLoading}
-              text="Login"
-            />
-          </form>
-        </Form>
-
-        <Button
-          asChild
-          variant="outline"
-          size="default"
-          className="w-full py-6"
-          type="button"
-        >
-          <Link href="/login/magic-link">Sign in with magic link</Link>
-        </Button>
-
-        <p className="font-inter text-neutralColor-dark-1 mt-5 text-center text-sm leading-[15.6px] font-normal">
-          Don&apos;t Have An Account?{' '}
-          <Link
-            href="/register"
-            className="font-inter text-primary hover:text-primary/90 ms-1 text-left text-base leading-[19.2px] font-bold"
-            data-testid="link"
-          >
-            Sign Up
-          </Link>
-        </p>
-
-        <p className="mt-2 text-center text-xs text-gray-500">
-          <ShieldCheck className="mr-1 hidden h-4 w-4 text-gray-400 sm:inline-block" />
-          By logging in, you agree to the{' '}
-          <a
-            href="/terms-and-conditions"
-            className="text-primary hover:text-primary/90 text-sm font-bold"
-          >
-            Terms of Service
-          </a>{' '}
-          and{' '}
-          <a
-            href="/privacy-policy"
-            className="text-primary hover:text-primary/90 text-sm font-bold"
-          >
-            Privacy Policy
-          </a>
+    <div className="space-y-4 py-8 sm:space-y-5">
+      <div className="space-y-1.5 sm:space-y-2">
+        <h1 className="text-xl font-medium text-[#152D58] sm:text-4xl">
+          Welcome back
+        </h1>
+        <p className="text-foreground/70 text-sm sm:text-[24px]">
+          Log in to keep building your marketing strategy.
         </p>
       </div>
+
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 sm:space-y-5"
+      >
+        <AuthField
+          id="email-input"
+          label="Email address"
+          placeholder="you@gmail.com"
+          type="email"
+          error={emailError}
+          register={emailRegistration}
+          onChange={() => {
+            form.clearErrors('email')
+            form.clearErrors('password')
+            form.clearErrors('root')
+          }}
+        />
+
+        <div className="space-y-3">
+          <AuthField
+            id="password-input"
+            label="Password"
+            placeholder="Your password"
+            type="password"
+            error={passwordError}
+            showToggle
+            showPassword={showPassword}
+            onTogglePassword={() => setShowPassword((current) => !current)}
+            register={passwordRegistration}
+            onChange={() => {
+              form.clearErrors('password')
+              form.clearErrors('root')
+            }}
+          />
+
+          <div className="flex items-center justify-between gap-4">
+            <label className="text-foreground/70 flex items-center gap-2 text-sm">
+              <Checkbox
+                checked={rememberMe}
+                disabled={isBusy}
+                onCheckedChange={(checked) => {
+                  form.setValue('rememberMe', checked === true, {
+                    shouldDirty: true,
+                  })
+                }}
+              />
+              <span>Remember me</span>
+            </label>
+
+            <Link
+              href="/forgot-password"
+              className="text-sm font-medium text-[#2E60BE]"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
+
+        {rootError ? (
+          <p
+            role="alert"
+            className="text-sm leading-[20px] font-normal text-[#D13232] sm:text-xs sm:leading-[18px] sm:font-medium"
+          >
+            {rootError}
+          </p>
+        ) : null}
+
+        <Button
+          type="submit"
+          disabled={isBusy}
+          className="h-auto w-full rounded-lg py-2.5 text-sm font-bold sm:py-3 sm:text-base"
+        >
+          Log in
+        </Button>
+      </form>
+
+      <div className="relative flex items-center justify-center py-2">
+        <div className="border-border w-full border-t" />
+        <span className="bg-background text-foreground/45 absolute px-2 text-xs">
+          OR
+        </span>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        disabled={isBusy}
+        onClick={async () => {
+          if (isBusy) {
+            return
+          }
+
+          await signIn('google', { redirectTo: DEFAULT_LOGIN_REDIRECT })
+        }}
+        className="h-auto w-full gap-2 rounded-lg py-2.5 text-sm font-semibold sm:py-3"
+      >
+        <GoogleLogo className="size-4" />
+        Continue with Google
+      </Button>
+
+      <p className="text-foreground/70 text-center text-xs sm:text-sm">
+        Don&apos;t have an account?{' '}
+        <Link
+          href="/register"
+          className="font-bold text-[#152D58] hover:underline"
+        >
+          Create an account
+        </Link>
+      </p>
+
+      <p className="text-foreground/50 px-4 text-center text-[10px]">
+        By logging in, you agree to our{' '}
+        <Link href="/terms-and-conditions" className="text-primary underline">
+          Terms of Service
+        </Link>{' '}
+        and{' '}
+        <Link href="/privacy-policy" className="text-primary underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </div>
   )
 }
-
-export default Login
