@@ -5,7 +5,7 @@ import Image from 'next/image'
 import logoBlue from '~public/images/logo-blue.png'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { Fade as Hamburger } from 'hamburger-react'
+import { Menu, X } from 'lucide-react'
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -65,9 +65,15 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="z-50 lg:hidden">
-            <Hamburger toggled={isOpen} toggle={setIsOpen} size={23} />
-          </div>
+          <button
+            type="button"
+            className="text-foreground z-50 flex items-center justify-center lg:hidden"
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            onClick={() => setIsOpen((current) => !current)}
+          >
+            {isOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
         </div>
       </div>
       <div
