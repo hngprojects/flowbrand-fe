@@ -15,29 +15,10 @@ const WelcomeSection = () => {
         <div className="mb-12 flex flex-col items-start justify-between gap-10 md:mb-16 lg:flex-row lg:items-end">
           {/* Left Column */}
           <div className="w-full lg:w-[60%]">
-            <span
-              className="mb-6 block text-[#2E60BE]"
-              style={{
-                fontFamily: 'Inter',
-                fontWeight: 500,
-                fontSize: '18px',
-                lineHeight: '150%',
-                letterSpacing: 0,
-                verticalAlign: 'middle',
-              }}
-            >
-              Welcome to Flowbrand
+            <span className="mb-6 block align-middle text-[18px] leading-[1.5] font-medium tracking-normal text-[#2E60BE]">
+              Welcome to FlowBrand
             </span>
-            <h2
-              className="text-[24px] md:text-[48px]"
-              style={{
-                fontFamily: 'Inter',
-                fontWeight: 500,
-                lineHeight: '110.00000000000001%',
-                letterSpacing: '0%',
-                verticalAlign: 'middle',
-              }}
-            >
+            <h2 className="align-middle text-[24px] leading-[1.1] font-medium tracking-normal md:text-[48px]">
               We help you attract the right customers and convert them into
               paying buyers
             </h2>
@@ -45,17 +26,7 @@ const WelcomeSection = () => {
 
           {/* Right Column */}
           <div className="w-full lg:w-[35%]">
-            <p
-              className="text-[#565D69]"
-              style={{
-                fontFamily: 'Inter',
-                fontWeight: 400,
-                fontSize: '16px',
-                lineHeight: '175%',
-                letterSpacing: '0%',
-                verticalAlign: 'middle',
-              }}
-            >
+            <p className="align-middle text-base leading-[1.75] font-normal tracking-normal text-[#565D69]">
               We built FlowBrand because we kept seeing the same thing:
               brilliant business owners with no clear path to getting customers
               consistently. Not because they were not capable, but because every
