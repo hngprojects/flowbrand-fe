@@ -100,43 +100,6 @@ export const Testimonials = () => {
   const visibleTestimonials = getVisibleTestimonials()
   const visibleTestimonialsRow2 = getVisibleTestimonialsRow2()
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 1, x: 100 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.5,
-        type: 'spring',
-        damping: 20,
-      },
-    },
-  }
-
-  const itemVariantsReverse = {
-    hidden: { opacity: 1, x: -100 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.5,
-        type: 'spring',
-        damping: 20,
-      },
-    },
-  }
-
   return (
     <section className="bg-white px-5 py-12 md:px-8 md:py-16 lg:px-20 lg:py-20">
       <div className="mx-auto w-full">
