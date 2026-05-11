@@ -17,6 +17,10 @@
   --color-foreground: var(--foreground);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-orange-100: var(--orange-100);
+  --color-orange-200: var(--orange-200);
+  --color-orange-500: var(--orange-500);
+  --color-orange-800: var(--orange-800);
 }
 
 :root {
@@ -41,6 +45,12 @@
   --foreground: #030d1f;
   --muted-foreground: #e4e4e4;
   --border: #e5e5e5;
+
+  /* Orange */
+  --orange-100: #fff7ed;
+  --orange-200: #ffedd5;
+  --orange-500: #f97316;
+  --orange-800: #9a3412;
 }
 
 /* I hardcoded  dark mode colors until further notice */
@@ -65,6 +75,11 @@
   --foreground: #030d1f;
   --muted-foreground: #e4e4e4;
   --border: #e5e5e5;
+
+  --orange-100: #fff7ed;
+  --orange-200: #ffedd5;
+  --orange-500: #f97316;
+  --orange-800: #9a3412;
 }
 
 @layer base {
