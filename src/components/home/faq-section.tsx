@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from '~/components/ui/accordion'
 import { SectionLabelPill } from '~/components/ui/section-label-pill'
-import { LANDING_FAQ_ITEMS } from '~/constants/landing-faq'
+import { faq_items } from '~/constants/landing-faq'
 
 export default function FAQSection() {
   return (
@@ -17,7 +17,7 @@ export default function FAQSection() {
       <div className="mx-auto flex w-full max-w-[1300px] flex-col items-center">
         <SectionLabelPill className="mb-6">FAQs</SectionLabelPill>
 
-        <h2 className="mb-16 text-center text-3xl font-bold text-[#1E293B] md:text-4xl">
+        <h2 className="text-foreground mb-16 text-center text-3xl font-bold md:text-4xl">
           Still wondering? We thought you might be.
         </h2>
 
@@ -26,14 +26,14 @@ export default function FAQSection() {
           collapsible
           className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2"
         >
-          {LANDING_FAQ_ITEMS.map((item, index) => (
+          {faq_items.map((item, index) => (
             <AccordionItem
-              key={item.question}
-              value={`faq-${index}`}
+              key={index}
+              value={item.question}
               className="group overflow-hidden rounded-xl border border-[#EDEDED] bg-white px-0 data-[state=open]:border-blue-100 data-[state=open]:shadow-sm"
             >
               <AccordionTrigger className="items-start px-6 py-6 text-left hover:no-underline [&>svg:last-child]:hidden">
-                <span className="pr-4 text-lg leading-tight font-medium text-[#1E293B]">
+                <span className="text-foreground pr-4 text-lg leading-tight font-medium">
                   {item.question}
                 </span>
                 <div className="ml-auto flex shrink-0 pt-0.5">
@@ -42,9 +42,11 @@ export default function FAQSection() {
               </AccordionTrigger>
               <AccordionContent className="px-6 pt-0 pb-6">
                 <div className="space-y-4 border-t border-gray-100 pt-4 text-sm leading-relaxed text-gray-600 md:text-[15px]">
-                  {item.answerParagraphs.map((paragraph, paragraphIndex) => (
-                    <p key={paragraphIndex}>{paragraph}</p>
-                  ))}
+                  {item.answerParagraphs.map(
+                    (paragraph: string, paragraphIndex: number) => (
+                      <p key={paragraphIndex}>{paragraph}</p>
+                    )
+                  )}
                 </div>
               </AccordionContent>
             </AccordionItem>

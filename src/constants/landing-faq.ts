@@ -3,7 +3,7 @@ export type LandingFaqEntry = {
   answerParagraphs: string[]
 }
 
-export const LANDING_FAQ_ITEMS: LandingFaqEntry[] = [
+export const faq_items: LandingFaqEntry[] = [
   {
     question: 'What is this platform and how does it work?',
     answerParagraphs: [
