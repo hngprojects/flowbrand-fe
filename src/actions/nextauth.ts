@@ -3,14 +3,14 @@
 import * as z from 'zod'
 import { cookies } from 'next/headers'
 import { envConfig } from '~/config/env.config'
+import {
+  coerceUserWithNameParts,
+  messageFromApiPayload,
+  normalizeLoginResponse,
+} from '~/lib/auth-api-helpers'
 import { LoginSchema } from '~/schemas'
 import type { AuthResponse, ErrorResponse, User } from '~/types'
 import { HttpError, createFetchUtil } from './fetchutil'
-
-export interface LoginResponse {
-  user: User
-  access_token: string
-}
 
 const GENERIC_LOGIN_ERROR_MESSAGE = 'Unable to sign in. Please try again.'
 
@@ -19,17 +19,10 @@ function extractHttpErrorMessage(
   fallbackMessage: string
 ) {
   if (typeof responseBody === 'string' && responseBody.trim()) {
-    return responseBody
+    return responseBody.trim()
   }
 
-  if (responseBody && typeof responseBody === 'object') {
-    const message = (responseBody as { message?: unknown }).message
-    if (typeof message === 'string' && message.trim()) {
-      return message
-    }
-  }
-
-  return fallbackMessage
+  return messageFromApiPayload(responseBody, fallbackMessage)
 }
 
 export const nextLogin = async (
@@ -45,19 +38,27 @@ export const nextLogin = async (
     }
   }
   const api = createFetchUtil({ baseUrl: baseURL })
+  const { email, password } = values
 
   try {
-    const response = await api<{ data: LoginResponse; access_token: string }>(
-      '/auth/login',
-      {
-        method: 'POST',
-        body: values,
-      }
-    )
+    const response = await api<unknown>('/auth/login', {
+      method: 'POST',
+      body: { email, password },
+    })
 
+    const normalized = normalizeLoginResponse(response)
+    if (!normalized) {
+      return {
+        success: false,
+        message: 'Unexpected login response from server.',
+        status_code: 502,
+      }
+    }
+
+    const user = coerceUserWithNameParts(normalized.user)
     return {
-      data: response.data.user,
-      access_token: response.access_token,
+      data: user,
+      access_token: normalized.access_token,
       success: true,
       message: 'login success',
     }

@@ -28,22 +28,9 @@ import {
   RegistrationFormSchema,
   splitFullNameForRegister,
 } from '~/schemas'
+import { COUNTRY_SELECT_OPTIONS } from '~/lib/country-select-options'
 import { REGISTER_VERIFY_EMAIL_STORAGE_KEY } from '~/lib/register-verify-storage'
 import { cn } from '~/utils'
-
-const COUNTRIES = [
-  { value: '', label: 'Select your country' },
-  { value: 'NG', label: 'Nigeria' },
-  { value: 'US', label: 'United States' },
-  { value: 'GB', label: 'United Kingdom' },
-  { value: 'CA', label: 'Canada' },
-  { value: 'GH', label: 'Ghana' },
-  { value: 'KE', label: 'Kenya' },
-  { value: 'ZA', label: 'South Africa' },
-  { value: 'IN', label: 'India' },
-  { value: 'DE', label: 'Germany' },
-  { value: 'FR', label: 'France' },
-] as const
 
 const inputClassWithError = (hasError: boolean) => {
   return cn(
@@ -203,7 +190,7 @@ const RegistrationForm = () => {
                       !!form.formState.errors.country
                     )}
                   >
-                    {COUNTRIES.map((c) => (
+                    {COUNTRY_SELECT_OPTIONS.map((c) => (
                       <option
                         key={c.value === '' ? '_placeholder' : c.value}
                         value={c.value}
