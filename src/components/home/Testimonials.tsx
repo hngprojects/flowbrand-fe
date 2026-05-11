@@ -1,15 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Image, { type StaticImageData } from 'next/image'
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { Card } from '../ui/card'
-import chef from '~public/images/chef.png'
-import david from '~public/images/david.png'
-import bright from '~public/images/bright.png'
-import ellipse1 from '~public/images/ellipse-1.png'
-import ellipse2 from '~public/images/ellipse-2.png'
-import ellipse3 from '~public/images/ellipse-3.png'
 import { SectionLabelPill } from '../ui/section-label-pill'
 
 interface Testimonial {
@@ -226,7 +219,6 @@ export const Testimonials = () => {
               />
             ))}
           </div>
-        </div>
       </div>
     </section>
   )
