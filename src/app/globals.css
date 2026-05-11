@@ -8,7 +8,7 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-background: var(--accent-background);
   --color-success: var(--success);
   --color-error: var(--error);
   --color-destructive: var(--destructive);
@@ -30,8 +30,7 @@
 
   /* Accent */
   --accent: #e58f17;
-  --accent-text: #e58f172b;
-  --accent-background: #e6b673;
+  --accent-background: #e58f172b;
 
   /* Status */
   --success: #57d132;
@@ -55,7 +54,7 @@
 
   /* Accent */
   --accent: #e58f17;
-  --accent-text: #e58f172b;
+  --accent-background: #e58f172b;
 
   /* Status */
   --success: #57d132;

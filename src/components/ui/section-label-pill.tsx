@@ -16,7 +16,7 @@ export function SectionLabelPill({
   return (
     <div
       className={cn(
-        'border-accent bg-accent/17 inline-flex items-center gap-2 rounded-full border px-3 py-1',
+        'border-accent bg-accent-background inline-flex items-center gap-2 rounded-full border px-3 py-1',
         className
       )}
       {...properties}
