@@ -8,16 +8,42 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '~/components/ui/accordion'
-import { SectionLabelPill } from '~/components/ui/section-label-pill'
+import { motion } from 'framer-motion'
+import { useSyncExternalStore } from 'react'
 import { faq_items } from '~/constants/landing-faq'
 
 export default function FaqSection() {
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
+
   return (
     <section className="bg-background w-full py-20">
       <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-6 md:px-12 lg:px-20">
-        <SectionLabelPill className="mb-6">FAQs</SectionLabelPill>
+        {isClient ? (
+          <motion.div
+            className="mb-8 inline-flex items-center gap-3 rounded-full bg-orange-50 px-5 py-3 md:mb-10"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+            <span className="text-sm font-semibold text-orange-500 md:text-base">
+              FAQs
+            </span>
+          </motion.div>
+        ) : (
+          <div className="mb-8 inline-flex -translate-y-5 items-center gap-3 rounded-full bg-orange-50 px-5 py-3 opacity-0 md:mb-10">
+            <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+            <span className="text-sm font-semibold text-orange-500 md:text-base">
+              FAQs
+            </span>
+          </div>
+        )}
 
-        <h2 className="text-foreground mb-16 text-center text-3xl font-bold md:text-4xl">
+        <h2 className="mb-16 text-4xl font-medium tracking-tight text-[#0F172A] md:text-5xl">
           Still wondering? We thought you might be.
         </h2>
 

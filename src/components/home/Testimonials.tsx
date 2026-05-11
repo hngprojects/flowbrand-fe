@@ -2,8 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
-import { SectionLabelPill } from '../ui/section-label-pill'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 
 interface Testimonial {
   id: number
@@ -39,7 +38,7 @@ const testimonials: Testimonial[] = [
     color: 'bg-gray-600',
   },
   {
-    id: 1,
+    id: 4,
     name: 'Glory Nkene',
     quote:
       '“I used to overthink my marketing a lot. Now i just follow the steps, and everything feels more organized and effective”.',
@@ -47,7 +46,7 @@ const testimonials: Testimonial[] = [
     color: 'bg-gray-400',
   },
   {
-    id: 2,
+    id: 5,
     name: 'Ameerah Raji',
     quote:
       '“Before using this, I was just posting and hoping for results. Now I actually have a clear system and I’m getting consistent customer inquiries every week”.',
@@ -55,7 +54,7 @@ const testimonials: Testimonial[] = [
     color: 'bg-gray-500',
   },
   {
-    id: 3,
+    id: 6,
     name: 'Dawin Muri',
     quote:
       '“I finally understand my customer journey. From attracting them to get them to buy. It all makes sense now”.',
@@ -66,159 +65,140 @@ const testimonials: Testimonial[] = [
 
 export const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const itemsPerView = 3
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
   const totalItems = testimonials.length
   const [isAutoPlay, setIsAutoPlay] = useState(true)
 
+  // Card width + gap (matches the design)
+  const cardWidth = 524 // 500px + 24px gap
+
   useEffect(() => {
-    if (!isAutoPlay) return
+    if (!isAutoPlay || !isClient) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % totalItems)
-    }, 4000) // Switch every 2 seconds
+      setCurrentIndex((prev) => (prev + 1) % (totalItems - 2))
+    }, 5000)
 
     return () => clearInterval(interval)
-  }, [isAutoPlay, totalItems])
+  }, [isAutoPlay, totalItems, isClient])
 
-  // Get visible testimonials for first row (handles wrapping)
-  const getVisibleTestimonials = () => {
-    const visible = []
-    for (let i = 0; i < itemsPerView; i++) {
-      visible.push(testimonials[(currentIndex + i) % totalItems])
-    }
-    return visible
-  }
+  const renderCard = (testimonial: Testimonial, index: number) => (
+    <div
+      key={`${testimonial.id}-${index}`}
+      className="w-[400px] flex-shrink-0 md:w-[500px]"
+    >
+      <div className="flex h-full min-h-56 flex-col justify-between rounded-3xl border border-gray-200 bg-white p-6 transition-shadow duration-300 hover:shadow-lg md:p-8">
+        <p className="mb-6 line-clamp-3 text-base leading-relaxed text-gray-800 md:text-lg">
+          &quot;{testimonial.quote}&quot;
+        </p>
 
-  // Get visible testimonials for second row (offset by itemsPerView)
-  const getVisibleTestimonialsRow2 = () => {
-    const visible = []
-    for (let i = 0; i < itemsPerView; i++) {
-      visible.push(testimonials[(currentIndex + itemsPerView + i) % totalItems])
-    }
-    return visible
-  }
+        <div className="flex items-center justify-center gap-4">
+          <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
+            <Image
+              src={testimonial.initials}
+              alt={testimonial.name}
+              width={48}
+              height={48}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <p className="text-sm font-semibold text-gray-900 md:text-base">
+            {testimonial.name}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 
-  const visibleTestimonials = getVisibleTestimonials()
-  const visibleTestimonialsRow2 = getVisibleTestimonialsRow2()
+  const maxIndex = totalItems - 2
 
   return (
     <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
       <div className="flex flex-col items-center justify-center text-center">
-        <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
-          <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
-          <SectionLabelPill>Testimonials</SectionLabelPill>
-        </div>
-        <h2 className="mb-8 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">
+        {isClient ? (
+          <motion.div
+            className="mb-8 inline-flex items-center gap-3 rounded-full bg-orange-50 px-5 py-3 md:mb-10"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+            <span className="text-sm font-semibold text-orange-500 md:text-base">
+              Testimonials
+            </span>
+          </motion.div>
+        ) : (
+          <div className="mb-8 inline-flex -translate-y-5 items-center gap-3 rounded-full bg-orange-50 px-5 py-3 opacity-0 md:mb-10">
+            <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+            <span className="text-sm font-semibold text-orange-500 md:text-base">
+              Testimonials
+            </span>
+          </div>
+        )}
+        <h2 className="mb-8 text-4xl font-medium tracking-tight text-[#0F172A] md:text-5xl">
           Trusted by growing businesses
         </h2>
-        </div>
+      </div>
 
-        {/* Testimonials Two Rows */}
-        <div
-          className="overflow-hidden"
-          onMouseEnter={() => setIsAutoPlay(false)}
-          onMouseLeave={() => setIsAutoPlay(true)}
-        >
-          {/* Row 1 - Moving Left to Right */}
-          <motion.div className="mb-8 flex gap-6" key={`row1-${currentIndex}`}>
-            {visibleTestimonials.map((testimonial) => (
-              <motion.div
-                key={testimonial.id}
-                className="w-[400px] flex-shrink-0 md:w-[500px]"
-              >
-                <div className="flex h-full min-h-56 flex-col justify-between rounded-3xl border border-gray-200 bg-white p-6 transition-shadow duration-300 hover:shadow-lg md:p-8">
-                  {/* Quote - Two Row Layout */}
-                  <p className="mb-6 line-clamp-3 text-base leading-relaxed text-gray-800 md:text-lg">
-                    &quot;{testimonial.quote}&quot;
-                  </p>
-
-                  {/* Author - Horizontal Layout */}
-                  <div className="flex items-center justify-center gap-4">
-                    <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
-                      <Image
-                        src={testimonial.initials}
-                        alt={testimonial.name}
-                        width={48}
-                        height={48}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <p className="text-sm font-semibold text-gray-900 md:text-base">
-                      {testimonial.name}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+      <div
+        className="overflow-hidden py-4"
+        onMouseEnter={() => setIsAutoPlay(false)}
+        onMouseLeave={() => setIsAutoPlay(true)}
+      >
+        {/* Row 1 - Sliding Left */}
+        {isClient ? (
+          <motion.div
+            className="mb-8 flex gap-6"
+            initial={false}
+            animate={{ x: -currentIndex * cardWidth }}
+            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+          >
+            {testimonials.map((t, i) => renderCard(t, i))}
           </motion.div>
+        ) : (
+          <div className="mb-8 flex gap-6">
+            {testimonials.map((t, i) => renderCard(t, i))}
+          </div>
+        )}
 
-          {/* Row 2 - Moving Right to Left (opposite direction) */}
-          <motion.div className="mb-8 flex gap-8" key={`row2-${currentIndex}`}>
-            {visibleTestimonialsRow2.map((testimonial) => (
-              <motion.div
-                key={testimonial.id}
-                className="w-[400px] flex-shrink-0 md:w-[500px]"
-              >
-                <div className="flex h-full min-h-56 flex-col justify-between rounded-3xl border border-gray-200 bg-white p-6 transition-shadow duration-300 hover:shadow-lg md:p-8">
-                  {/* Quote - Two Row Layout */}
-                  <p className="mb-6 line-clamp-3 text-base leading-relaxed text-gray-800 md:text-lg">
-                    &quot;{testimonial.quote}&quot;
-                  </p>
-
-                  {/* Author - Horizontal Layout */}
-                  <div className="flex items-center justify-center gap-4">
-                    <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
-                      <Image
-                        src={testimonial.initials}
-                        alt={testimonial.name}
-                        width={48}
-                        height={48}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <p className="text-sm font-semibold text-gray-900 md:text-base">
-                      {testimonial.name}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+        {/* Row 2 - Sliding Right (Opposite Direction) */}
+        {isClient ? (
+          <motion.div
+            className="mb-8 flex gap-6"
+            initial={false}
+            animate={{ x: (currentIndex - maxIndex) * cardWidth }}
+            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+          >
+            {[...testimonials].reverse().map((t, i) => renderCard(t, i))}
           </motion.div>
-
-          {/* Navigation Dots */}
-          <div className="mt-8 flex justify-center gap-2">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'w-8 bg-blue-500'
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
+        ) : (
+          <div
+            className="mb-8 flex gap-6"
+            style={{ transform: `translateX(${-maxIndex * cardWidth}px)` }}
+          >
+            {[...testimonials].reverse().map((t, i) => renderCard(t, i))}
           </div>
+        )}
+      </div>
 
-          {/* Auto-play indicator */}
-          <div className="mt-4 flex justify-center gap-1">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="h-1 w-1 rounded-full bg-blue-500"
-                animate={{
-                  opacity: [0.3, 1, 0.3],
-                  scale: [0.8, 1, 0.8],
-                }}
-                transition={{
-                  duration: 2,
-                  delay: i * 0.2,
-                  repeat: Infinity,
-                }}
-              />
-            ))}
-          </div>
+      {/* Navigation Dots */}
+      <div className="mt-8 flex justify-center gap-2">
+        {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={`h-2 w-2 rounded-full transition-all duration-300 ${
+              index === currentIndex
+                ? 'w-8 bg-blue-500'
+                : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+            aria-label={`Go to testimonial ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   )

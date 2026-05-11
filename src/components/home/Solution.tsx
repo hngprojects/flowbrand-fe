@@ -2,12 +2,13 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 
 interface Step {
   number: number
   title: string
   description: string
+  image: string
 }
 
 const steps: Step[] = [
@@ -16,24 +17,32 @@ const steps: Step[] = [
     title: 'Tell us about your business.',
     description:
       'Upload your business documents or answer 3 plain questions to get started—no marketing knowledge needed.',
+    image: '/images/snippet.png',
   },
   {
     number: 2,
-    title: 'Get your custom strategy.',
+    title: 'We build your marketing strategy.',
     description:
-      'Our AI analyzes your business and creates a personalized marketing strategy tailored to your goals.',
+      'FlowBrand matches your answers to the right strategy plan type and personalizes every stage for your business. Done in under 3 seconds.',
+    image: '/images/snippet-1.png',
   },
   {
     number: 3,
-    title: 'Start executing.',
+    title: 'Take it one step at a time.',
     description:
-      'Follow our step-by-step action plan with templates, tools, and support to grow your business.',
+      'Each week, you get one clear action to complete. Tick it off. Move to the next stage. No overwhelm, no skipped steps.',
+    image: '/images/snippet-2.png',
   },
 ]
 
 export const Solution = () => {
   const [activeStep, setActiveStep] = useState(0)
   const [isAutoPlay, setIsAutoPlay] = useState(true)
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
   const totalSteps = steps.length
 
   useEffect(() => {
@@ -53,19 +62,27 @@ export const Solution = () => {
       <div className="mx-auto w-full">
         {/* Header */}
         <div className="mb-16 text-center md:mb-20">
-          <motion.div
-            className="mb-8 inline-flex items-center gap-3 rounded-full bg-orange-50 px-5 py-3 md:mb-10"
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <div className="h-3 w-3 rounded-full bg-orange-400"></div>
-            <span className="text-sm font-semibold text-orange-500 md:text-base">
-              Our Solution
-            </span>
-          </motion.div>
-          <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">
+          {isClient ? (
+            <motion.div
+              className="mb-8 inline-flex items-center gap-3 rounded-full bg-orange-50 px-5 py-3 md:mb-10"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+              <span className="text-sm font-semibold text-orange-500 md:text-base">
+                Our Solution
+              </span>
+            </motion.div>
+          ) : (
+            <div className="mb-8 inline-flex -translate-y-5 items-center gap-3 rounded-full bg-orange-50 px-5 py-3 opacity-0 md:mb-10">
+              <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+              <span className="text-sm font-semibold text-orange-500 md:text-base">
+                Our Solution
+              </span>
+            </div>
+          )}
+          <h2 className="mb-4 text-4xl font-medium tracking-tight text-[#0F172A] md:text-5xl">
             How it works
           </h2>
           <p className="text-base font-medium text-gray-600 md:text-lg">
@@ -80,11 +97,8 @@ export const Solution = () => {
           onMouseLeave={() => setIsAutoPlay(true)}
         >
           {/* Left Side - Steps Carousel */}
-          <motion.div
-            className="relative overflow-hidden"
-            key={`step-${activeStep}`}
-          >
-            <motion.div className="space-y-6">
+          <div className="relative overflow-hidden">
+            <div className="space-y-6">
               {/* Step Indicator */}
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center">
@@ -101,15 +115,21 @@ export const Solution = () => {
               </h3>
 
               {/* Description */}
-              <motion.p
-                key={`desc-${activeStep}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="text-base leading-relaxed text-gray-600 md:text-lg"
-              >
-                {currentStep.description}
-              </motion.p>
+              {isClient ? (
+                <motion.p
+                  key={`desc-${activeStep}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-base leading-relaxed text-gray-600 md:text-lg"
+                >
+                  {currentStep.description}
+                </motion.p>
+              ) : (
+                <p className="text-base leading-relaxed text-gray-600 md:text-lg">
+                  {currentStep.description}
+                </p>
+              )}
 
               {/* Navigation Dots */}
               <div className="mt-8 flex gap-2">
@@ -126,27 +146,48 @@ export const Solution = () => {
                   />
                 ))}
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Right Side - Desktop Image */}
-          <motion.div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-end">
             <div className="relative w-full max-w-lg">
               {/* Image Container */}
-              <div className="relative z-10 overflow-hidden rounded-3xl bg-[#E58F17] p-6">
-                <div className="relative w-full">
-                  <Image
-                    src="/images/snippet.png"
-                    alt="How it works - Desktop mockup"
-                    width={523}
-                    height={501}
-                    className="h-auto w-full rounded-lg object-contain"
-                    priority
-                  />
+              {isClient ? (
+                <motion.div
+                  key={activeStep}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="relative z-10 overflow-hidden rounded-3xl bg-[#E58F17] p-6"
+                >
+                  <div className="relative w-full">
+                    <Image
+                      src={currentStep.image}
+                      alt={currentStep.title}
+                      width={523}
+                      height={501}
+                      className="h-auto w-full rounded-lg object-contain"
+                      priority
+                    />
+                  </div>
+                </motion.div>
+              ) : (
+                <div className="relative z-10 scale-95 overflow-hidden rounded-3xl bg-[#E58F17] p-6 opacity-0">
+                  <div className="relative w-full">
+                    <Image
+                      src={currentStep.image}
+                      alt={currentStep.title}
+                      width={523}
+                      height={501}
+                      className="h-auto w-full rounded-lg object-contain"
+                      priority
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
