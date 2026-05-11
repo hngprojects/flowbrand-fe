@@ -12,10 +12,10 @@ const HomeHero = () => {
   return (
     <section className="w-full bg-[url('/images/cloud.png')] bg-cover bg-bottom bg-no-repeat">
       {/* Content Container */}
-      <div className="mx-auto w-full max-w-4xl px-5 pt-10 pb-0 text-center md:px-8 lg:px-12 lg:pt-24">
+      <div className="mx-auto w-full max-w-[1440px] px-6 pt-0.5 pb-0 text-center md:px-12 lg:px-20 lg:pt-20">
         {/* Badge with border */}
-        <div className="mx-auto mt-8 mb-8 flex w-fit items-center justify-center gap-3 rounded-2xl border-2 border-[#E58F17] px-3 py-3 md:mb-10 lg:mt-12">
-          <span className="rounded-full bg-[#E58F17] px-4 py-2 text-xs font-semibold text-white md:text-sm">
+        <div className="border-accent mx-auto mt-10 mb-6 flex w-fit items-center justify-center gap-2 rounded-xl border-2 px-4 py-2 lg:mt-[70px]">
+          <span className="bg-accent text-accent-foreground rounded-xl px-3 py-1 text-[14px] sm:text-sm">
             Simply
           </span>
           <span className="text-xs font-medium text-[#565D69] md:text-sm">

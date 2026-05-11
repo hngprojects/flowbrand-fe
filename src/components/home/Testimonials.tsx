@@ -1,8 +1,16 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Image from 'next/image'
+import Image, { type StaticImageData } from 'next/image'
 import React, { useEffect, useState } from 'react'
+import { Card } from '../ui/card'
+import chef from '~public/images/chef.png'
+import david from '~public/images/david.png'
+import bright from '~public/images/bright.png'
+import ellipse1 from '~public/images/ellipse-1.png'
+import ellipse2 from '~public/images/ellipse-2.png'
+import ellipse3 from '~public/images/ellipse-3.png'
+import { SectionLabelPill } from '../ui/section-label-pill'
 
 interface Testimonial {
   id: number
@@ -101,27 +109,15 @@ export const Testimonials = () => {
   const visibleTestimonialsRow2 = getVisibleTestimonialsRow2()
 
   return (
-    <section className="bg-white px-5 py-12 md:px-8 md:py-16 lg:px-20 lg:py-20">
-      <div className="mx-auto w-full">
-        {/* Header */}
-        <div className="mb-16 text-center md:mb-20">
-          {/* Testimonials Badge */}
-          <motion.div
-            className="mb-8 inline-flex items-center gap-3 rounded-full bg-orange-50 px-5 py-3 md:mb-10"
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-          >
-            <div className="h-3 w-3 rounded-full bg-orange-400"></div>
-            <span className="text-sm font-semibold text-orange-500 md:text-base">
-              Testimonials
-            </span>
-          </motion.div>
-
-          <h2 className="text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">
-            Trusted by growing businesses
-          </h2>
+    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
+      <div className="flex flex-col items-center justify-center text-center">
+        <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
+          <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
+          <SectionLabelPill>Testimonials</SectionLabelPill>
+        </div>
+        <h2 className="mb-8 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">
+          Trusted by growing businesses
+        </h2>
         </div>
 
         {/* Testimonials Two Rows */}

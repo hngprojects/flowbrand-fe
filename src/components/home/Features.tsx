@@ -1,27 +1,15 @@
 'use client'
 
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { SectionLabelPill } from '../ui/section-label-pill'
 
 const Features = () => {
   return (
-    <section className="px-5 py-8 md:px-8 md:py-16 lg:px-20 lg:py-20">
+    <section className="mx-auto w-full max-w-[1440px] px-6 py-4 md:px-12 lg:px-20">
       {/* Header */}
-      <div className="mb-16 text-center md:mb-20">
-        <motion.div
-          className="mb-8 inline-flex items-center gap-3 rounded-full bg-orange-50 px-5 py-3 md:mb-10"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <div className="h-3 w-3 rounded-full bg-orange-400"></div>
-          <span className="text-sm font-semibold text-orange-500 md:text-base">
-            Features
-          </span>
-        </motion.div>
-
-        <h2 className="text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">
+      <div className="mb-12 text-center">
+        <SectionLabelPill>Features</SectionLabelPill>
+        <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
           Everything you need to grow
         </h2>
       </div>

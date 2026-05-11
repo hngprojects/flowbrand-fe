@@ -9,8 +9,8 @@ import Image from 'next/image'
  */
 const WelcomeSection = () => {
   return (
-    <section className="mx-auto w-full py-8 md:py-12 lg:py-16">
-      <div className="px-5 py-8 md:px-8 md:py-12 lg:px-20 lg:py-16">
+    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
+      <div className="p-7 md:p-[24px] lg:p-20">
         {/* Header Content */}
         <div className="mb-12 flex flex-col items-start justify-between gap-12 md:mb-16 lg:flex-row lg:items-end lg:gap-16">
           {/* Left Column */}

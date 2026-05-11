@@ -11,10 +11,10 @@ import {
 import { SectionLabelPill } from '~/components/ui/section-label-pill'
 import { faq_items } from '~/constants/landing-faq'
 
-export default function FAQSection() {
+export default function FaqSection() {
   return (
-    <section className="bg-background px-6 py-20 md:px-0">
-      <div className="mx-auto flex w-full max-w-[1300px] flex-col items-center">
+    <section className="bg-background w-full py-20">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-6 md:px-12 lg:px-20">
         <SectionLabelPill className="mb-6">FAQs</SectionLabelPill>
 
         <h2 className="text-foreground mb-16 text-center text-3xl font-bold md:text-4xl">
@@ -56,8 +56,7 @@ export default function FAQSection() {
         <div className="mt-24 mb-12 flex w-full max-w-2xl flex-col items-center space-y-6 text-center">
           <h2 className="max-w-2xl text-4xl font-medium tracking-tight text-[#0F172A] md:text-5xl">
             Get a step-by-step{' '}
-            <span className="text-orange-400">marketing strategy</span> in
-            minutes
+            <span className="text-accent">marketing strategy</span> in minutes
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-gray-500 md:text-base">
             A simple marketing plan that attracts, nurtures, and converts
