@@ -31,7 +31,7 @@ const formatTimer = (seconds: number) => {
 
 const OTPVerification = ({ email }: { email: string }) => {
   const router = useRouter()
-  const [secondsLeft, setSecondsLeft] = useState(30)
+  const [secondsLeft, setSecondsLeft] = useState(300)
   const [isVerifying, setIsVerifying] = useState(false)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
