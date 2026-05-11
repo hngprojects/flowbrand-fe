@@ -13,8 +13,8 @@ import { faq_items } from '~/constants/landing-faq'
 
 export default function FAQSection() {
   return (
-    <section className="bg-background px-6 py-20 md:px-0">
-      <div className="mx-auto flex w-full max-w-[1300px] flex-col items-center">
+    <section className="bg-background py-20">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-6 md:px-12 lg:px-20">
         <SectionLabelPill className="mb-6">FAQs</SectionLabelPill>
 
         <h2 className="text-foreground mb-16 text-center text-3xl font-bold md:text-4xl">

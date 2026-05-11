@@ -1,7 +1,7 @@
 'use server'
 
 import axios from 'axios'
-import type { z } from 'zod'
+import * as z from 'zod'
 import { envConfig } from '~/config/env.config'
 import type {
   RegisterUserResult,
@@ -11,62 +11,59 @@ import type {
   VerifyOtpResult,
   VerifyOtpSuccess,
 } from '~/lib/auth-action-results'
-import { messageFromApiPayload } from '~/lib/auth-api-helpers'
-import { countryAlpha2ToOfficialName } from '~/lib/country-select-options'
-import { RegisterSchema } from '~/schemas'
-import { inDevEnvironment } from '~/utils'
+import { LoginSchema, RegisterSchema } from '~/schemas'
+import { AuthResponse, ErrorResponse } from '~/types'
 
+/** Safe string from API error payloads; avoids showing objects in the UI. */
 function messageFromAxiosData(data: unknown, fallback: string): string {
-  return messageFromApiPayload(data, fallback)
+  if (
+    data &&
+    typeof data === 'object' &&
+    'message' in data &&
+    typeof (data as { message: unknown }).message === 'string'
+  ) {
+    const text = (data as { message: string }).message.trim()
+    if (text.length > 0) {
+      return text
+    }
+  }
+  return fallback
 }
 
-/** Axios errors with no `response` are usually network/DNS/timeout or bad BASE_URL. */
-function messageFromAxiosNetworkOrUnknown(
-  error: unknown,
-  fallback: string
-): string {
-  if (axios.isAxiosError(error)) {
-    if (error.response) {
-      return messageFromAxiosData(error.response.data, fallback)
-    }
-    if (error.code === 'ECONNREFUSED') {
-      return 'Cannot reach the API server. Is it running and is BASE_URL correct?'
-    }
-    if (error.code === 'ENOTFOUND' || error.code === 'EAI_AGAIN') {
-      return 'API host not found. Check BASE_URL in your environment.'
-    }
-    if (error.code === 'ECONNABORTED') {
-      return 'The request timed out. Try again.'
-    }
-    if (error.message?.trim()) {
-      return error.message
+const credentialsAuth = async (
+  values: z.infer<typeof LoginSchema>
+): Promise<AuthResponse | ErrorResponse> => {
+  const baseURL = envConfig.BASEURL
+  const validatedFields = LoginSchema.safeParse(values)
+  if (!validatedFields.success) {
+    return {
+      message: 'Something went wrong',
+      status_code: 401,
+      success: false,
     }
   }
-  if (error instanceof Error && error.message.trim()) {
-    return error.message
-  }
-  return 'An unexpected error occurred.'
-}
-
-function logAuthApiErrorDev(
-  action: string,
-  error: unknown,
-  context: { url: string; safeMeta?: Record<string, unknown> }
-) {
-  if (!inDevEnvironment) {
-    return
-  }
-  if (axios.isAxiosError(error)) {
-    console.error(`[auth ${action}]`, {
-      url: context.url,
-      status: error.response?.status,
-      responseData: error.response?.data,
-      axiosCode: error.code,
-      axiosMessage: error.message,
-      ...context.safeMeta,
-    })
-  } else {
-    console.error(`[auth ${action}] non-axios error`, error)
+  const { email, password } = validatedFields.data
+  const payload = { email, password }
+  try {
+    const response = await axios.post(`${baseURL}/auth/login`, payload)
+    return {
+      data: response.data.user,
+      access_token: response.data.access_token,
+      success: true,
+      message: 'login success',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        axios.isAxiosError(error) && error.response
+          ? messageFromAxiosData(error.response.data, 'Something went wrong')
+          : 'Something went wrong',
+      status_code:
+        axios.isAxiosError(error) && error.response
+          ? error.response.status
+          : undefined,
+    }
   }
 }
 
@@ -74,32 +71,18 @@ const registerUser = async (
   values: z.infer<typeof RegisterSchema>
 ): Promise<RegisterUserResult> => {
   const validatedFields = RegisterSchema.safeParse(values)
+  const baseURL = envConfig.BASEURL
   if (!validatedFields.success) {
     return {
       ok: false,
       error: 'registration  Failed. Please check your inputs.',
     }
   }
-  const baseURL = envConfig.BASEURL?.trim()
-  if (!baseURL) {
-    return {
-      ok: false,
-      error:
-        'API URL is not configured. Set BASE_URL (e.g. http://host:port/api/v1) in .env.',
-    }
-  }
-  const { first_name, last_name, email, country, password } =
-    validatedFields.data
-  const full_name = [first_name, last_name].filter(Boolean).join(' ').trim()
-  const countryForApi = countryAlpha2ToOfficialName(country) ?? country
-  const payload = {
-    email,
-    full_name,
-    country: countryForApi,
-    password,
-  }
   try {
-    const response = await axios.post(`${baseURL}/auth/register`, payload)
+    const response = await axios.post(
+      `${baseURL}/auth/register`,
+      validatedFields.data
+    )
 
     return {
       ok: true,
@@ -107,33 +90,26 @@ const registerUser = async (
       data: response.data,
     }
   } catch (error) {
-    logAuthApiErrorDev('registerUser', error, {
-      url: `${baseURL}/auth/register`,
-      safeMeta: {
-        payload: {
-          email: payload.email,
-          full_name: payload.full_name,
-          country: payload.country,
-        },
-      },
-    })
-    return {
-      ok: false,
-      error: messageFromAxiosNetworkOrUnknown(error, 'Registration failed.'),
-      ...(axios.isAxiosError(error) && error.response
-        ? { status: error.response.status }
-        : {}),
-    }
+    return axios.isAxiosError(error) && error.response
+      ? {
+          ok: false,
+          error: messageFromAxiosData(
+            error.response.data,
+            'Registration failed.'
+          ),
+          status: error.response.status,
+        }
+      : {
+          ok: false,
+          error: 'An unexpected error occurred.',
+        }
   }
 }
 
 const resendOtp = async (email: string): Promise<ResendOtpResult> => {
-  const baseURL = envConfig.BASEURL?.trim()
-  if (!baseURL) {
-    return { error: 'API URL is not configured (BASE_URL).' }
-  }
+  const baseURL = envConfig.BASEURL
   try {
-    const response = await axios.post(`${baseURL}/auth/resend-otp`, {
+    const response = await axios.post(`${baseURL}/auth/request/token`, {
       email,
     })
 
@@ -152,23 +128,20 @@ const resendOtp = async (email: string): Promise<ResendOtpResult> => {
           status: error.response.status,
         }
       : {
-          error: messageFromAxiosNetworkOrUnknown(error, 'Resend OTP failed.'),
+          error: 'An unexpected error occurred.',
         }
   }
 }
 
 const verifyOtp = async (
   email: string,
-  otp: string
+  code: string
 ): Promise<VerifyOtpResult> => {
-  const baseURL = envConfig.BASEURL?.trim()
-  if (!baseURL) {
-    return { error: 'API URL is not configured (BASE_URL).' }
-  }
+  const baseURL = envConfig.BASEURL
   try {
-    const response = await axios.post(`${baseURL}/auth/verify-otp`, {
+    const response = await axios.post(`${baseURL}/auth/verify/otp`, {
       email,
-      otp,
+      code,
     })
     const success: VerifyOtpSuccess = {
       status: response.status,
@@ -185,10 +158,7 @@ const verifyOtp = async (
           status: error.response.status,
         }
       : {
-          error: messageFromAxiosNetworkOrUnknown(
-            error,
-            'Invalid or expired verification code.'
-          ),
+          error: 'An unexpected error occurred.',
         }
   }
 }
@@ -209,10 +179,7 @@ const resetPasswordWithToken = async (input: {
     return { ok: false, error: 'Password is required.' }
   }
 
-  const baseURL = envConfig.BASEURL?.trim()
-  if (!baseURL) {
-    return { ok: false, error: 'API URL is not configured (BASE_URL).' }
-  }
+  const baseURL = envConfig.BASEURL
   try {
     await axios.post(
       `${baseURL}/auth/password/reset`,
@@ -243,4 +210,10 @@ const resetPasswordWithToken = async (input: {
   }
 }
 
-export { registerUser, resendOtp, resetPasswordWithToken, verifyOtp }
+export {
+  credentialsAuth,
+  registerUser,
+  resendOtp,
+  resetPasswordWithToken,
+  verifyOtp,
+}
