@@ -38,7 +38,7 @@ export default function Hero() {
       {/* ── Image + overlay ── */}
       <div className="relative z-10 mt-10 w-full md:mt-18">
         {/* Desktop */}
-        <div className="relative mx-auto hidden w-full max-w-[1440px] md:block">
+        <div className="relative mx-auto hidden w-full md:block">
           <Image
             src="/images/hero-desktop.png"
             alt="Small business owners — Maimuna, David, Sarah and Aisha"
@@ -47,6 +47,7 @@ export default function Hero() {
             priority
             className="w-full object-cover object-top"
           />
+
           {/* Overlay: absolute, pinned to bottom, covers ~40% of image height */}
           <div
             className="pointer-events-none absolute bottom-0 left-0 w-full select-none"

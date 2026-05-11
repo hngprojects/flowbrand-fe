@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 const Features = () => {
   return (
-    <section className="px-6 py-4 md:px-12 lg:px-20">
+    <section className="mx-auto w-full max-w-[1440px] px-6 py-4 md:px-12 lg:px-20">
       {/* Header */}
       <div className="mb-12 text-center">
         <span className="mb-4 inline-block rounded-full bg-[#FEF3C7] px-3 py-1 text-sm font-semibold text-[#E58F17]">

@@ -1,6 +1,6 @@
 export default function WhoBuiltThis() {
   return (
-    <section className="flex w-full flex-col items-center bg-[#FCFDFF] px-5 py-16 text-center md:px-10 md:py-20">
+    <section className="mx-auto flex w-full max-w-[1440px] flex-col items-center bg-[#FCFDFF] px-6 py-16 text-center md:px-12 md:py-20 lg:px-20">
       {/* Single bordered pill container */}
       <div className="mb-7 flex items-center gap-0 rounded-md border border-[#E58F17] p-2">
         <span className="rounded-md bg-[#E58F17] px-5 py-2 text-[13px] leading-none font-semibold text-white">

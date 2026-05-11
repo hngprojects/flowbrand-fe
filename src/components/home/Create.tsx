@@ -11,8 +11,8 @@ import Link from 'next/link'
  */
 const Create = () => {
   return (
-    <section className="mx-auto w-full py-16 md:py-24">
-      <div className="container mx-auto px-4 text-center">
+    <section className="w-full py-16 md:py-24">
+      <div className="mx-auto w-full max-w-[1440px] px-6 text-center md:px-12 lg:px-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

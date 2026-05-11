@@ -3,7 +3,7 @@ import Image from 'next/image'
 export default function WhyWeStarted() {
   return (
     <section className="w-full bg-[#FCFDFF]">
-      <div className="mx-auto flex max-w-[1100px] flex-col gap-10 px-5 py-14 md:flex-row md:items-center md:gap-10 md:px-10 md:py-20 xl:px-20">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-6 py-14 md:flex-row md:items-center md:gap-10 md:px-12 md:py-20 lg:px-20">
         {/* Text — 45% */}
         <div className="w-full flex-shrink-0 md:mt-8 md:w-[45%]">
           <span className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-[#E58F172B] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#E58F17] uppercase">
