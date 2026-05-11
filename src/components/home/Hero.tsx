@@ -12,27 +12,25 @@ const HomeHero = () => {
   return (
     <section className="w-full bg-[url('/images/cloud.png')] bg-cover bg-bottom bg-no-repeat">
       {/* Content Container */}
-      <div className="mx-auto w-full max-w-4xl px-4 pt-0.5 pb-0 text-center lg:px-8 lg:pt-20">
+      <div className="mx-auto w-full max-w-4xl px-5 pt-10 pb-0 text-center md:px-8 lg:px-12 lg:pt-24">
         {/* Badge with border */}
-        <div className="border-accent mx-auto mt-10 mb-6 flex w-fit items-center justify-center gap-2 rounded-xl border-2 px-4 py-2 lg:mt-[70px]">
-          <span className="bg-accent rounded-xl px-3 py-1 text-[14px] text-white sm:text-sm">
+        <div className="mx-auto mt-8 mb-8 flex w-fit items-center justify-center gap-3 rounded-2xl border-2 border-[#E58F17] px-3 py-3 md:mb-10 lg:mt-12">
+          <span className="rounded-full bg-[#E58F17] px-4 py-2 text-xs font-semibold text-white md:text-sm">
             Simply
           </span>
-          <span className="text-[14px] text-[#565D69] sm:text-sm">
+          <span className="text-xs font-medium text-[#565D69] md:text-sm">
             Made for every kind of business
           </span>
         </div>
 
         {/* Main Heading */}
-        <h1 className="mb-4 text-center align-middle text-[32px] leading-none font-medium tracking-normal text-black sm:mb-6 md:text-[60px]">
-          Grow your business with a{' '}
-          <span className="md:block">
-            smarter <span className="text-accent">Marketing Strategy</span>
-          </span>
+        <h1 className="mb-6 line-clamp-3 text-center text-[32px] leading-tight font-semibold text-black md:mb-8 md:text-5xl lg:text-6xl">
+          Grow your business with a smarter{' '}
+          <span className="text-[#E58F17]">Marketing Strategy</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="mx-auto mb-8 max-w-2xl text-center align-middle text-[15px] leading-[1.5] font-normal tracking-normal text-gray-700 sm:mb-10 md:text-[18px]">
+        <p className="mx-auto mb-10 max-w-2xl text-center text-base leading-relaxed font-normal text-gray-700 md:mb-12 md:text-lg lg:text-xl">
           Manage your entire customer journey from first contact to repeat
           sales, without stress with everything you need in one place.
         </p>
@@ -40,7 +38,7 @@ const HomeHero = () => {
         {/* CTA Button */}
         <Link
           href="/register"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground mb-12 inline-block rounded-lg px-6 py-3 text-[16px] font-semibold transition-colors duration-200 sm:mb-16 sm:px-8 sm:py-4 sm:text-base md:text-[18px]"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground mb-12 inline-block rounded-xl px-7 py-3 text-base font-semibold transition-all duration-200 hover:scale-105 active:scale-95 md:mb-16 md:px-10 md:py-4 md:text-lg"
         >
           Create a free account
         </Link>

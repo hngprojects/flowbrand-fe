@@ -1,25 +1,37 @@
+'use client'
+
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 
 const Features = () => {
   return (
-    <section className="px-6 py-4 md:px-12 lg:px-20">
+    <section className="px-5 py-8 md:px-8 md:py-16 lg:px-20 lg:py-20">
       {/* Header */}
-      <div className="mb-12 text-center">
-        <span className="mb-4 inline-block rounded-full bg-[#FEF3C7] px-3 py-1 text-sm font-semibold text-[#E58F17]">
-          <circle cx="113.27" cy="22.49" r="6" fill="#E58F17" />
-          Features
-        </span>
-        <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
+      <div className="mb-16 text-center md:mb-20">
+        <motion.div
+          className="mb-8 inline-flex items-center gap-3 rounded-full bg-orange-50 px-5 py-3 md:mb-10"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+          <span className="text-sm font-semibold text-orange-500 md:text-base">
+            Features
+          </span>
+        </motion.div>
+
+        <h2 className="text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">
           Everything you need to grow
         </h2>
       </div>
 
       {/* Features Grid */}
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
+      <div className="mx-auto grid w-full grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3">
         {/* Card 1: Guided Setup */}
-        <div className="flex h-full min-h-80 flex-col justify-between rounded-3xl bg-black p-8 text-white">
+        <div className="flex h-full min-h-96 flex-col justify-between rounded-3xl bg-black p-8 text-white md:p-10">
           {/* Icon */}
-          <div className="mb-6">
+          <div className="mb-8">
             <Image
               src="/images/feature-1.png"
               alt="Guided Setup"
@@ -30,8 +42,10 @@ const Features = () => {
 
           {/* Content */}
           <div>
-            <h3 className="mb-3 text-2xl font-bold">Guided Setup</h3>
-            <p className="text-sm leading-relaxed text-gray-300">
+            <h3 className="mb-4 text-2xl font-bold md:text-3xl">
+              Guided Setup
+            </h3>
+            <p className="text-xs leading-relaxed text-gray-300 md:text-sm">
               Build the best marketing strategy for your business with clear,
               step by step support
             </p>
@@ -39,7 +53,7 @@ const Features = () => {
         </div>
 
         {/* Card 2: Progress Tracking */}
-        <div className="h-full min-h-80 overflow-hidden rounded-3xl">
+        <div className="h-[456px] overflow-hidden rounded-3xl">
           <div className="relative flex h-full items-end bg-gradient-to-br from-gray-200 to-gray-300">
             {/* Placeholder for image */}
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/40 to-transparent p-8">
@@ -56,68 +70,71 @@ const Features = () => {
               src="/images/dark-skin-girl-2.jpg"
               alt="Progress Tracking"
               className="h-full w-full object-cover"
-              width={405}
+              width={400}
               height={456}
             />
           </div>
         </div>
 
         {/* Card 3: Smarter Conversions */}
-        <div className="relative flex h-full min-h-80 flex-col justify-between rounded-3xl bg-[#769BE0] p-3 text-white">
-          {/* From Tag */}
-          <div className="rounded-xl bg-[#A1BAEA] p-3">
-            <div>
-              <div className="mb-4">
-                <span className="text-xs font-semibold text-blue-100 opacity-75">
-                  From
-                </span>
-                <p className="text-lg font-bold">Business Idea</p>
-              </div>
-
-              {/* Dashed Arrow with Curve and Ball */}
-              <svg
-                style={{
-                  position: 'absolute',
-                  width: '119.26608269285097px',
-                  height: '24.986453995172663px',
-                  top: '85px',
-                  left: '31px',
-                  transform: 'rotate(-28.06deg)',
-                  opacity: 1,
-                }}
-                viewBox="0 0 119.27 34.99"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Ball at tail end (inverted position) */}
-                <circle cx="113.27" cy="22.49" r="6" fill="white" />
-
-                {/* Curved dashed line that bends opposite direction */}
-                <path
-                  d="M 107.27 22.49 Q 59.27 -5 10 14.99"
-                  stroke="white"
-                  strokeWidth="3"
-                  strokeDasharray="6, 6"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-
-                {/* Arrowhead pointing diagonally downward */}
-                <polygon points="10,14.99 17,5 12,11 22,20" fill="white" />
-              </svg>
+        <div className="relative flex h-full min-h-96 flex-col rounded-3xl bg-[#769BE0] p-6 text-white md:p-8">
+          {/* Top Section - Reconstructed Box matching the original visual screenshot layout */}
+          <div className="relative mb-auto flex h-[180px] flex-col justify-between overflow-hidden rounded-2xl border-4 border-[#B8D0F0] bg-[#9ab4f0] p-6">
+            {/* Top Section - From Business Idea Box */}
+            <div className="flex-shrink-0 self-start text-left">
+              <span className="mb-0 block text-[14px] leading-tight font-medium text-white opacity-90">
+                From
+              </span>
+              <p className="text-[14px] leading-tight font-medium text-white opacity-90">
+                Business idea
+              </p>
             </div>
-            {/* Real Marketing Strategies Box - Right Side */}
-            <div className="absolute right-4 bottom-55 max-w-[150px]">
-              <h3 className="text-sm leading-tight font-bold text-white">
-                Real Marketing
-                <br />
-                Strategies
-              </h3>
+
+            {/* Center - Dashed Arrow Vector Overlay (Shifted left via negative translation) */}
+            <svg
+              className="pointer-events-none absolute inset-0 z-10 h-full w-full -translate-x-6"
+              viewBox="0 0 320 180"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Starting Node Circle */}
+              <circle cx="68" cy="72" r="4.5" fill="white" />
+
+              {/* Curved Dotted Path */}
+              <path
+                d="M 68 76 C 80 125, 115 130, 142 118"
+                stroke="white"
+                strokeWidth="2"
+                strokeDasharray="5 4"
+                strokeLinecap="round"
+                fill="none"
+              />
+
+              {/* Arrowhead Geometry */}
+              <path
+                d="M 134 125 L 144 117 L 138 109"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+
+            {/* Bottom Right Section - Real Marketing Strategies Text */}
+            <div className="z-20 mr-2 mb-2 w-[60%] self-end text-left">
+              <p className="text-[20px] leading-tight font-bold text-white">
+                Real Marketing Strategies
+              </p>
             </div>
           </div>
-          {/* Content - Bottom */}
-          <div className="mt-auto p-6">
-            <h4 className="mb-2 text-[24px] font-bold">Smarter Conversions</h4>
-            <p className="text-[16px] leading-relaxed text-blue-50">
+
+          {/* Bottom Content Section */}
+          <div className="flex flex-col justify-end pt-6 md:pt-8">
+            <h4 className="mb-2 text-xl font-bold md:text-2xl">
+              Smarter Conversions
+            </h4>
+            <p className="text-xs leading-relaxed text-blue-100 md:text-sm">
               Convert leads into real customers with better inquiry and booking
               flows
             </p>

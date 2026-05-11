@@ -9,16 +9,16 @@ import Image from 'next/image'
  */
 const WelcomeSection = () => {
   return (
-    <section className="mx-auto w-full py-4">
-      <div className="p-7 md:p-[24px] lg:p-20">
+    <section className="mx-auto w-full py-8 md:py-12 lg:py-16">
+      <div className="px-5 py-8 md:px-8 md:py-12 lg:px-20 lg:py-16">
         {/* Header Content */}
-        <div className="mb-12 flex flex-col items-start justify-between gap-10 md:mb-16 lg:flex-row lg:items-end">
+        <div className="mb-12 flex flex-col items-start justify-between gap-12 md:mb-16 lg:flex-row lg:items-end lg:gap-16">
           {/* Left Column */}
           <div className="w-full lg:w-[60%]">
-            <span className="mb-6 block align-middle text-[18px] leading-[1.5] font-medium tracking-normal text-[#2E60BE]">
+            <span className="mb-6 block text-lg font-semibold text-[#2E60BE] md:text-xl">
               Welcome to Flowbrand
             </span>
-            <h2 className="align-middle text-[24px] leading-[1.1] font-medium tracking-normal md:text-[48px]">
+            <h2 className="text-2xl leading-tight font-bold md:text-4xl lg:text-5xl">
               We help you attract the right customers and convert them into
               paying buyers
             </h2>
@@ -26,7 +26,7 @@ const WelcomeSection = () => {
 
           {/* Right Column */}
           <div className="w-full lg:w-[35%]">
-            <p className="align-middle text-base leading-[1.75] font-normal tracking-normal text-[#565D69]">
+            <p className="text-base leading-relaxed font-normal text-[#565D69] md:text-lg">
               We built Flowbrand because we kept seeing the same thing:
               brilliant business owners with no clear path to getting customers
               consistently. Not because they were not capable, but because every
