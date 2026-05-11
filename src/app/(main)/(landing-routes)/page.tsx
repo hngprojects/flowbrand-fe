@@ -1,9 +1,9 @@
-import FAQSection from '~/components/landing/faq-section'
+import Home from './(home)/page'
 
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
-      <FAQSection />
+      <Home />
     </main>
   )
 }

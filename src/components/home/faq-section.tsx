@@ -13,7 +13,7 @@ import { LANDING_FAQ_ITEMS } from '~/constants/landing-faq'
 
 export default function FAQSection() {
   return (
-    <section className="bg-[#FBFCFF] px-6 py-20 md:px-0">
+    <section className="bg-background px-6 py-20 md:px-0">
       <div className="mx-auto flex w-full max-w-[1300px] flex-col items-center">
         <SectionLabelPill className="mb-6">FAQs</SectionLabelPill>
 
@@ -30,7 +30,7 @@ export default function FAQSection() {
             <AccordionItem
               key={item.question}
               value={`faq-${index}`}
-              className="group overflow-hidden rounded-xl border-1 border-[#EDEDED] bg-white px-0 data-[state=open]:border-blue-100 data-[state=open]:shadow-sm"
+              className="group overflow-hidden rounded-xl border border-[#EDEDED] bg-white px-0 data-[state=open]:border-blue-100 data-[state=open]:shadow-sm"
             >
               <AccordionTrigger className="items-start px-6 py-6 text-left hover:no-underline [&>svg:last-child]:hidden">
                 <span className="pr-4 text-lg leading-tight font-medium text-[#1E293B]">
