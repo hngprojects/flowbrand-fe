@@ -110,8 +110,8 @@ export default function PricingPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-black">
       {/* Header Section */}
-      <section className="px-4 py-16 sm:py-20">
-        <div className="mx-auto max-w-4xl text-center">
+      <section className="w-full py-16 sm:py-20">
+        <div className="mx-auto max-w-[1440px] px-6 text-center md:px-12 lg:px-20">
           <h1 className="mb-2 text-4xl font-bold sm:text-5xl">
             Affordable Pricing for your{' '}
             <span className="text-orange-500">Business</span>
@@ -148,8 +148,8 @@ export default function PricingPage() {
       </section>
 
       {/* Pricing Cards */}
-      <section className="px-4 py-12">
-        <div className="mx-auto max-w-5xl">
+      <section className="w-full py-12">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
           <div className="grid gap-8 md:grid-cols-2">
             {/* Free Plan */}
             <div className="rounded-lg border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-950">
@@ -241,8 +241,8 @@ export default function PricingPage() {
       </section>
 
       {/* Comparison Table */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-5xl">
+      <section className="w-full py-16">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
           <h2 className="mb-12 text-center text-3xl font-bold">
             Compare Plans
           </h2>
@@ -282,8 +282,8 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-3xl">
+      <section className="w-full py-16">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
           <div className="mb-12 text-center">
             <div className="mb-4 inline-block rounded bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-600 dark:bg-orange-900 dark:text-orange-200">
               FAQ
