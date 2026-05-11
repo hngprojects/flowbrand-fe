@@ -3,12 +3,6 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-/**
- * Create component displays a call-to-action section encouraging users
- * to get a marketing strategy by creating an account.
- *
- * @returns {JSX.Element} The rendered CTA section.
- */
 const Create = () => {
   return (
     <section className="w-full py-16 md:py-24">

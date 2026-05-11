@@ -14,8 +14,8 @@ const HomeHero = () => {
       {/* Content Container */}
       <div className="mx-auto w-full max-w-[1440px] px-6 pt-0.5 pb-0 text-center md:px-12 lg:px-20 lg:pt-20">
         {/* Badge with border */}
-        <div className="mx-auto mt-10 mb-6 flex w-fit items-center justify-center gap-2 rounded-xl border-2 border-orange-500 px-4 py-2 lg:mt-[70px]">
-          <span className="rounded-xl bg-orange-500 px-3 py-1 text-[14px] text-white sm:text-sm">
+        <div className="border-accent mx-auto mt-10 mb-6 flex w-fit items-center justify-center gap-2 rounded-xl border-2 px-4 py-2 lg:mt-[70px]">
+          <span className="bg-accent text-accent-foreground rounded-xl px-3 py-1 text-[14px] sm:text-sm">
             Simply
           </span>
           <span className="text-[14px] text-[#565D69] sm:text-sm">

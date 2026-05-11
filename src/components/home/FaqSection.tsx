@@ -56,8 +56,7 @@ export default function FaqSection() {
         <div className="mt-24 mb-12 flex w-full max-w-2xl flex-col items-center space-y-6 text-center">
           <h2 className="max-w-2xl text-4xl font-medium tracking-tight text-[#0F172A] md:text-5xl">
             Get a step-by-step{' '}
-            <span className="text-orange-400">marketing strategy</span> in
-            minutes
+            <span className="text-accent">marketing strategy</span> in minutes
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-gray-500 md:text-base">
             A simple marketing plan that attracts, nurtures, and converts
