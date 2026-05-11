@@ -3,10 +3,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
 import { Fade as Hamburger } from 'hamburger-react'
 import MobileLogoIcon from '~/components/icons/navbar/mobile-logo'
 import logoBlue from '~public/images/logo-blue.png'
+import { Dispatch, SetStateAction } from 'react'
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -15,8 +15,13 @@ const navLinks = [
   { label: 'Pricing', path: '/pricing' },
 ]
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false)
+const Navbar = ({
+  setIsOpen,
+  isOpen,
+}: {
+  setIsOpen: Dispatch<SetStateAction<boolean>>
+  isOpen: boolean
+}) => {
   const pathname = usePathname()
 
   return (
@@ -42,7 +47,7 @@ const Navbar = () => {
             <li key={link.label}>
               <Link
                 href={link.path}
-                className={`hover:text-primary flex h-12 w-[132px] items-center justify-center px-4 py-3 text-base font-medium text-[#565D69] transition-colors ${
+                className={`hover:text-primary flex h-12 items-center justify-center px-4 py-3 text-base font-medium text-[#565D69] transition-colors ${
                   pathname === link.path ||
                   (link.path !== '/' && pathname.startsWith(link.path))
                     ? 'text-primary font-semibold'
