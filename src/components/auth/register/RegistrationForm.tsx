@@ -119,7 +119,7 @@ const RegistrationForm = () => {
   }
 
   return (
-    <div className="space-y-4 py-8 sm:space-y-5">
+    <div className="max-h-screen space-y-4 py-8 sm:space-y-5">
       <div className="bg-primary/10 text-foreground inline-block rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:px-3 sm:py-1 sm:text-xs">
         No marketing experience needed
       </div>
@@ -361,7 +361,7 @@ const RegistrationForm = () => {
         </Link>
       </p>
 
-      <p className="text-foreground/50 px-4 text-center text-[10px]">
+      <p className="text-foreground/50 px-4 pb-4 text-center text-[10px]">
         By signing up you agree to our{' '}
         <Link
           href="/terms-and-conditions"

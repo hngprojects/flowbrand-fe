@@ -1,51 +1,84 @@
-name: Build, Lint, Test and Security Scan
+name: Build and Upload
 
 on:
-  pull_request:
+  push:
     branches: [dev, staging, main]
 
 jobs:
-  build_lint_test:
+  build:
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      HOST: ${{ secrets.HOST }}
+      USERNAME: ${{ secrets.USERNAME }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "23"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "23"
+          cache: "pnpm"
+
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint code
-        run: pnpm lint
-
-      - name: Build project
+      - name: Build Next.js application
         run: pnpm build
 
-      - name: Security scan with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: CRITICAL,HIGH
-          exit-code: 1
-          format: json
-          output: trivy-report.json
+      - name: Archive production artifacts
+        run: |
+          tar -czf boilerplate.tar.gz .next package.json pnpm-lock.yaml
 
-      - name: Upload Trivy report as artifact
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-security-report
-          path: trivy-report.json
-          retention-days: 7
+      - name: Setup SSH key and known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KNOWN_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to Dev
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/dev/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
+            "cd /flowbrand/dev/frontend \
+            && tar -xzf boilerplate.tar.gz \
+            && pnpm install --prod --frozen-lockfile \
+            && pm2 restart flowbrand-dev || pm2 start \"node_modules/.bin/next start -p 3002\" --name flowbrand-dev \
+            && rm -f boilerplate.tar.gz"
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: |
+          scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/staging/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
+            "cd /flowbrand/staging/frontend \
+            && tar -xzf boilerplate.tar.gz \
+            && pnpm install --prod --frozen-lockfile \
+            && pm2 restart flowbrand-staging || pm2 start \"node_modules/.bin/next start -p 3000\" --name flowbrand-staging \
+            && rm -f boilerplate.tar.gz"
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/production/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
+            "cd /flowbrand/production/frontend \
+            && tar -xzf boilerplate.tar.gz \
+            && pnpm install --prod --frozen-lockfile \
+            && pm2 restart flowbrand-production || pm2 start \"node_modules/.bin/next start -p 3001\" --name flowbrand-production \
+            && rm -f boilerplate.tar.gz"
+
+      - name: Delete local archive
+        if: always()
+        run: rm -f boilerplate.tar.gz

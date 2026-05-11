@@ -46,7 +46,7 @@ const AuthSplitLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
         <div />
       </div>
 
-      <div className="flex h-screen max-h-screen w-full flex-1 flex-col overflow-y-auto px-4 py-6 sm:px-6 sm:py-8 lg:w-1/2 lg:items-center lg:justify-center lg:px-8 lg:py-10">
+      <div className="flex h-screen max-h-screen w-full flex-1 flex-col overflow-y-auto px-4 py-6 lg:items-center lg:justify-center lg:px-0 lg:py-0">
         <div className="flex w-full shrink-0 pb-6 lg:hidden">
           <Image
             src="/images/logo-blue.png"
