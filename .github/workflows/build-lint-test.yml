@@ -18,16 +18,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4               # FIX: pnpm must be installed BEFORE setup-node
+        with:                                    # so the cache: "pnpm" option can locate the executable
+          version: 10
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "23"
-          cache: "pnpm"                          # FIX: cache pnpm deps to speed up installs
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
