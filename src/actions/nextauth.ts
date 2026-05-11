@@ -1,41 +1,85 @@
 'use server'
 
 import * as z from 'zod'
-import { LoginSchema } from '~/schemas'
-import { createFetchUtil } from './fetchutil'
-import { User } from '~/types'
 import { cookies } from 'next/headers'
 import { envConfig } from '~/config/env.config'
+import { LoginSchema } from '~/schemas'
+import type { AuthResponse, ErrorResponse, User } from '~/types'
+import { HttpError, createFetchUtil } from './fetchutil'
 
 export interface LoginResponse {
   user: User
   access_token: string
 }
 
-export const nextLogin = async (values: z.infer<typeof LoginSchema>) => {
-  const baseURL = process.env.BASEURL
+const GENERIC_LOGIN_ERROR_MESSAGE = 'Unable to sign in. Please try again.'
+
+function extractHttpErrorMessage(
+  responseBody: unknown,
+  fallbackMessage: string
+) {
+  if (typeof responseBody === 'string' && responseBody.trim()) {
+    return responseBody
+  }
+
+  if (responseBody && typeof responseBody === 'object') {
+    const message = (responseBody as { message?: unknown }).message
+    if (typeof message === 'string' && message.trim()) {
+      return message
+    }
+  }
+
+  return fallbackMessage
+}
+
+export const nextLogin = async (
+  values: z.infer<typeof LoginSchema>
+): Promise<AuthResponse | ErrorResponse> => {
+  const baseURL = envConfig.BASEURL
 
   if (!baseURL) {
     return {
-      status: 500,
-      message: 'Base URL not defined',
-      success: true,
+      status_code: 500,
+      message: GENERIC_LOGIN_ERROR_MESSAGE,
+      success: false,
     }
   }
   const api = createFetchUtil({ baseUrl: baseURL })
 
-  const response = await api<{ data: LoginResponse; access_token: string }>(
-    '/auth/login',
-    {
-      method: 'POST',
-      body: values,
-    }
-  )
+  try {
+    const response = await api<{ data: LoginResponse; access_token: string }>(
+      '/auth/login',
+      {
+        method: 'POST',
+        body: values,
+      }
+    )
 
-  return {
-    data: response.data.user,
-    access_token: response.access_token,
-    success: true,
+    return {
+      data: response.data.user,
+      access_token: response.access_token,
+      success: true,
+      message: 'login success',
+    }
+  } catch (error) {
+    if (error instanceof HttpError) {
+      return {
+        success: false,
+        message: extractHttpErrorMessage(
+          error.responseBody,
+          error.statusCode >= 500
+            ? GENERIC_LOGIN_ERROR_MESSAGE
+            : 'Invalid email or password.'
+        ),
+        status_code: error.statusCode,
+      }
+    }
+
+    return {
+      success: false,
+      message: GENERIC_LOGIN_ERROR_MESSAGE,
+      status_code: 500,
+    }
   }
 }
 
