@@ -53,7 +53,7 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         run: |
           scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/staging/frontend/boilerplate.tar.gz"
-          # FIX: extract and restart the app after upload so the deploy is actually applied
+          # FIX: extract and reload the app after upload so the deploy is actually applied
           ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
             "cd /flowbrand/staging/frontend \
              && tar -xzf boilerplate.tar.gz \

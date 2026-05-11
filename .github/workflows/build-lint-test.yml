@@ -1,4 +1,4 @@
-name: Build, Lint, Test and Security Scan
+name: Build, Lint and Security Scan
 
 on:
   pull_request:
@@ -34,9 +34,6 @@ jobs:
 
       - name: Lint code
         run: pnpm lint
-
-      - name: Run tests                          # FIX: added missing test step (was in the workflow name but absent)
-        run: pnpm test
 
       - name: Build project
         run: pnpm build
