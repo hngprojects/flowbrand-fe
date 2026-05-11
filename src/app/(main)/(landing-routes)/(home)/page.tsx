@@ -1,4 +1,3 @@
-import Create from '~/components/home/Create'
 import Features from '~/components/home/Features'
 import Solution from '~/components/home/Solution'
 import HomeHero from '~/components/home/Hero'
@@ -15,7 +14,6 @@ export default function Home() {
       <Features />
       <Solution />
       <Testimonials />
-      <Create />
       <FAQSection />
     </>
   )
