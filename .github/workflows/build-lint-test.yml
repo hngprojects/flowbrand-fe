@@ -39,7 +39,7 @@ jobs:
         run: pnpm build
 
       - name: Security scan with Trivy
-        uses: aquasecurity/trivy-action@0.28.0  # FIX: pin to a specific release — @master is unstable and a supply-chain risk
+        uses: aquasecurity/trivy-action@v0.35.0  # FIX: pin to a specific release — @master is unstable and a supply-chain risk
         with:
           scan-type: fs
           scan-ref: .
