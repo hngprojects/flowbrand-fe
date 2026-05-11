@@ -27,7 +27,10 @@
       ],
       "~ui/*": [
         "./src/components/ui/*"
-      ]
+      ],
+      "~public/*": [
+        "./public/*"
+      ],
     },
     "target": "ES2017"
   },
