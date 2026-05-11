@@ -1,6 +1,6 @@
 export default function SimpleIdea() {
   return (
-    <section className="flex w-full flex-col items-center bg-[#FCFDFF] px-5 py-16 text-center md:px-10 md:py-20">
+    <section className="mx-auto flex w-full max-w-[1440px] flex-col items-center bg-[#FCFDFF] px-6 py-16 text-center md:px-12 md:py-20 lg:px-20">
       <h2 className="mb-10 text-[20px] font-bold tracking-tight text-[#0D1117] md:text-[24px]">
         FlowBrand started as a simple idea
       </h2>

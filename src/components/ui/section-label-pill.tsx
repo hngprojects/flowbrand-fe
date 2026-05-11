@@ -16,13 +16,13 @@ export function SectionLabelPill({
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-100 px-3 py-1',
+        'border-accent bg-accent-background inline-flex items-center gap-2 rounded-full border px-3 py-1',
         className
       )}
       {...properties}
     >
-      <div className="size-2 shrink-0 rounded-full bg-orange-500" aria-hidden />
-      <span className="text-xs font-semibold text-orange-800">{children}</span>
+      <div className="bg-accent size-2 shrink-0 rounded-full" aria-hidden />
+      <span className="text-accent text-xs">{children}</span>
     </div>
   )
 }

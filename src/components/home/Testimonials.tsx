@@ -6,6 +6,7 @@ import bright from '~public/images/bright.png'
 import ellipse1 from '~public/images/ellipse-1.png'
 import ellipse2 from '~public/images/ellipse-2.png'
 import ellipse3 from '~public/images/ellipse-3.png'
+import { SectionLabelPill } from '../ui/section-label-pill'
 
 type Testimonial = {
   quote: string
@@ -94,11 +95,11 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
 
 export default function Testimonials() {
   return (
-    <section className="py-16">
+    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
       <div className="flex flex-col items-center justify-center text-center">
         <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
           <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
-          <p className="text-badge-fg">Testimonials</p>
+          <SectionLabelPill>Testimonials</SectionLabelPill>
         </div>
         <h2 className="mb-8 text-4xl">Trusted by growing businesses</h2>
         <div className="w-full space-y-8">

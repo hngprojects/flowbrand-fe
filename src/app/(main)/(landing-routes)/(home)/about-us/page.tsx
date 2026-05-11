@@ -2,7 +2,7 @@ import Hero from '~/components/about/Hero'
 import SocialProof from '~/components/about/SocialProof'
 import WhyWeStarted from '~/components/about/WhyWeStarted'
 import SimpleIdea from '~/components/about/SimpleIdea'
-import WhoBuiltThis from '~/components/about/WhoBuiltThis'
+// import WhoBuiltThis from '~/components/about/WhoBuiltThis'
 import Mission from '~/components/about/Mission'
 import CTASection from '~/components/about/CTASection'
 
@@ -13,7 +13,7 @@ export default function AboutPage() {
       <SocialProof />
       <WhyWeStarted />
       <SimpleIdea />
-      <WhoBuiltThis />
+      {/* <WhoBuiltThis /> */}
       <Mission />
       <CTASection />
     </main>
