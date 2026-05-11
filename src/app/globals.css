@@ -17,6 +17,8 @@
   --color-foreground: var(--foreground);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-badge-bg: var(--badge-bg);
+  --color-badge-fg: var(--badge-fg);
 }
 
 :root {
@@ -41,6 +43,8 @@
   --foreground: #030d1f;
   --muted-foreground: #e4e4e4;
   --border: #e5e5e5;
+  --badge-bg: #fcf4e8;
+  --badge-fg: #e58f17;
 }
 
 /* I hardcoded  dark mode colors until further notice */

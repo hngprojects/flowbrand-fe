@@ -7,9 +7,6 @@ import ellipse1 from '~public/images/ellipse-1.png'
 import ellipse2 from '~public/images/ellipse-2.png'
 import ellipse3 from '~public/images/ellipse-3.png'
 
-const BADGE_BG = '#fcf4e8'
-const BADGE_FG = '#e58f17'
-
 type Testimonial = {
   quote: string
   name: string
@@ -99,15 +96,9 @@ export default function Testimonials() {
   return (
     <section className="py-16">
       <div className="flex flex-col items-center justify-center text-center">
-        <div
-          className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2"
-          style={{ backgroundColor: BADGE_BG }}
-        >
-          <div
-            className="h-4 w-4 rounded-full"
-            style={{ backgroundColor: BADGE_FG }}
-          ></div>
-          <p style={{ color: BADGE_FG }}>Testimonials</p>
+        <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
+          <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
+          <p className="text-badge-fg">Testimonials</p>
         </div>
         <h2 className="mb-8 text-4xl">Trusted by growing businesses</h2>
         <div className="w-full space-y-8">
