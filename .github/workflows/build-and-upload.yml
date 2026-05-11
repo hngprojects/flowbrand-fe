@@ -44,13 +44,13 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          echo "${{ secrets.HOST }}" >> ~/.ssh/known_hosts
+        
 
       - name: Deploy to Dev
         if: github.ref == 'refs/heads/dev'
         run: |
-          scp -i ~/.ssh/deploy_key boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/dev/frontend/boilerplate.tar.gz"
-          ssh -i ~/.ssh/deploy_key "$USERNAME@$HOST" \
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/dev/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$USERNAME@$HOST" \
             "cd /flowbrand/dev/frontend \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
@@ -60,8 +60,8 @@ jobs:
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          scp -i ~/.ssh/deploy_key boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/staging/frontend/boilerplate.tar.gz"
-          ssh -i ~/.ssh/deploy_key "$USERNAME@$HOST" \
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/staging/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$USERNAME@$HOST" \
             "cd /flowbrand/staging/frontend \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
@@ -71,8 +71,8 @@ jobs:
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
-          scp -i ~/.ssh/deploy_key boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/production/frontend/boilerplate.tar.gz"
-          ssh -i ~/.ssh/deploy_key "$USERNAME@$HOST" \
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/production/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$USERNAME@$HOST" \
             "cd /flowbrand/production/frontend \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
