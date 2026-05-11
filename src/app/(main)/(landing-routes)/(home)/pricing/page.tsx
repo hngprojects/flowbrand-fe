@@ -99,9 +99,9 @@ export default function PricingPage() {
   const renderFeatureValue = (value: boolean | string) => {
     if (typeof value === 'boolean') {
       if (value) {
-        return <Check className="mx-auto h-5 w-5 text-orange-500" />
+        return <Check className="text-accent mx-auto h-5 w-5" />
       } else {
-        return <X className="mx-auto h-5 w-5 text-gray-300" />
+        return <X className="text-muted-foreground mx-auto h-5 w-5" />
       }
     }
     return <span className="text-center text-sm">{value}</span>
@@ -110,11 +110,11 @@ export default function PricingPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-black">
       {/* Header Section */}
-      <section className="px-4 py-16 sm:py-20">
-        <div className="mx-auto max-w-4xl text-center">
+      <section className="w-full py-16 sm:py-20">
+        <div className="mx-auto max-w-[1440px] px-6 text-center md:px-12 lg:px-20">
           <h1 className="mb-2 text-4xl font-bold sm:text-5xl">
             Affordable Pricing for your{' '}
-            <span className="text-orange-500">Business</span>
+            <span className="text-accent">Business</span>
           </h1>
           <p className="mb-8 text-gray-600 dark:text-gray-400">
             Whether you&apos;re just figuring things out or ready to scale,
@@ -127,7 +127,7 @@ export default function PricingPage() {
               onClick={() => setBillingCycle('monthly')}
               className={`px-4 py-2 font-medium transition-all ${
                 billingCycle === 'monthly'
-                  ? 'rounded-md bg-orange-500 text-white'
+                  ? 'bg-accent rounded-md text-white'
                   : 'text-gray-600 dark:text-gray-400'
               }`}
             >
@@ -137,7 +137,7 @@ export default function PricingPage() {
               onClick={() => setBillingCycle('annual')}
               className={`px-4 py-2 font-medium transition-all ${
                 billingCycle === 'annual'
-                  ? 'rounded-md bg-orange-500 text-white'
+                  ? 'bg-accent rounded-md text-white'
                   : 'text-gray-600 dark:text-gray-400'
               }`}
             >
@@ -148,8 +148,8 @@ export default function PricingPage() {
       </section>
 
       {/* Pricing Cards */}
-      <section className="px-4 py-12">
-        <div className="mx-auto max-w-5xl">
+      <section className="w-full py-12">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
           <div className="grid gap-8 md:grid-cols-2">
             {/* Free Plan */}
             <div className="rounded-lg border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-950">
@@ -169,29 +169,29 @@ export default function PricingPage() {
               </Button>
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Initiate Wizard</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Personalized Templates</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Built-In Checklist</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Save & Track your progress</span>
                 </div>
               </div>
             </div>
 
             {/* Pro Plan */}
-            <div className="rounded-lg border-2 border-orange-500 bg-white p-8 dark:bg-gray-950">
+            <div className="border-accent rounded-lg border-2 bg-white p-8 dark:bg-gray-950">
               <div className="mb-6 flex items-start justify-between">
                 <div>
-                  <div className="mb-2 inline-block rounded bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-600 dark:bg-orange-900 dark:text-orange-200">
+                  <div className="bg-accent mb-2 inline-block rounded-xl px-3 py-1 text-xs font-semibold text-white">
                     RECOMMENDED
                   </div>
                   <h3 className="mb-2 text-2xl font-bold">Pro Plan</h3>
@@ -206,32 +206,32 @@ export default function PricingPage() {
                   /monthly
                 </p>
               </div>
-              <Button className="w-full bg-orange-500 text-white hover:bg-orange-600">
+              <Button className="bg-accent hover:bg-accent/80 w-full text-white">
                 Get Full Access
               </Button>
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Everything in free</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Multiple marketing plans</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Advanced stages</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Follow up templates & Prompts</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Team Collaboration</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
+                  <Check className="text-accent h-5 w-5" />
                   <span className="text-sm">Performance Insights</span>
                 </div>
               </div>
@@ -241,8 +241,8 @@ export default function PricingPage() {
       </section>
 
       {/* Comparison Table */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-5xl">
+      <section className="w-full py-16">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
           <h2 className="mb-12 text-center text-3xl font-bold">
             Compare Plans
           </h2>
@@ -282,10 +282,10 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-3xl">
+      <section className="w-full py-16">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
           <div className="mb-12 text-center">
-            <div className="mb-4 inline-block rounded bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-600 dark:bg-orange-900 dark:text-orange-200">
+            <div className="bg-accent mb-4 inline-block rounded-xl px-3 py-1 text-xs font-semibold text-white">
               FAQ
             </div>
             <h2 className="mb-4 text-3xl font-bold">
@@ -299,7 +299,7 @@ export default function PricingPage() {
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left text-sm font-medium hover:text-orange-500">
+                <AccordionTrigger className="hover:text-accent text-left text-sm font-medium">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-sm text-gray-600 dark:text-gray-400">

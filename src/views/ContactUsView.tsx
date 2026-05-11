@@ -8,7 +8,7 @@ export default function ContactUsView() {
   return (
     <main className="my-10">
       {/* Hero Section */}
-      <section className="bg-primary/20 relative flex h-[409px] flex-col items-center justify-center gap-2 px-6 py-20 md:gap-5">
+      <section className="bg-primary/20 relative mx-auto flex h-[409px] w-full max-w-[1440px] flex-col items-center justify-center gap-2 px-6 py-20 md:gap-5 md:px-12 lg:px-20">
         <h1 className="text-foreground mb-3 text-center text-[24px] font-semibold md:text-[40px]">
           We would love to work with you
         </h1>
@@ -37,7 +37,7 @@ export default function ContactUsView() {
       </section>
 
       {/* Content Section */}
-      <section className="mx-auto mt-10 w-full space-y-8 px-6 md:px-[101.5px]">
+      <section className="mx-auto mt-10 w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
         {/* Email Card */}
         <div className="flex items-center gap-5">
           <div className="bg-accent/20 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
@@ -61,88 +61,89 @@ export default function ContactUsView() {
             <p className="text-sm font-semibold text-gray-900">Email us at</p>
             <p className="text-sm text-[#1C3A73]">flowbrand@email.com</p>
           </div>
-        </div>
 
-        {/* Form */}
-        <div>
-          <h2 className="mb-1 text-lg font-semibold text-gray-900">
-            Send us a message
-          </h2>
-          <p className="mb-6 text-sm text-gray-500">
-            Fill this in and we&apos;ll get back to you within one business day
-          </p>
+          {/* Form */}
+          <div>
+            <h2 className="mb-1 text-lg font-semibold text-gray-900">
+              Send us a message
+            </h2>
+            <p className="mb-6 text-sm text-gray-500">
+              Fill this in and we&apos;ll get back to you within one business
+              day
+            </p>
 
-          <form className="mt-10 space-y-5">
-            <div className="space-y-1">
-              <Label
-                htmlFor="fullName"
-                className="text-[16px] font-semibold text-[#152D58]"
-              >
-                Full Name
-              </Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="John Doe"
-                className="focus:ring-primary/30 focus:border-primary w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
-              />
-            </div>
+            <form className="mt-10 space-y-5">
+              <div className="space-y-1">
+                <Label
+                  htmlFor="fullName"
+                  className="text-[16px] font-semibold text-[#152D58]"
+                >
+                  Full Name
+                </Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="John Doe"
+                  className="focus:ring-primary/30 focus:border-primary w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
+                />
+              </div>
 
-            <div className="space-y-1">
-              <Label
-                htmlFor="email"
-                className="text-[16px] font-semibold text-[#152D58]"
-              >
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@gmail.com"
-                className="focus:ring-primary/30 focus:border-primary w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
-              />
-            </div>
+              <div className="space-y-1">
+                <Label
+                  htmlFor="email"
+                  className="text-[16px] font-semibold text-[#152D58]"
+                >
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@gmail.com"
+                  className="focus:ring-primary/30 focus:border-primary w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
+                />
+              </div>
 
-            <div className="space-y-1">
-              <Label
-                htmlFor="businessName"
-                className="text-[16px] font-semibold text-[#152D58]"
-              >
-                Business Name
-              </Label>
-              <Input
-                id="businessName"
-                type="text"
-                placeholder="rands & will"
-                className="focus:ring-primary/30 focus:border-primary w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
-              />
-            </div>
+              <div className="space-y-1">
+                <Label
+                  htmlFor="businessName"
+                  className="text-[16px] font-semibold text-[#152D58]"
+                >
+                  Business Name
+                </Label>
+                <Input
+                  id="businessName"
+                  type="text"
+                  placeholder="rands & will"
+                  className="focus:ring-primary/30 focus:border-primary w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
+                />
+              </div>
 
-            <div className="space-y-1">
-              <Label
-                htmlFor="message"
-                className="text-[16px] font-semibold text-[#152D58]"
-              >
-                How did your week go?
-              </Label>
-              <Textarea
-                id="message"
-                rows={5}
-                placeholder="Tell us how your week went....."
-                className="focus:ring-primary/30 focus:border-primary w-full resize-none rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
-              />
-            </div>
+              <div className="space-y-1">
+                <Label
+                  htmlFor="message"
+                  className="text-[16px] font-semibold text-[#152D58]"
+                >
+                  How did your week go?
+                </Label>
+                <Textarea
+                  id="message"
+                  rows={5}
+                  placeholder="Tell us how your week went....."
+                  className="focus:ring-primary/30 focus:border-primary w-full resize-none rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2"
+                />
+              </div>
 
-            <div className="flex justify-end">
-              <Button
-                disabled
-                type="submit"
-                className="bg-primary hover:bg-primary/90 w-full rounded-md px-6 py-2 text-sm font-medium text-white transition-colors disabled:opacity-60 md:w-[344px]"
-              >
-                Submit
-              </Button>
-            </div>
-          </form>
+              <div className="flex justify-end">
+                <Button
+                  disabled
+                  type="submit"
+                  className="bg-primary hover:bg-primary/90 w-full rounded-md px-6 py-2 text-sm font-medium text-white transition-colors disabled:opacity-60 md:w-[344px]"
+                >
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </section>
     </main>
