@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { registerUser } from '~/actions/auth'
+import { registerUser, sendOtp } from '~/actions/auth'
 import GoogleLogo from '~/components/icons/google-logo'
 import { Button } from '~/components/ui/button'
 import {
@@ -28,22 +28,10 @@ import {
   RegistrationFormSchema,
   splitFullNameForRegister,
 } from '~/schemas'
+import { COUNTRY_SELECT_OPTIONS } from '~/lib/country-select-options'
 import { REGISTER_VERIFY_EMAIL_STORAGE_KEY } from '~/lib/register-verify-storage'
+import { isResendOtpSuccess } from '~/lib/auth-action-results'
 import { cn } from '~/utils'
-
-const COUNTRIES = [
-  { value: '', label: 'Select your country' },
-  { value: 'NG', label: 'Nigeria' },
-  { value: 'US', label: 'United States' },
-  { value: 'GB', label: 'United Kingdom' },
-  { value: 'CA', label: 'Canada' },
-  { value: 'GH', label: 'Ghana' },
-  { value: 'KE', label: 'Kenya' },
-  { value: 'ZA', label: 'South Africa' },
-  { value: 'IN', label: 'India' },
-  { value: 'DE', label: 'Germany' },
-  { value: 'FR', label: 'France' },
-] as const
 
 const inputClassWithError = (hasError: boolean) => {
   return cn(
@@ -91,7 +79,11 @@ const RegistrationForm = () => {
         country: values.country,
         password: values.password,
       })
-      const isSuccess = data.ok && data.status === 201
+      const isSuccess =
+        data.ok &&
+        typeof data.status === 'number' &&
+        data.status >= 200 &&
+        data.status < 300
       const errorDescription = !data.ok
         ? data.error
         : !isSuccess
@@ -109,6 +101,12 @@ const RegistrationForm = () => {
 
       if (isSuccess) {
         sessionStorage.setItem(REGISTER_VERIFY_EMAIL_STORAGE_KEY, values.email)
+        const sent = await sendOtp(values.email)
+        if (!isResendOtpSuccess(sent)) {
+          toast.error('Could not send verification code', {
+            description: sent.error,
+          })
+        }
         router.push('/register/verify')
       }
     } catch {
@@ -203,7 +201,7 @@ const RegistrationForm = () => {
                       !!form.formState.errors.country
                     )}
                   >
-                    {COUNTRIES.map((c) => (
+                    {COUNTRY_SELECT_OPTIONS.map((c) => (
                       <option
                         key={c.value === '' ? '_placeholder' : c.value}
                         value={c.value}

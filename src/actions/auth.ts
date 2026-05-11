@@ -11,105 +11,194 @@ import type {
   VerifyOtpResult,
   VerifyOtpSuccess,
 } from '~/lib/auth-action-results'
-import { LoginSchema, RegisterSchema } from '~/schemas'
-import { AuthResponse, ErrorResponse } from '~/types'
+import { messageFromApiOrRateLimit } from '~/lib/auth-api-helpers'
+import { countryAlpha2ToOfficialName } from '~/lib/country-select-options'
+import { RegisterSchema } from '~/schemas'
 
-/** Safe string from API error payloads; avoids showing objects in the UI. */
-function messageFromAxiosData(data: unknown, fallback: string): string {
-  if (
-    data &&
-    typeof data === 'object' &&
-    'message' in data &&
-    typeof (data as { message: unknown }).message === 'string'
-  ) {
-    const text = (data as { message: string }).message.trim()
-    if (text.length > 0) {
-      return text
+function messageFromAxiosNetworkOrUnknown(
+  error: unknown,
+  fallback: string
+): string {
+  if (axios.isAxiosError(error)) {
+    if (error.response) {
+      return messageFromApiOrRateLimit(
+        error.response.status,
+        error.response.data,
+        fallback
+      )
+    }
+    const code = error.code
+    if (code === 'ECONNREFUSED') {
+      return 'Cannot reach the API server (connection refused). Check BASE_URL and that the API is running.'
+    }
+    if (code === 'ENOTFOUND') {
+      return 'API host not found. Check BASE_URL.'
+    }
+    if (code === 'ECONNABORTED') {
+      return 'Request timed out. Try again.'
+    }
+    if (typeof error.message === 'string' && error.message.trim()) {
+      return error.message.trim()
     }
   }
   return fallback
 }
 
-const credentialsAuth = async (
-  values: z.infer<typeof LoginSchema>
-): Promise<AuthResponse | ErrorResponse> => {
-  const baseURL = envConfig.BASEURL
-  const validatedFields = LoginSchema.safeParse(values)
-  if (!validatedFields.success) {
-    return {
-      message: 'Something went wrong',
-      status_code: 401,
-      success: false,
-    }
+function messageFromAxiosData(
+  status: number,
+  data: unknown,
+  fallback: string
+): string {
+  return messageFromApiOrRateLimit(status, data, fallback)
+}
+
+/** Log API errors in development environment. */
+function logAuthApiErrorDev(
+  action: string,
+  error: unknown,
+  meta: Record<string, unknown>
+) {
+  if (process.env.NODE_ENV !== 'development') {
+    return
   }
-  const { email, password } = validatedFields.data
-  const payload = { email, password }
-  try {
-    const response = await axios.post(`${baseURL}/auth/login`, payload)
-    return {
-      data: response.data.user,
-      access_token: response.data.access_token,
-      success: true,
-      message: 'login success',
-    }
-  } catch (error) {
-    return {
-      success: false,
-      message:
-        axios.isAxiosError(error) && error.response
-          ? messageFromAxiosData(error.response.data, 'Something went wrong')
-          : 'Something went wrong',
-      status_code:
-        axios.isAxiosError(error) && error.response
-          ? error.response.status
-          : undefined,
-    }
-  }
+  console.error(`[auth ${action}]`, meta)
 }
 
 const registerUser = async (
   values: z.infer<typeof RegisterSchema>
 ): Promise<RegisterUserResult> => {
+  const baseURL = envConfig.BASEURL?.trim()
+  if (!baseURL) {
+    return { ok: false, error: 'API URL is not configured (BASE_URL).' }
+  }
+
   const validatedFields = RegisterSchema.safeParse(values)
-  const baseURL = envConfig.BASEURL
   if (!validatedFields.success) {
     return {
       ok: false,
       error: 'registration  Failed. Please check your inputs.',
     }
   }
-  try {
-    const response = await axios.post(
-      `${baseURL}/auth/register`,
-      validatedFields.data
-    )
 
+  const { email, password, first_name, last_name, country } =
+    validatedFields.data
+  const full_name = [first_name, last_name].filter(Boolean).join(' ').trim()
+  const countryForApi = countryAlpha2ToOfficialName(country) ?? country
+  const payload = {
+    email,
+    full_name,
+    country: countryForApi,
+    password,
+    terms_accepted: true,
+  }
+
+  try {
+    const response = await axios.post(`${baseURL}/auth/register`, payload)
     return {
       ok: true,
       status: response.status,
       data: response.data,
     }
   } catch (error) {
-    return axios.isAxiosError(error) && error.response
-      ? {
-          ok: false,
-          error: messageFromAxiosData(
-            error.response.data,
-            'Registration failed.'
-          ),
-          status: error.response.status,
-        }
-      : {
-          ok: false,
-          error: 'An unexpected error occurred.',
-        }
+    if (axios.isAxiosError(error) && error.response) {
+      logAuthApiErrorDev('registerUser', error, {
+        url: `${baseURL}/auth/register`,
+        status: error.response.status,
+        responseData: error.response.data,
+        axiosCode: error.code,
+        axiosMessage: error.message,
+        payload: {
+          email: payload.email,
+          full_name: payload.full_name,
+          country: payload.country,
+        },
+      })
+      return {
+        ok: false,
+        error: messageFromApiOrRateLimit(
+          error.response.status,
+          error.response.data,
+          'Registration failed.'
+        ),
+        status: error.response.status,
+      }
+    }
+
+    logAuthApiErrorDev('registerUser', error, {
+      url: `${baseURL}/auth/register`,
+      axiosCode: axios.isAxiosError(error) ? error.code : undefined,
+      payload: {
+        email: payload.email,
+        full_name: payload.full_name,
+        country: payload.country,
+      },
+    })
+
+    return {
+      ok: false,
+      error: messageFromAxiosNetworkOrUnknown(
+        error,
+        'An unexpected error occurred.'
+      ),
+    }
+  }
+}
+
+const sendOtp = async (email: string): Promise<ResendOtpResult> => {
+  const baseURL = envConfig.BASEURL?.trim()
+  if (!baseURL) {
+    return { error: 'API URL is not configured (BASE_URL).' }
+  }
+  try {
+    const response = await axios.post(`${baseURL}/auth/send-otp`, {
+      email: email.trim(),
+    })
+
+    const success: ResendOtpSuccess = {
+      status: response.status,
+      message: response.data?.message,
+    }
+    return success
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      logAuthApiErrorDev('sendOtp', error, {
+        url: `${baseURL}/auth/send-otp`,
+        status: error.response.status,
+        responseData: error.response.data,
+        email,
+      })
+      return {
+        error: messageFromApiOrRateLimit(
+          error.response.status,
+          error.response.data,
+          'Could not send verification code.'
+        ),
+        status: error.response.status,
+      }
+    }
+
+    logAuthApiErrorDev('sendOtp', error, {
+      url: `${baseURL}/auth/send-otp`,
+      axiosCode: axios.isAxiosError(error) ? error.code : undefined,
+      email,
+    })
+
+    return {
+      error: messageFromAxiosNetworkOrUnknown(
+        error,
+        'An unexpected error occurred.'
+      ),
+    }
   }
 }
 
 const resendOtp = async (email: string): Promise<ResendOtpResult> => {
-  const baseURL = envConfig.BASEURL
+  const baseURL = envConfig.BASEURL?.trim()
+  if (!baseURL) {
+    return { error: 'API URL is not configured (BASE_URL).' }
+  }
   try {
-    const response = await axios.post(`${baseURL}/auth/request/token`, {
+    const response = await axios.post(`${baseURL}/auth/resend-otp`, {
       email,
     })
 
@@ -121,14 +210,18 @@ const resendOtp = async (email: string): Promise<ResendOtpResult> => {
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
-          error: messageFromAxiosData(
+          error: messageFromApiOrRateLimit(
+            error.response.status,
             error.response.data,
             'Resend OTP failed.'
           ),
           status: error.response.status,
         }
       : {
-          error: 'An unexpected error occurred.',
+          error: messageFromAxiosNetworkOrUnknown(
+            error,
+            'An unexpected error occurred.'
+          ),
         }
   }
 }
@@ -137,11 +230,14 @@ const verifyOtp = async (
   email: string,
   code: string
 ): Promise<VerifyOtpResult> => {
-  const baseURL = envConfig.BASEURL
+  const baseURL = envConfig.BASEURL?.trim()
+  if (!baseURL) {
+    return { error: 'API URL is not configured (BASE_URL).' }
+  }
   try {
-    const response = await axios.post(`${baseURL}/auth/verify/otp`, {
+    const response = await axios.post(`${baseURL}/auth/verify-otp`, {
       email,
-      code,
+      otp: code,
     })
     const success: VerifyOtpSuccess = {
       status: response.status,
@@ -151,14 +247,18 @@ const verifyOtp = async (
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
-          error: messageFromAxiosData(
+          error: messageFromApiOrRateLimit(
+            error.response.status,
             error.response.data,
             'Invalid or expired verification code.'
           ),
           status: error.response.status,
         }
       : {
-          error: 'An unexpected error occurred.',
+          error: messageFromAxiosNetworkOrUnknown(
+            error,
+            'An unexpected error occurred.'
+          ),
         }
   }
 }
@@ -179,7 +279,11 @@ const resetPasswordWithToken = async (input: {
     return { ok: false, error: 'Password is required.' }
   }
 
-  const baseURL = envConfig.BASEURL
+  const baseURL = envConfig.BASEURL?.trim()
+  if (!baseURL) {
+    return { ok: false, error: 'API URL is not configured (BASE_URL).' }
+  }
+
   try {
     await axios.post(
       `${baseURL}/auth/password/reset`,
@@ -202,6 +306,7 @@ const resetPasswordWithToken = async (input: {
       ? {
           ok: false,
           error: messageFromAxiosData(
+            error.response.status,
             error.response.data,
             'Could not reset password. Please try again.'
           ),
@@ -210,10 +315,4 @@ const resetPasswordWithToken = async (input: {
   }
 }
 
-export {
-  credentialsAuth,
-  registerUser,
-  resendOtp,
-  resetPasswordWithToken,
-  verifyOtp,
-}
+export { registerUser, resendOtp, resetPasswordWithToken, sendOtp, verifyOtp }
