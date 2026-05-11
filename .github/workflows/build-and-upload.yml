@@ -8,11 +8,20 @@ jobs:
   build_lint_test:
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
+<<<<<<< HEAD
+=======
+    timeout-minutes: 10
+
+    env:
+      HOST: ${{ secrets.HOST }}
+      USERNAME: ${{ secrets.USERNAME }}
+>>>>>>> c2ef4bd019e29b0530552782627814d0477f6ffd
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+<<<<<<< HEAD
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -49,3 +58,62 @@ jobs:
           name: trivy-security-report
           path: trivy-report.json
           retention-days: 7
+=======
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4               # FIX: pnpm must be installed BEFORE setup-node
+        with:                                    # so the cache: "pnpm" option can locate the executable
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "23"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Next.js application
+        run: pnpm build
+
+      - name: Archive production artifacts
+        run: |
+          # FIX: exclude node_modules — install on the server instead to keep the tarball lean
+          tar -czf boilerplate.tar.gz .next package.json pnpm-lock.yaml
+
+      - name: Setup SSH key and known hosts
+        run: |
+          # FIX: use key-based auth — no plaintext passwords in process args or logs
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # FIX: verify the server fingerprint — no StrictHostKeyChecking=no
+          echo "${{ secrets.SSH_KNOWN_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: |
+          scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/staging/frontend/boilerplate.tar.gz"
+          # FIX: extract and restart the app after upload so the deploy is actually applied
+          ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
+            "cd /flowbrand/staging/frontend \
+             && tar -xzf boilerplate.tar.gz \
+             && pnpm install --prod --frozen-lockfile \
+             && pm2 restart app \
+             && rm -f boilerplate.tar.gz"
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          scp -i ~/.ssh/id_rsa boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/production/frontend/boilerplate.tar.gz"
+          ssh -i ~/.ssh/id_rsa "$USERNAME@$HOST" \
+            "cd /flowbrand/production/frontend \
+             && tar -xzf boilerplate.tar.gz \
+             && pnpm install --prod --frozen-lockfile \
+             && pm2 restart app \
+             && rm -f boilerplate.tar.gz"
+
+      - name: Delete local archive
+        if: always()                             # FIX: always run cleanup, even if a deploy step fails
+        run: rm -f boilerplate.tar.gz
+>>>>>>> c2ef4bd019e29b0530552782627814d0477f6ffd

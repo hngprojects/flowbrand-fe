@@ -1,34 +1,61 @@
+<<<<<<< HEAD
 name: Build and Upload
 
 on:
   push:
     branches: [staging, main]
+=======
+name: Build, Lint and Security Scan
+
+on:
+  pull_request:
+    branches: [dev, staging, main]
+
+# FIX: cancel stale runs when new commits are pushed to the same PR
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+>>>>>>> c2ef4bd019e29b0530552782627814d0477f6ffd
 
 jobs:
   build:
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
+<<<<<<< HEAD
     timeout-minutes: 10
+=======
+    timeout-minutes: 15                          # FIX: prevent hung steps consuming minutes for hours
+>>>>>>> c2ef4bd019e29b0530552782627814d0477f6ffd
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4               # FIX: pnpm must be installed BEFORE setup-node
+        with:                                    # so the cache: "pnpm" option can locate the executable
+          version: 10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "23"
+<<<<<<< HEAD
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
+=======
+          cache: "pnpm"
+>>>>>>> c2ef4bd019e29b0530552782627814d0477f6ffd
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build Next.js application
         run: pnpm build
 
+<<<<<<< HEAD
       - name: Archive production artifacts
         run: tar -czf boilerplate.tar.gz .next node_modules package.json
 
@@ -50,3 +77,22 @@ jobs:
 
       - name: Delete zip file
         run: rm -f boilerplate.tar.gz
+=======
+      - name: Security scan with Trivy
+        uses: aquasecurity/trivy-action@v0.35.0  # FIX: pin to a specific release — @master is unstable and a supply-chain risk
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          format: json
+          output: trivy-report.json
+
+      - name: Upload Trivy report as artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-security-report
+          path: trivy-report.json
+          retention-days: 7
+>>>>>>> c2ef4bd019e29b0530552782627814d0477f6ffd
