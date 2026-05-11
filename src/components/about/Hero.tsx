@@ -38,30 +38,30 @@ export default function Hero() {
       {/* ── Image + overlay ── */}
       <div className="relative z-10 mt-10 w-full md:mt-18">
         {/* Desktop */}
-        <div className="relative mx-auto hidden w-full max-w-[1440px] md:block">
+        <div className="relative mx-auto hidden w-full md:block">
           <Image
             src="/images/hero-desktop.png"
             alt="Small business owners — Maimuna, David, Sarah and Aisha"
             width={1100}
             height={640}
             priority
-            className="w-full max-w-[1440px] object-cover object-top"
+            className="w-full object-cover object-top"
           />
-        </div>
 
-        {/* Overlay: absolute, pinned to bottom, covers ~40% of image height */}
-        <div
-          className="pointer-events-none absolute bottom-0 left-0 w-full select-none"
-          style={{ height: '42%' }}
-        >
-          <Image
-            src="/images/white-desktop.png"
-            alt=""
-            width={1100}
-            height={260}
-            className="mt-26 h-full w-full object-cover object-top"
-            aria-hidden
-          />
+          {/* Overlay: absolute, pinned to bottom, covers ~40% of image height */}
+          <div
+            className="pointer-events-none absolute bottom-0 left-0 w-full select-none"
+            style={{ height: '42%' }}
+          >
+            <Image
+              src="/images/white-desktop.png"
+              alt=""
+              width={1100}
+              height={260}
+              className="mt-26 h-full w-full object-cover object-top"
+              aria-hidden
+            />
+          </div>
         </div>
 
         {/* Mobile */}

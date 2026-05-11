@@ -149,7 +149,7 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section className="w-full py-12">
-        <div className="mx-auto w-full max-w-5xl max-w-[1440px] px-6 md:px-12 lg:px-20">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
           <div className="grid gap-8 md:grid-cols-2">
             {/* Free Plan */}
             <div className="rounded-lg border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-950">
