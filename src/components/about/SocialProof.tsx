@@ -8,27 +8,25 @@ const logos = [
 
 export default function SocialProof() {
   return (
-    <section className="flex w-full flex-col items-center gap-8 bg-[#FCFDFF] pt-10 pb-8 md:pt-0">
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-8 px-6 md:px-12 lg:px-20">
-        <p className="text-center text-[14px] text-gray-600 md:text-[16px]">
-          Used by small businesses like yours to build and grow with confidence
-        </p>
+    <section className="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-8 bg-[#FCFDFF] px-6 pt-10 pb-8 md:px-12 md:pt-0 lg:px-20">
+      <p className="text-center text-[14px] text-gray-600 md:text-[16px]">
+        Used by small businesses like yours to build and grow with confidence
+      </p>
 
-        <div className="flex w-full flex-wrap items-center justify-center gap-x-16 gap-y-8">
-          {logos.map(({ label, icon, serif }) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 opacity-40 grayscale"
+      <div className="flex w-full flex-wrap items-center justify-center gap-x-16 gap-y-8">
+        {logos.map(({ label, icon, serif }) => (
+          <div
+            key={label}
+            className="flex items-center gap-2 opacity-40 grayscale"
+          >
+            {icon}
+            <span
+              className={`text-[14px] font-semibold whitespace-nowrap text-gray-500 ${serif ? 'font-serif italic' : ''}`}
             >
-              {icon}
-              <span
-                className={`text-[14px] font-semibold whitespace-nowrap text-gray-500 ${serif ? 'font-serif italic' : ''}`}
-              >
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
+              {label}
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   )

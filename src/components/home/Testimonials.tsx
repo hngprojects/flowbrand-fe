@@ -94,18 +94,16 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
 
 export default function Testimonials() {
   return (
-    <section className="w-full py-16">
-      <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
-        <div className="flex flex-col items-center justify-center text-center">
-          <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
-            <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
-            <p className="text-badge-fg">Testimonials</p>
-          </div>
-          <h2 className="mb-8 text-4xl">Trusted by growing businesses</h2>
-          <div className="w-full space-y-8">
-            <TestimonialRow items={row1} />
-            <TestimonialRow items={row2} />
-          </div>
+    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
+      <div className="flex flex-col items-center justify-center text-center">
+        <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
+          <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
+          <p className="text-badge-fg">Testimonials</p>
+        </div>
+        <h2 className="mb-8 text-4xl">Trusted by growing businesses</h2>
+        <div className="w-full space-y-8">
+          <TestimonialRow items={row1} />
+          <TestimonialRow items={row2} />
         </div>
       </div>
     </section>

@@ -8,16 +8,14 @@ export default function ContactUsView() {
   return (
     <main className="my-10">
       {/* Hero Section */}
-      <section className="bg-primary/20 relative flex h-[409px] w-full flex-col items-center justify-center gap-2 py-20 md:gap-5">
-        <div className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col items-center justify-center gap-2 px-6 md:px-12 lg:px-20">
-          <h1 className="text-foreground mb-3 text-center text-[24px] font-semibold md:text-[40px]">
-            We would love to work with you
-          </h1>
-          <p className="mx-auto max-w-[650px] text-center text-[14px] text-[#565D69] md:text-[18px]">
-            Have a question, need support, or just want to learn more about
-            FlowBrand? Reach out—we&apos;d love to hear from you.
-          </p>
-        </div>
+      <section className="bg-primary/20 relative mx-auto flex h-[409px] w-full max-w-[1440px] flex-col items-center justify-center gap-2 px-6 py-20 md:gap-5 md:px-12 lg:px-20">
+        <h1 className="text-foreground mb-3 text-center text-[24px] font-semibold md:text-[40px]">
+          We would love to work with you
+        </h1>
+        <p className="mx-auto max-w-[650px] text-center text-[14px] text-[#565D69] md:text-[18px]">
+          Have a question, need support, or just want to learn more about
+          FlowBrand? Reach out—we&apos;d love to hear from you.
+        </p>
 
         <Image
           src="/images/full-cloud.png"
@@ -39,31 +37,29 @@ export default function ContactUsView() {
       </section>
 
       {/* Content Section */}
-      <section className="mt-10 w-full">
-        <div className="mx-auto w-full max-w-[1440px] space-y-8 px-6 md:px-12 lg:px-20">
-          {/* Email Card */}
-          <div className="flex items-center gap-5">
-            <div className="bg-accent/20 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-accent"
-              >
-                <rect width="20" height="16" x="2" y="4" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-900">Email us at</p>
-              <p className="text-sm text-[#1C3A73]">flowbrand@email.com</p>
-            </div>
+      <section className="mx-auto mt-10 w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
+        {/* Email Card */}
+        <div className="flex items-center gap-5">
+          <div className="bg-accent/20 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-accent"
+            >
+              <rect width="20" height="16" x="2" y="4" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-900">Email us at</p>
+            <p className="text-sm text-[#1C3A73]">flowbrand@email.com</p>
           </div>
 
           {/* Form */}
