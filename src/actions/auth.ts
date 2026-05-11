@@ -53,7 +53,7 @@ const credentialsAuth = async (
     return {
       message: 'Authentication service is not configured.',
       status_code: 500,
-      success: false,
+      status: 'error',
     }
   }
   const validatedFields = LoginSchema.safeParse(values)
@@ -61,7 +61,7 @@ const credentialsAuth = async (
     return {
       message: 'Something went wrong',
       status_code: 401,
-      success: false,
+      status: 'error',
     }
   }
   const { email, password } = validatedFields.data
@@ -74,16 +74,16 @@ const credentialsAuth = async (
     return {
       data: response.data.user,
       access_token: response.data.access_token,
-      success: true,
+      status: 'success',
       message: 'login success',
     }
   } catch (error) {
     return {
-      success: false,
       message:
         axios.isAxiosError(error) && error.response
           ? messageFromAxiosData(error.response.data, 'Something went wrong')
           : 'Something went wrong',
+      status: 'error',
       status_code:
         axios.isAxiosError(error) && error.response
           ? error.response.status

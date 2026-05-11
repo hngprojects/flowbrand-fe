@@ -41,7 +41,7 @@ export const nextLogin = async (
     return {
       status_code: 500,
       message: GENERIC_LOGIN_ERROR_MESSAGE,
-      success: false,
+      status: 'error',
     }
   }
   const api = createFetchUtil({ baseUrl: baseURL })
@@ -58,26 +58,26 @@ export const nextLogin = async (
     return {
       data: response.data.user,
       access_token: response.access_token,
-      success: true,
+      status: 'success',
       message: 'login success',
     }
   } catch (error) {
     if (error instanceof HttpError) {
       return {
-        success: false,
         message: extractHttpErrorMessage(
           error.responseBody,
           error.statusCode >= 500
             ? GENERIC_LOGIN_ERROR_MESSAGE
             : 'Invalid email or password.'
         ),
+        status: 'error',
         status_code: error.statusCode,
       }
     }
 
     return {
-      success: false,
       message: GENERIC_LOGIN_ERROR_MESSAGE,
+      status: 'error',
       status_code: 500,
     }
   }
@@ -102,7 +102,7 @@ export const googleAuth = async (idToken: string) => {
   return {
     data: data.data,
     access_token: data.access_token,
-    success: true,
+    status: 'success',
   }
 }
 

@@ -28,9 +28,8 @@ const authConfig: NextAuthConfig = {
         const { email, password, rememberMe } = validatedFields.data
         const response = await nextLogin({ email, password, rememberMe })
 
-        if (!response.success) {
-          const statusCode =
-            'status_code' in response ? (response.status_code ?? 0) : 0
+        if (response.status === 'error') {
+          const statusCode = response.status_code ?? 0
           if (INVALID_CREDENTIAL_STATUSES.has(statusCode)) {
             return null
           }
