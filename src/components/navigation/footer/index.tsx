@@ -1,5 +1,6 @@
 'use client'
 import Image from 'next/image'
+import Link from 'next/link'
 import logoLight from '~public/images/logo-light.png'
 import footerImg from '~public/images/footer-icon.png'
 
@@ -24,34 +25,34 @@ const Footer = () => {
               </h2>
               <ul className="text-muted-foreground/80 flex flex-col gap-2 text-[14px] leading-[130%] tracking-normal sm:text-[16px] lg:text-[20px]">
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="/home" className="hover:text-white">
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="/how-it-works" className="hover:text-white">
                     How it works
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="/about-us" className="hover:text-white">
                     About Us
-                  </a>
+                  </Link>
                 </li>
-                <li>
-                  <a href="#" className="hover:text-white">
+                {/* <li>
+                  <a href="/features" className="hover:text-white">
                     Features
                   </a>
-                </li>
+                </li> */}
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="/contact-us" className="hover:text-white">
                     Contact Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="/faqs" className="hover:text-white">
                     FAQ
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -64,19 +65,19 @@ const Footer = () => {
 
               <ul className="text-muted-foreground/80 flex flex-col gap-2 text-[14px] leading-[130%] tracking-normal sm:text-[16px] lg:text-[20px]">
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="#" className="hover:text-white">
                     Terms of use
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="#" className="hover:text-white">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="#" className="hover:text-white">
                     Cookie Policy
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
