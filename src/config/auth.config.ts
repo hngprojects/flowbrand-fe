@@ -7,6 +7,12 @@ import { inDevEnvironment } from '~/utils'
 import { LoginSchema } from '~/schemas'
 import { CustomJWT } from '~/types'
 
+const INVALID_CREDENTIAL_STATUSES = new Set([400, 401, 403, 422])
+const AUTH_SECRET_FALLBACK =
+  process.env.AUTH_SECRET ??
+  process.env.NEXTAUTH_SECRET ??
+  (process.env.NODE_ENV !== 'production' ? 'flowbrand-dev-secret' : undefined)
+
 const authConfig: NextAuthConfig = {
   providers: [
     Google({
@@ -22,12 +28,18 @@ const authConfig: NextAuthConfig = {
         const { email, password, rememberMe } = validatedFields.data
         const response = await nextLogin({ email, password, rememberMe })
 
-        if (!response) {
-          return null
+        if (!response.success) {
+          const statusCode =
+            'status_code' in response ? (response.status_code ?? 0) : 0
+          if (INVALID_CREDENTIAL_STATUSES.has(statusCode)) {
+            return null
+          }
+
+          throw new Error(response.message)
         }
 
-        if (!response || !('data' in response)) {
-          return null
+        if (!('data' in response)) {
+          throw new Error('Login response is missing user data')
         }
 
         const user = response.data as CustomJWT
@@ -102,7 +114,7 @@ const authConfig: NextAuthConfig = {
     signIn: '/login',
   },
   basePath: '/api/auth',
-  secret: process.env.AUTH_SECRET,
+  secret: AUTH_SECRET_FALLBACK,
   trustHost: true,
 } satisfies NextAuthConfig
 

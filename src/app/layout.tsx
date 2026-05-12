@@ -7,9 +7,11 @@ import { Providers } from './provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'HNG Boilerplate',
-  description: 'HNG Boilerplate',
+  title: 'FlowBrand — Guided Marketing Funnel Wizard',
+  description:
+    'FlowBrand helps small businesses build and run a personalised marketing funnel in minutes — no marketing knowledge required.',
 }
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -17,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.className, 'max-w-[1920px] antialiased')}>
+      <body className={cn(inter.className, 'antialiased')}>
         <Providers>{children}</Providers>
       </body>
     </html>
