@@ -23,7 +23,7 @@ export default function ContactUsView() {
           aria-hidden="true"
           width={447}
           height={445}
-          className="absolute top-0 left-0"
+          className="absolute top-0 left-0 bg-red-300"
         />
 
         <Image
