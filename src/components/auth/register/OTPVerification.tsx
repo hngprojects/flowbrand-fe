@@ -63,10 +63,10 @@ const OTPVerification = ({ email }: { email: string }) => {
 
   const onConfirm = () => {
     void form.handleSubmit(async (data) => {
-      const code = OTP_FIELDS.map((field) => data[field]).join('')
+      const otp = OTP_FIELDS.map((field) => data[field]).join('')
       setIsVerifying(true)
       try {
-        const result = await verifyOtp(email, code)
+        const result = await verifyOtp(email, otp)
         if (!isVerifyOtpSuccess(result)) {
           toast.error('Verification failed', {
             description: result.error,

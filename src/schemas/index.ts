@@ -20,10 +20,10 @@ export const registrationPasswordField = z
   .string()
   .min(8, { message: 'Password must be at least 8 characters' })
   .regex(/[A-Z]/, {
-    message: 'Include an uppercase letter (A–Z)',
+    message: 'Include an uppercase letter (A-Z)',
   })
   .regex(/[a-z]/, {
-    message: 'Include a lowercase letter (a–z)',
+    message: 'Include a lowercase letter (a-z)',
   })
   .regex(/[@#$%]/, {
     message: 'Include a symbol (@, #, $, %)',
@@ -39,8 +39,8 @@ export type PasswordChecks = {
 /** Shared labels for password rule checklists (registration, reset password). */
 export const PASSWORD_RULE_ROWS = [
   { key: 'minLength' as const, label: 'At least 8 characters' },
-  { key: 'uppercase' as const, label: 'Uppercase letter (A–Z)' },
-  { key: 'lowercase' as const, label: 'Lowercase letter (a–z)' },
+  { key: 'uppercase' as const, label: 'Uppercase letter (A-Z)' },
+  { key: 'lowercase' as const, label: 'Lowercase letter (a-z)' },
   { key: 'symbol' as const, label: 'One symbol (@, #, $, %)' },
 ] as const
 
@@ -127,6 +127,19 @@ export const ResetPasswordSchema = z
       .min(1, { message: 'Please confirm your password' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
+
+export const ChangePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(1, { message: 'Current password is required' }),
+    newPassword: registrationPasswordField,
+    confirmPassword: z
+      .string()
+      .min(1, { message: 'Please confirm your new password' }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })

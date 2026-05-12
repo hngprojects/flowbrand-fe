@@ -135,14 +135,14 @@ const HowItWorksView = () => {
             <motion.div
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
-              className="flex w-full max-w-[447px] justify-center"
+              className="flex w-full max-w-[606px] justify-center"
             >
               <Image
                 src={step.image}
                 alt={step.title}
-                width={447}
+                width={606}
                 height={445}
-                className="h-auto w-full rounded-2xl"
+                className="h-auto w-[606px]"
               />
             </motion.div>
           </motion.div>

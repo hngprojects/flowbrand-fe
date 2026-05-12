@@ -1,3 +1,7 @@
-export default function Faq() {
-  return <div>Faq</div>
+import FaqViews from '~/views/FaqViews'
+
+const FaqPage = () => {
+  return <FaqViews />
 }
+
+export default FaqPage
