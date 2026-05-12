@@ -4,10 +4,10 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next-nprogress-bar'
 import { useEffect, useState } from 'react'
 
-import CreateNewPassword from '~/components/auth/reset-password/CreateNewPassword'
-import { PASSWORD_RESET_VERIFIED_EMAIL_STORAGE_KEY } from '~/lib/password-reset-storage'
+import VerifyResetOtp from '~/components/auth/reset-password/VerifyResetOtp'
+import { PASSWORD_RESET_EMAIL_STORAGE_KEY } from '~/lib/password-reset-storage'
 
-const ResetPasswordPageContent = () => {
+const VerifyOtpPageContent = () => {
   const router = useRouter()
   const [email] = useState(() => {
     try {
@@ -16,9 +16,7 @@ const ResetPasswordPageContent = () => {
       }
 
       return (
-        sessionStorage
-          .getItem(PASSWORD_RESET_VERIFIED_EMAIL_STORAGE_KEY)
-          ?.trim() ?? ''
+        sessionStorage.getItem(PASSWORD_RESET_EMAIL_STORAGE_KEY)?.trim() ?? ''
       )
     } catch {
       return ''
@@ -35,12 +33,12 @@ const ResetPasswordPageContent = () => {
     return null
   }
 
-  return <CreateNewPassword />
+  return <VerifyResetOtp email={email} />
 }
 
-const ResetPasswordPage = dynamic(
-  () => Promise.resolve({ default: ResetPasswordPageContent }),
+const VerifyOtpPage = dynamic(
+  () => Promise.resolve({ default: VerifyOtpPageContent }),
   { ssr: false }
 )
 
-export default ResetPasswordPage
+export default VerifyOtpPage

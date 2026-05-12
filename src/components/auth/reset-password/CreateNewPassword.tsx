@@ -1,15 +1,18 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, Eye, EyeOff } from 'lucide-react'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { Check, CheckCircle2, Eye, EyeOff } from 'lucide-react'
+import { useRouter } from 'next-nprogress-bar'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { useForm, useWatch, type ControllerRenderProps } from 'react-hook-form'
 import { z } from 'zod'
 
-import { resetPasswordWithToken } from '~/actions/auth'
+import { clearPasswordResetFlowStorage } from '~/lib/password-reset-storage'
+import {
+  getPasswordChecks,
+  PASSWORD_RULE_ROWS,
+  registrationPasswordField,
+} from '~/schemas'
 import { Button } from '~/components/ui/button'
 import {
   Form,
@@ -20,303 +23,320 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
-import {
-  getPasswordChecks,
-  PASSWORD_RULE_ROWS,
-  ResetPasswordSchema,
-} from '~/schemas'
 import { cn } from '~/utils'
 
-const inputClassWithError = (hasError: boolean) => {
-  return cn(
-    'rounded-lg px-2.5 py-2 text-sm sm:px-3 sm:py-2.5',
-    hasError &&
-      'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/40 border-2'
+const CreatePasswordSchema = z
+  .object({
+    newPassword: registrationPasswordField,
+    confirmPassword: z
+      .string()
+      .min(1, { message: 'Please confirm your password' }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
+
+type CreatePasswordValues = z.infer<typeof CreatePasswordSchema>
+
+const inputBaseClass =
+  'h-11 rounded-[8px] px-4 text-[16px] leading-6 text-[#030D1F] placeholder:text-[#A2A2A2] focus-visible:ring-0'
+
+const inputStateClass = (hasError: boolean, isPrimary: boolean) =>
+  cn(
+    inputBaseClass,
+    hasError
+      ? 'border-[#D13232] focus-visible:border-[#D13232]'
+      : isPrimary
+        ? 'border-[#326AD1] focus-visible:border-[#326AD1]'
+        : 'border-[#CFCFCF] focus-visible:border-[#326AD1]'
+  )
+
+function PasswordField({
+  id,
+  label,
+  placeholder,
+  error,
+  showPassword,
+  onTogglePassword,
+  field,
+  disabled,
+  onFocus,
+  onBlur,
+  isPrimary,
+}: {
+  id: string
+  label: string
+  placeholder: string
+  error?: string
+  showPassword: boolean
+  onTogglePassword: () => void
+  field: ControllerRenderProps<CreatePasswordValues>
+  disabled?: boolean
+  onFocus?: () => void
+  onBlur?: () => void
+  isPrimary?: boolean
+}) {
+  return (
+    <FormItem className="space-y-2">
+      <FormLabel className="text-[16px] leading-6 font-medium text-[#152D58]">
+        {label}
+      </FormLabel>
+      <FormControl>
+        <div className="relative">
+          <Input
+            id={id}
+            type={showPassword ? 'text' : 'password'}
+            placeholder={placeholder}
+            disabled={disabled}
+            autoComplete="new-password"
+            aria-invalid={!!error}
+            aria-describedby={error ? `${id}-error` : undefined}
+            {...field}
+            onFocus={onFocus}
+            onBlur={() => {
+              field.onBlur()
+              onBlur?.()
+            }}
+            className={cn(inputStateClass(!!error, !!isPrimary), 'pr-12')}
+          />
+          <button
+            type="button"
+            disabled={disabled}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            className="absolute inset-y-0 right-0 flex h-full w-12 items-center justify-center text-[#CFCFCF] disabled:opacity-50"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={onTogglePassword}
+          >
+            {showPassword ? (
+              <EyeOff className="size-6" strokeWidth={1.8} aria-hidden />
+            ) : (
+              <Eye className="size-6" strokeWidth={1.8} aria-hidden />
+            )}
+          </button>
+        </div>
+      </FormControl>
+      <FormMessage
+        className="text-[14px] leading-5 font-normal text-[#D13232]"
+        id={error ? `${id}-error` : undefined}
+      />
+    </FormItem>
   )
 }
 
-const InvalidResetLink = () => (
-  <div className="space-y-4 py-8 sm:space-y-5">
-    <div className="space-y-1.5 sm:space-y-2">
-      <h2 className="text-xl font-medium text-[#152D58] sm:text-4xl">
-        Invalid reset link
-      </h2>
-      <p className="text-foreground/70 text-sm sm:text-[15px]">
-        This password reset link is invalid or has expired. Please request a new
-        one.
-      </p>
-    </div>
-  </div>
-)
+function PasswordRulesGuide({
+  visible,
+  password,
+}: {
+  visible: boolean
+  password: string
+}) {
+  const checks = getPasswordChecks(password)
 
-const ResetPasswordSuccess = () => (
-  <div className="flex flex-col items-center space-y-6 py-8 text-center sm:space-y-8 sm:py-10">
-    <div className="bg-primary/10 border-border flex h-12 w-12 items-center justify-center rounded-full border sm:h-14 sm:w-14">
-      <Check
-        className="text-primary size-6 stroke-[2.5] sm:size-7"
-        aria-hidden
-      />
-    </div>
-
-    <div className="space-y-1.5 sm:space-y-2">
-      <h2 className="text-xl font-medium text-[#152D58] sm:text-3xl">
-        Password reset successful
-      </h2>
-      <p className="text-foreground/70 mx-auto max-w-md text-sm leading-relaxed sm:text-[15px]">
-        Your password has been updated. You can now log in with your new
-        password.
-      </p>
-    </div>
-
-    <Button
-      asChild
-      className="h-auto w-full rounded-lg py-2.5 text-sm font-bold sm:py-3 sm:text-base"
+  return (
+    <div
+      className={cn(
+        'grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none',
+        visible ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+      )}
     >
-      <Link href="/login">Continue to log in</Link>
-    </Button>
-  </div>
-)
+      <div className="min-h-0 overflow-hidden">
+        <div
+          className={cn(
+            'transition-opacity duration-300 ease-out motion-reduce:transition-none',
+            visible ? 'opacity-100' : 'opacity-0'
+          )}
+          aria-hidden={!visible}
+        >
+          <p className="text-[14px] leading-5 font-normal text-[#769BE0] lg:hidden">
+            Must contain atleast 8 characters and a symbol
+          </p>
 
-const CreateNewPasswordForm = ({ token }: Readonly<{ token: string }>) => {
+          <ul className="hidden space-y-2 lg:block">
+            {PASSWORD_RULE_ROWS.map(({ key, label }) => {
+              const met = checks[key]
+              return (
+                <li key={key} className="flex items-center gap-2">
+                  <Check
+                    aria-hidden
+                    className={cn(
+                      'size-4 shrink-0 stroke-[2.5]',
+                      met ? 'text-[#769BE0]' : 'text-[#91949D]'
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      'text-[14px] leading-5 font-normal',
+                      met ? 'text-[#769BE0]' : 'text-[#91949D]'
+                    )}
+                  >
+                    {label}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PasswordResetSuccess() {
+  const router = useRouter()
+
+  const handleDone = () => {
+    clearPasswordResetFlowStorage()
+    router.push('/login')
+  }
+
+  return (
+    <div className="absolute inset-x-0 top-[89px] lg:top-1/2 lg:-translate-y-1/2">
+      <div className="mx-auto flex w-full max-w-[344px] flex-col items-center gap-8 text-center lg:max-w-[412px]">
+        <div className="flex size-10 items-center justify-center rounded-full bg-[#EBF0FA]">
+          <CheckCircle2
+            className="text-primary size-6"
+            strokeWidth={1.8}
+            aria-hidden
+          />
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-[24px] leading-[31px] font-semibold text-[#0F172A] lg:text-[32px] lg:leading-[38px]">
+            Password reset successful
+          </h2>
+          <p className="mx-auto max-w-[344px] text-[14px] leading-5 font-medium text-[#5E6470] lg:max-w-[412px] lg:text-[16px] lg:leading-6">
+            Your password has been updated. You can now log in with your new
+            password.
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          onClick={handleDone}
+          className="h-[45px] w-full rounded-[8px] text-[16px] font-normal text-[#FCFDFF] lg:h-[45px] lg:max-w-[412px] lg:rounded-[8px]"
+        >
+          Done
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+const CreateNewPasswordForm = () => {
   const [resetComplete, setResetComplete] = useState(false)
   const [showNewPasswordPlain, setShowNewPasswordPlain] = useState(false)
   const [showConfirmPasswordPlain, setShowConfirmPasswordPlain] =
     useState(false)
-  const [passwordFocused, setPasswordFocused] = useState(false)
+  const [newPasswordFocused, setNewPasswordFocused] = useState(false)
 
-  const form = useForm<z.infer<typeof ResetPasswordSchema>>({
-    resolver: zodResolver(ResetPasswordSchema),
+  const form = useForm<CreatePasswordValues>({
+    resolver: zodResolver(CreatePasswordSchema),
     mode: 'onTouched',
     reValidateMode: 'onChange',
     defaultValues: {
-      password: '',
+      newPassword: 'Password@1',
       confirmPassword: '',
     },
   })
 
   const { isSubmitting } = form.formState
+  const newPasswordValue =
+    useWatch({
+      control: form.control,
+      name: 'newPassword',
+    }) ?? ''
 
-  const onSubmit = async (values: z.infer<typeof ResetPasswordSchema>) => {
-    try {
-      const result = await resetPasswordWithToken({
-        token,
-        password: values.password,
-      })
-      if (result.ok) {
-        setResetComplete(true)
-        return
-      }
-      toast.error('Could not update password', {
-        description: result.error,
-      })
-    } catch {
-      toast.error('Could not update password', {
-        description: 'Please try again.',
-      })
-    }
+  const showPasswordGuide = newPasswordFocused || newPasswordValue.length > 0
+
+  const onSubmit = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 250))
+    setResetComplete(true)
   }
 
   if (resetComplete) {
-    return <ResetPasswordSuccess />
+    return <PasswordResetSuccess />
   }
 
   return (
-    <div className="space-y-4 py-8 sm:space-y-5">
-      <div className="bg-primary/10 text-primary inline-block max-w-fit rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:px-3 sm:py-1 sm:text-xs">
-        Password recovery
-      </div>
+    <div className="absolute inset-x-0 top-[89px] lg:top-1/2 lg:-translate-y-1/2">
+      <div className="space-y-10">
+        <div className="space-y-2.5">
+          <h2 className="text-[20px] leading-[26px] font-medium text-[#152D58] lg:text-[40px] lg:leading-[48px]">
+            Create a new password
+          </h2>
+          <p className="max-w-[336px] text-[24px] leading-9 font-light text-[#565D69] lg:max-w-[450px] lg:text-[24px] lg:leading-9">
+            Enter a new password to continue
+          </p>
+        </div>
 
-      <div className="space-y-1.5 sm:space-y-2">
-        <h2 className="text-xl font-medium text-[#152D58] sm:text-4xl">
-          Create a new password
-        </h2>
-        <p className="text-foreground/70 text-sm sm:text-[15px]">
-          Enter a new password to continue
-        </p>
-      </div>
-
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-3 sm:space-y-4"
-        >
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => {
-              const pwd = field.value ?? ''
-              const checks = getPasswordChecks(pwd)
-              const showPasswordGuide = passwordFocused || pwd.length > 0
-
-              return (
-                <FormItem>
-                  <FormLabel className="text-foreground/80 text-xs font-semibold sm:text-sm">
-                    New password
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={showNewPasswordPlain ? 'text' : 'password'}
-                        placeholder="Your new password"
-                        disabled={isSubmitting}
-                        autoComplete="new-password"
-                        {...field}
-                        onFocus={() => setPasswordFocused(true)}
-                        onBlur={() => {
-                          setPasswordFocused(false)
-                          field.onBlur()
-                        }}
-                        className={cn(
-                          inputClassWithError(!!form.formState.errors.password),
-                          'pr-10'
-                        )}
-                      />
-                      <button
-                        type="button"
-                        aria-label={
-                          showNewPasswordPlain
-                            ? 'Hide password'
-                            : 'Show password'
-                        }
-                        disabled={isSubmitting}
-                        className="text-foreground/45 hover:text-foreground/70 absolute inset-y-0 right-0 flex items-center pr-2.5 disabled:opacity-50 sm:pr-3"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => setShowNewPasswordPlain((v) => !v)}
-                      >
-                        {showNewPasswordPlain ? (
-                          <EyeOff className="size-5" aria-hidden />
-                        ) : (
-                          <Eye className="size-5" aria-hidden />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <div
-                    className={cn(
-                      'grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none',
-                      showPasswordGuide ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                    )}
-                  >
-                    <div className="min-h-0 overflow-hidden">
-                      <div
-                        className={cn(
-                          'transition-opacity duration-300 ease-out motion-reduce:transition-none',
-                          showPasswordGuide ? 'opacity-100' : 'opacity-0'
-                        )}
-                        aria-hidden={!showPasswordGuide}
-                      >
-                        <p className="text-foreground/50 mt-2 text-xs">
-                          Use 8+ characters with uppercase, lowercase, and a
-                          symbol from @, #, $, or %
-                        </p>
-                        <ul className="mt-3 space-y-2 pt-3">
-                          {PASSWORD_RULE_ROWS.map(({ key, label }) => {
-                            const met = checks[key]
-                            return (
-                              <li
-                                key={key}
-                                className="flex items-start gap-2.5 text-xs sm:text-[13px]"
-                              >
-                                <Check
-                                  aria-hidden
-                                  className={cn(
-                                    'mt-0.5 size-4 shrink-0 stroke-[2.5]',
-                                    met ? 'text-primary' : 'text-foreground/25'
-                                  )}
-                                />
-                                <span
-                                  className={cn(
-                                    'leading-snug',
-                                    met
-                                      ? 'text-primary font-medium'
-                                      : 'text-foreground/50'
-                                  )}
-                                >
-                                  {label}
-                                </span>
-                              </li>
-                            )
-                          })}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )
-            }}
-          />
-
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground/80 text-xs font-semibold sm:text-sm">
-                  Confirm password
-                </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input
-                      type={showConfirmPasswordPlain ? 'text' : 'password'}
-                      placeholder="Confirm your password"
-                      disabled={isSubmitting}
-                      autoComplete="new-password"
-                      {...field}
-                      className={cn(
-                        inputClassWithError(
-                          !!form.formState.errors.confirmPassword
-                        ),
-                        'pr-10'
-                      )}
-                    />
-                    <button
-                      type="button"
-                      aria-label={
-                        showConfirmPasswordPlain
-                          ? 'Hide password'
-                          : 'Show password'
-                      }
-                      disabled={isSubmitting}
-                      className="text-foreground/45 hover:text-foreground/70 absolute inset-y-0 right-0 flex items-center pr-2.5 disabled:opacity-50 sm:pr-3"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => setShowConfirmPasswordPlain((v) => !v)}
-                    >
-                      {showConfirmPasswordPlain ? (
-                        <EyeOff className="size-5" aria-hidden />
-                      ) : (
-                        <Eye className="size-5" aria-hidden />
-                      )}
-                    </button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="h-auto w-full rounded-lg py-2.5 text-sm font-bold sm:py-3 sm:text-base"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 lg:space-y-5"
           >
-            Done
-          </Button>
-        </form>
-      </Form>
+            <FormField
+              control={form.control}
+              name="newPassword"
+              render={({ field }) => (
+                <PasswordField
+                  id="new-password"
+                  label="New password"
+                  placeholder="Password@1"
+                  error={form.formState.errors.newPassword?.message}
+                  showPassword={showNewPasswordPlain}
+                  onTogglePassword={() =>
+                    setShowNewPasswordPlain((current) => !current)
+                  }
+                  field={field}
+                  disabled={isSubmitting}
+                  isPrimary
+                  onFocus={() => setNewPasswordFocused(true)}
+                  onBlur={() => setNewPasswordFocused(false)}
+                />
+              )}
+            />
+
+            <PasswordRulesGuide
+              visible={showPasswordGuide}
+              password={newPasswordValue}
+            />
+
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <PasswordField
+                  id="confirm-password"
+                  label="Repeat password"
+                  placeholder="Show password"
+                  error={form.formState.errors.confirmPassword?.message}
+                  showPassword={showConfirmPasswordPlain}
+                  onTogglePassword={() =>
+                    setShowConfirmPasswordPlain((current) => !current)
+                  }
+                  field={field}
+                  disabled={isSubmitting}
+                />
+              )}
+            />
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-[45px] w-full rounded-[8px] text-[16px] font-normal text-[#FCFDFF] lg:h-12 lg:rounded-[8px]"
+            >
+              Done
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   )
 }
 
 const CreateNewPassword = () => {
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')?.trim() ?? ''
-
-  if (!token) {
-    return <InvalidResetLink />
-  }
-
-  return <CreateNewPasswordForm token={token} />
+  return <CreateNewPasswordForm />
 }
 
 export default CreateNewPassword

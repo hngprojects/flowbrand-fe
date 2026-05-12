@@ -48,7 +48,7 @@ export const nextLogin = async (
 
   try {
     const response = await api<{ data: LoginResponse; access_token: string }>(
-      '/auth/login',
+      '/api/v1/auth/login',
       {
         method: 'POST',
         body: values,
