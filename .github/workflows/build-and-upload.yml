@@ -52,11 +52,12 @@ jobs:
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/dev/frontend/boilerplate.tar.gz"
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$USERNAME@$HOST" \
             "cd /flowbrand/dev/frontend \
+            && rm -rf .next \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
-            && pm2 describe flowbrand-fe-dev > /dev/null 2>&1 \
+            && (pm2 describe flowbrand-fe-dev > /dev/null 2>&1 \
               && pm2 restart flowbrand-fe-dev --update-env \
-              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-dev' --cwd /flowbrand/dev/frontend --node-args='--env-file=.env' -- start \
+              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-dev' --cwd /flowbrand/dev/frontend --node-args='--env-file=.env' -- start) \
             && pm2 save \
             && rm -f boilerplate.tar.gz"
 
@@ -66,11 +67,12 @@ jobs:
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/staging/frontend/boilerplate.tar.gz"
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$USERNAME@$HOST" \
             "cd /flowbrand/staging/frontend \
+            && rm -rf .next \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
-            && pm2 describe flowbrand-fe-staging > /dev/null 2>&1 \
+            && (pm2 describe flowbrand-fe-staging > /dev/null 2>&1 \
               && pm2 restart flowbrand-fe-staging --update-env \
-              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-staging' --cwd /flowbrand/staging/frontend --node-args='--env-file=.env' -- start \
+              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-staging' --cwd /flowbrand/staging/frontend --node-args='--env-file=.env' -- start) \
             && pm2 save \
             && rm -f boilerplate.tar.gz"
 
@@ -80,11 +82,12 @@ jobs:
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no boilerplate.tar.gz "$USERNAME@$HOST:/flowbrand/production/frontend/boilerplate.tar.gz"
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$USERNAME@$HOST" \
             "cd /flowbrand/production/frontend \
+            && rm -rf .next \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
-            && pm2 describe flowbrand-fe-production > /dev/null 2>&1 \
+            && (pm2 describe flowbrand-fe-production > /dev/null 2>&1 \
               && pm2 restart flowbrand-fe-production --update-env \
-              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-production' --cwd /flowbrand/production/frontend --node-args='--env-file=.env' -- start \
+              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-production' --cwd /flowbrand/production/frontend --node-args='--env-file=.env' -- start) \
             && pm2 save \
             && rm -f boilerplate.tar.gz"
 
