@@ -12,9 +12,20 @@ import type {
   VerifyOtpSuccess,
 } from '~/lib/auth-action-results'
 import { LoginSchema, RegisterSchema } from '~/schemas'
-import { AuthResponse, ErrorResponse } from '~/types'
+import type { AuthResponse, ErrorResponse, User } from '~/types'
+import { withAuth } from './fetchutil'
 
-/** Safe string from API error payloads; avoids showing objects in the UI. */
+export interface LoginResponse {
+  user: User
+  access_token: string
+}
+
+type ChangePasswordInput = {
+  oldPassword: string
+  newPassword: string
+  accessToken?: string
+}
+
 function messageFromAxiosData(data: unknown, fallback: string): string {
   if (
     data &&
@@ -30,10 +41,21 @@ function messageFromAxiosData(data: unknown, fallback: string): string {
   return fallback
 }
 
+function buildAuthUrl(baseURL: string, endpoint: string) {
+  return `${baseURL.replace(/\/$/, '')}${endpoint}`
+}
+
 const credentialsAuth = async (
   values: z.infer<typeof LoginSchema>
 ): Promise<AuthResponse | ErrorResponse> => {
   const baseURL = envConfig.BASEURL
+  if (!baseURL) {
+    return {
+      message: 'Authentication service is not configured.',
+      status_code: 500,
+      success: false,
+    }
+  }
   const validatedFields = LoginSchema.safeParse(values)
   if (!validatedFields.success) {
     return {
@@ -45,7 +67,10 @@ const credentialsAuth = async (
   const { email, password } = validatedFields.data
   const payload = { email, password }
   try {
-    const response = await axios.post(`${baseURL}/auth/login`, payload)
+    const response = await axios.post(
+      buildAuthUrl(baseURL, '/api/v1/auth/login'),
+      payload
+    )
     return {
       data: response.data.user,
       access_token: response.data.access_token,
@@ -72,6 +97,12 @@ const registerUser = async (
 ): Promise<RegisterUserResult> => {
   const validatedFields = RegisterSchema.safeParse(values)
   const baseURL = envConfig.BASEURL
+  if (!baseURL) {
+    return {
+      ok: false,
+      error: 'Registration service is not configured.',
+    }
+  }
   if (!validatedFields.success) {
     return {
       ok: false,
@@ -80,7 +111,7 @@ const registerUser = async (
   }
   try {
     const response = await axios.post(
-      `${baseURL}/auth/register`,
+      buildAuthUrl(baseURL, '/api/v1/auth/register'),
       validatedFields.data
     )
 
@@ -106,10 +137,20 @@ const registerUser = async (
   }
 }
 
-const resendOtp = async (email: string): Promise<ResendOtpResult> => {
+async function postOtpRequest(
+  endpoint: '/api/v1/auth/send-otp' | '/api/v1/auth/resend-otp',
+  email: string,
+  fallbackError: string
+): Promise<ResendOtpResult> {
   const baseURL = envConfig.BASEURL
+  if (!baseURL) {
+    return {
+      error: 'OTP service is not configured.',
+    }
+  }
+
   try {
-    const response = await axios.post(`${baseURL}/auth/request/token`, {
+    const response = await axios.post(buildAuthUrl(baseURL, endpoint), {
       email,
     })
 
@@ -121,10 +162,7 @@ const resendOtp = async (email: string): Promise<ResendOtpResult> => {
   } catch (error) {
     return axios.isAxiosError(error) && error.response
       ? {
-          error: messageFromAxiosData(
-            error.response.data,
-            'Resend OTP failed.'
-          ),
+          error: messageFromAxiosData(error.response.data, fallbackError),
           status: error.response.status,
         }
       : {
@@ -133,16 +171,33 @@ const resendOtp = async (email: string): Promise<ResendOtpResult> => {
   }
 }
 
+const sendOtp = async (email: string): Promise<ResendOtpResult> => {
+  return postOtpRequest('/api/v1/auth/send-otp', email, 'OTP request failed.')
+}
+
+const resendOtp = async (email: string): Promise<ResendOtpResult> => {
+  return postOtpRequest('/api/v1/auth/resend-otp', email, 'Resend OTP failed.')
+}
+
 const verifyOtp = async (
   email: string,
-  code: string
+  otp: string
 ): Promise<VerifyOtpResult> => {
   const baseURL = envConfig.BASEURL
+  if (!baseURL) {
+    return {
+      error: 'OTP service is not configured.',
+    }
+  }
+
   try {
-    const response = await axios.post(`${baseURL}/auth/verify/otp`, {
-      email,
-      code,
-    })
+    const response = await axios.post(
+      buildAuthUrl(baseURL, '/api/v1/auth/verify-otp'),
+      {
+        email,
+        otp,
+      }
+    )
     const success: VerifyOtpSuccess = {
       status: response.status,
       message: response.data?.message,
@@ -163,57 +218,78 @@ const verifyOtp = async (
   }
 }
 
-const resetPasswordWithToken = async (input: {
-  token: string
-  password: string
-}): Promise<ResetPasswordResult> => {
-  if (typeof input.token !== 'string' || typeof input.password !== 'string') {
-    return { ok: false, error: 'Invalid request payload.' }
-  }
-
-  const trimmed = input.token.trim()
-  if (!trimmed) {
-    return { ok: false, error: 'Reset link is invalid or expired.' }
-  }
-  if (input.password.trim().length === 0) {
-    return { ok: false, error: 'Password is required.' }
-  }
-
+const changePassword = async (
+  input: ChangePasswordInput
+): Promise<ResetPasswordResult> => {
   const baseURL = envConfig.BASEURL
+  if (!baseURL) {
+    return {
+      ok: false,
+      error: 'Password service is not configured.',
+    }
+  }
+
+  if (!input.accessToken?.trim()) {
+    return {
+      ok: false,
+      error: 'You need to sign in again before changing your password.',
+    }
+  }
+
   try {
     await axios.post(
-      `${baseURL}/auth/password/reset`,
+      buildAuthUrl(baseURL, '/api/v1/auth/change-password'),
       {
-        token: trimmed,
-        password: input.password,
+        oldPassword: input.oldPassword,
+        newPassword: input.newPassword,
       },
-      { timeout: 30_000 }
+      {
+        headers: withAuth(input.accessToken),
+        timeout: 30_000,
+      }
     )
+
     return { ok: true }
   } catch (error) {
     if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
       return {
         ok: false,
         error:
-          'The password reset service did not respond in time. Please try again.',
+          'The password update service did not respond in time. Please try again.',
       }
     }
-    return axios.isAxiosError(error) && error.response
-      ? {
-          ok: false,
-          error: messageFromAxiosData(
-            error.response.data,
-            'Could not reset password. Please try again.'
-          ),
-        }
-      : { ok: false, error: 'An unexpected error occurred.' }
+
+    if (axios.isAxiosError(error) && error.response) {
+      const status = error.response.status
+      const fallback =
+        status === 401
+          ? 'Missing or invalid bearer token. Please sign in again.'
+          : status === 400
+            ? 'Old password is incorrect.'
+            : 'Could not update password. Please try again.'
+
+      return {
+        ok: false,
+        error: messageFromAxiosData(error.response.data, fallback),
+      }
+    }
+
+    return {
+      ok: false,
+      error: 'An unexpected error occurred.',
+    }
   }
 }
 
+/** @deprecated Use changePassword instead. */
+const resetPasswordWithToken = changePassword
+
 export {
+  changePassword,
   credentialsAuth,
   registerUser,
   resendOtp,
   resetPasswordWithToken,
+  sendOtp,
   verifyOtp,
 }
