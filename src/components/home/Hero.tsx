@@ -18,7 +18,7 @@ const HomeHero = () => {
           <span className="bg-accent rounded-xl px-3 py-1 text-[14px] text-white sm:text-sm">
             Simply
           </span>
-          <span className="text-[14px] text-[#565D69] sm:text-sm">
+          <span className="text-foreground text-[14px] sm:text-sm">
             Made for every kind of business
           </span>
         </div>
