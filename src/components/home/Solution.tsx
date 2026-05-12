@@ -74,8 +74,8 @@ const Solution = () => {
   const currentStep = steps[activeStep]
 
   return (
-    <section className="bg-white px-6 py-12 md:px-8 md:py-16 lg:px-20 lg:py-20">
-      <div className="mx-auto w-full max-w-[1440px]">
+    <section className="bg-white px-6 py-12">
+      <div className="mx-auto w-full max-w-[1440px] px-20">
         {/* Header Content */}
         <div className="mb-16 text-center md:mb-20">
           <div className="bg-badge-bg mb-2 flex items-center justify-center gap-2 rounded-xl px-4 py-2">
