@@ -55,21 +55,28 @@ const logos = [
 
 export default function SocialProof() {
   return (
-    <section className="flex w-full flex-col items-center gap-8 bg-[#FCFDFF] pt-10 pb-8 md:pt-0">
+    <section className="flex w-full flex-col items-center gap-8 bg-[#FCFDFF] pt-10 pb-8">
       <p className="text-center text-[14px] text-gray-600 md:text-[16px]">
         Used by small businesses like yours to build and grow with confidence
       </p>
 
-      <div className="flex w-full flex-wrap items-center justify-between gap-y-8">
+      <div className="flex w-full max-w-full flex-nowrap items-center justify-between gap-x-1 gap-y-4 sm:gap-x-2 md:gap-x-4">
         {logos.map(({ label, icon, fontClass }) => (
           <div
             key={label}
-            className="flex h-[57px] items-center gap-2 opacity-40 grayscale"
+            className="flex min-h-0 min-w-0 flex-1 basis-0 items-center justify-center gap-1 opacity-40 grayscale sm:gap-1.5 md:gap-2"
           >
-            <Image src={icon} alt={label} width={57} height={24} />
+            <Image
+              src={icon}
+              alt={label}
+              width={57}
+              height={24}
+              sizes="(max-width: 640px) 12vw, 57px"
+              className="h-auto max-h-[clamp(14px,4.2vw,24px)] w-auto max-w-[clamp(22px,9vw,57px)] shrink-0 object-contain"
+            />
             <span
               className={cn(
-                'text-[26px] leading-none font-normal whitespace-nowrap text-gray-500',
+                'min-w-0 text-center text-[clamp(8px,1.85vw,26px)] leading-tight font-normal text-gray-500',
                 fontClass
               )}
             >
