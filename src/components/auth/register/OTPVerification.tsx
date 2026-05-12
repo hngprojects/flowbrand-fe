@@ -4,34 +4,35 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next-nprogress-bar'
 import Link from 'next/link'
-import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { resendOtp } from '~/actions/auth'
+import { resendOtp, verifyOtp } from '~/actions/auth'
+import {
+  isResendOtpSuccess,
+  isVerifyOtpSuccess,
+} from '~/lib/auth-action-results'
 import { Button } from '~/components/ui/button'
 import { Form, FormControl, FormField, FormItem } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
+import { REGISTER_VERIFY_EMAIL_STORAGE_KEY } from '~/lib/register-verify-storage'
 import { OtpFormSchema } from '~/schemas'
 import { cn } from '~/utils'
 
 const OTP_FIELDS = ['d0', 'd1', 'd2', 'd3', 'd4', 'd5'] as const
 
-function formatTimer(seconds: number) {
+const formatTimer = (seconds: number) => {
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-export default function OTPVerification({
-  email,
-}: Readonly<{
-  email: string
-}>) {
+const OTPVerification = ({ email }: { email: string }) => {
   const router = useRouter()
   const [secondsLeft, setSecondsLeft] = useState(30)
-  const [isPending, startTransition] = useTransition()
+  const [isVerifying, setIsVerifying] = useState(false)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   const form = useForm<z.infer<typeof OtpFormSchema>>({
@@ -61,11 +62,31 @@ export default function OTPVerification({
   }, [])
 
   const onConfirm = () => {
-    form.handleSubmit(() => {
-      startTransition(() => {
-        toast.success('Verification complete')
-        router.push('/login')
-      })
+    void form.handleSubmit(async (data) => {
+      const code = OTP_FIELDS.map((field) => data[field]).join('')
+      setIsVerifying(true)
+      try {
+        const result = await verifyOtp(email, code)
+        if (!isVerifyOtpSuccess(result)) {
+          toast.error('Verification failed', {
+            description: result.error,
+          })
+          return
+        }
+        if (result.status >= 200 && result.status < 300) {
+          sessionStorage.removeItem(REGISTER_VERIFY_EMAIL_STORAGE_KEY)
+          toast.success('Verification complete', {
+            description: result.message,
+          })
+          router.push('/login')
+        }
+      } catch {
+        toast.error('Verification failed', {
+          description: 'Network error. Please try again.',
+        })
+      } finally {
+        setIsVerifying(false)
+      }
     })()
   }
 
@@ -76,32 +97,39 @@ export default function OTPVerification({
       })
       return
     }
-    const result = await resendOtp(email)
-    const status =
-      'status' in result && typeof result.status === 'number'
-        ? result.status
-        : undefined
-    if (status !== undefined && status >= 200 && status < 300) {
-      toast.success('Code sent', {
-        description: 'message' in result ? result.message : undefined,
-      })
-      setSecondsLeft(30)
-    } else {
+    try {
+      const result = await resendOtp(email)
+      if (
+        isResendOtpSuccess(result) &&
+        result.status >= 200 &&
+        result.status < 300
+      ) {
+        toast.success('Code sent', {
+          description: result.message,
+        })
+        setSecondsLeft(30)
+      } else {
+        toast.error('Could not resend', {
+          description: isResendOtpSuccess(result)
+            ? 'Please try again later.'
+            : result.error,
+        })
+      }
+    } catch {
       toast.error('Could not resend', {
-        description:
-          'error' in result ? result.error : 'Please try again later.',
+        description: 'Network error. Please try again later.',
       })
     }
   }
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      <div className="bg-primary/10 text-primary inline-block rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:px-3 sm:py-1 sm:text-xs">
+    <div className="-mt-50 flex h-full flex-col justify-center space-y-5 sm:space-y-6 lg:-mt-0">
+      <div className="bg-primary/10 text-primary inline-block max-w-fit rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:px-3 sm:py-1 sm:text-xs">
         OTP has been sent
       </div>
 
       <div className="space-y-1.5 sm:space-y-2">
-        <h2 className="text-foreground text-xl font-bold sm:text-2xl">
+        <h2 className="text-xl font-medium text-[#152D58] sm:text-4xl">
           Verify your email
         </h2>
         <p className="text-foreground/70 text-sm sm:text-[15px]">
@@ -132,7 +160,7 @@ export default function OTPVerification({
                       inputMode="numeric"
                       autoComplete="one-time-code"
                       maxLength={1}
-                      disabled={isPending}
+                      disabled={isVerifying}
                       onChange={(e) => {
                         const v = e.target.value.replace(/\D/g, '').slice(-1)
                         field.onChange(v)
@@ -179,7 +207,7 @@ export default function OTPVerification({
           <Button
             type="button"
             variant="link"
-            disabled={secondsLeft > 0}
+            disabled={secondsLeft > 0 || isVerifying}
             onClick={handleResend}
             className="text-primary hover:text-primary/90 h-auto p-0 font-bold disabled:opacity-40"
           >
@@ -189,7 +217,7 @@ export default function OTPVerification({
 
         <Button
           type="button"
-          disabled={!isOtpComplete || isPending}
+          disabled={!isOtpComplete || isVerifying}
           variant={isOtpComplete ? 'default' : 'outline'}
           onClick={onConfirm}
           className={cn(
@@ -212,3 +240,5 @@ export default function OTPVerification({
     </div>
   )
 }
+
+export default OTPVerification

@@ -10,10 +10,48 @@ export const LoginSchema = z.object({
       message: 'Email is required',
     })
     .email({
-      message: 'Invalid email address',
+      message: 'Enter a valid email address',
     }),
   rememberMe: z.boolean().default(false).optional(),
 })
+
+/** Shared password rules for registration (UI checklist + API payload). */
+export const registrationPasswordField = z
+  .string()
+  .min(8, { message: 'Password must be at least 8 characters' })
+  .regex(/[A-Z]/, {
+    message: 'Include an uppercase letter (A–Z)',
+  })
+  .regex(/[a-z]/, {
+    message: 'Include a lowercase letter (a–z)',
+  })
+  .regex(/[@#$%]/, {
+    message: 'Include a symbol (@, #, $, %)',
+  })
+
+export type PasswordChecks = {
+  minLength: boolean
+  uppercase: boolean
+  lowercase: boolean
+  symbol: boolean
+}
+
+/** Shared labels for password rule checklists (registration, reset password). */
+export const PASSWORD_RULE_ROWS = [
+  { key: 'minLength' as const, label: 'At least 8 characters' },
+  { key: 'uppercase' as const, label: 'Uppercase letter (A–Z)' },
+  { key: 'lowercase' as const, label: 'Lowercase letter (a–z)' },
+  { key: 'symbol' as const, label: 'One symbol (@, #, $, %)' },
+] as const
+
+export function getPasswordChecks(password: string): PasswordChecks {
+  return {
+    minLength: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    symbol: /[@#$%]/.test(password),
+  }
+}
 
 export const RegisterSchema = z.object({
   first_name: z.string().min(1, { message: 'First name is required.' }).min(3, {
@@ -25,9 +63,8 @@ export const RegisterSchema = z.object({
   email: z.string().min(1, { message: 'Field is required' }).email({
     message: 'Invalid email address',
   }),
-  password: z.string().min(8, {
-    message: 'Password is required',
-  }),
+  country: z.string().min(1, { message: 'Country is required' }),
+  password: registrationPasswordField,
 })
 
 const RegisterNameSchema = RegisterSchema.pick({
@@ -44,27 +81,21 @@ export function splitFullNameForRegister(fullName: string): {
     return { first_name: '', last_name: '' }
   }
   if (parts.length === 1) {
-    return { first_name: parts[0], last_name: parts[0] }
+    return { first_name: parts[0], last_name: '' }
   }
   return { first_name: parts[0], last_name: parts.slice(1).join(' ') }
 }
 
 export const RegistrationFormSchema = z
   .object({
-    full_name: z.string().min(1, { message: 'Full name is required' }),
+    full_name: z.string().trim().min(1, { message: 'Full name is required' }),
     email: z
       .string()
+      .trim()
       .min(1, { message: 'Email is required' })
-      .email({ message: 'Invalid email address' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
-    password: z
-      .string()
-      .min(8, {
-        message: 'Use 8+ characters with a mix of letters & numbers',
-      })
-      .regex(/^(?=.*[A-Za-z])(?=.*\d)/, {
-        message: 'Include at least one letter and one number',
-      }),
+      .email({ message: 'Enter a valid email address' }),
+    country: z.string().trim().min(1, { message: 'Please select a country' }),
+    password: registrationPasswordField,
   })
   .superRefine((data, ctx) => {
     const names = splitFullNameForRegister(data.full_name)
@@ -90,12 +121,10 @@ export const OtpFormSchema = z.object({
 
 export const ResetPasswordSchema = z
   .object({
-    password: z.string().min(8, {
-      message: 'Password is required',
-    }),
+    password: registrationPasswordField,
     confirmPassword: z
       .string()
-      .min(8, { message: 'Confirm Password is required' }),
+      .min(1, { message: 'Please confirm your password' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',

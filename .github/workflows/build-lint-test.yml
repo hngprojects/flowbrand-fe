@@ -1,31 +1,57 @@
-name: Build, Lint and Test
+name: Build, Lint and Security Scan
 
 on:
-  pull_request
+  pull_request:
+    branches: [dev, staging, main]
+
+# FIX: cancel stale runs when new commits are pushed to the same PR
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   build_lint_test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15                          # FIX: prevent hung steps consuming minutes for hours
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4               # FIX: pnpm must be installed BEFORE setup-node
+        with:                                    # so the cache: "pnpm" option can locate the executable
+          version: 10
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+          node-version: "23"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Lint code
         run: pnpm lint
 
       - name: Build project
         run: pnpm build
+
+      - name: Security scan with Trivy
+        uses: aquasecurity/trivy-action@v0.35.0  # FIX: pin to a specific release — @master is unstable and a supply-chain risk
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          format: json
+          output: trivy-report.json
+
+      - name: Upload Trivy report as artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-security-report
+          path: trivy-report.json
+          retention-days: 7

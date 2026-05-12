@@ -1,7 +1,125 @@
 'use client'
 
-const Navbar = () => {
-  return <div>Navbar</div>
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Fade as Hamburger } from 'hamburger-react'
+import MobileLogoIcon from '~/components/icons/navbar/mobile-logo'
+import logoBlue from '~public/images/logo-blue.png'
+import { Dispatch, SetStateAction } from 'react'
+
+const navLinks = [
+  { label: 'Home', path: '/' },
+  { label: 'How it works', path: '/how-it-works' },
+  { label: 'About Us', path: '/about-us' },
+  { label: 'Pricing', path: '/pricing' },
+]
+
+const Navbar = ({
+  setIsOpen,
+  isOpen,
+}: {
+  setIsOpen: Dispatch<SetStateAction<boolean>>
+  isOpen: boolean
+}) => {
+  const pathname = usePathname()
+
+  return (
+    <nav className="bg-background border-border font-inter sticky top-0 z-50 border-b">
+      <div className="landing-layout flex h-[83px] w-full items-center justify-between py-0">
+        <Link href="/">
+          <span className="lg:hidden">
+            <MobileLogoIcon />
+          </span>
+          <span className="hidden lg:block">
+            <Image
+              src={logoBlue}
+              alt="FlowBrand logo"
+              width={188}
+              height={51}
+              className="cursor-pointer"
+            />
+          </span>
+        </Link>
+
+        <ul className="hidden items-center lg:flex">
+          {navLinks.map((link) => (
+            <li key={link.label}>
+              <Link
+                href={link.path}
+                className={`hover:text-primary flex h-12 items-center justify-center px-4 py-3 text-base font-medium text-[#565D69] transition-colors ${
+                  pathname === link.path ||
+                  (link.path !== '/' && pathname.startsWith(link.path))
+                    ? 'text-primary font-semibold'
+                    : ''
+                }`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="hidden items-center gap-4 lg:flex">
+          <Link
+            href="/login"
+            className="text-primary hover:text-primary/80 flex h-[51px] items-center justify-center px-6 py-3 text-base font-medium transition-colors"
+          >
+            Log In
+          </Link>
+          <Link
+            href="/register"
+            className="bg-primary text-primary-foreground flex h-[51px] items-center justify-center rounded-[10px] px-6 py-3 font-semibold transition-opacity hover:opacity-90"
+          >
+            Get started
+          </Link>
+        </div>
+
+        <div className="z-50 lg:hidden">
+          <Hamburger toggled={isOpen} toggle={setIsOpen} size={23} />
+        </div>
+      </div>
+
+      <div
+        className={`bg-background absolute top-full left-0 flex w-full flex-col gap-4 overflow-hidden text-sm font-semibold transition-all duration-300 ease-in-out lg:hidden ${
+          isOpen
+            ? 'max-h-96 py-6 opacity-100'
+            : 'pointer-events-none max-h-0 opacity-0'
+        }`}
+        inert={!isOpen ? true : undefined}
+      >
+        {navLinks.map((link) => (
+          <Link
+            key={link.label}
+            href={link.path}
+            className={`hover:text-primary px-4 py-2 text-[#565D69] ${
+              pathname === link.path ? 'text-primary' : ''
+            }`}
+            onClick={() => setIsOpen(false)}
+          >
+            {link.label}
+          </Link>
+        ))}
+
+        <div className="flex flex-col gap-3 px-4 pt-2">
+          <Link
+            href="/login"
+            className="border-primary text-primary rounded-lg border py-2.5 text-center font-semibold"
+            onClick={() => setIsOpen(false)}
+          >
+            Log In
+          </Link>
+          <Link
+            href="/get-started"
+            className="bg-primary text-primary-foreground rounded-[10px] py-2.5 text-center font-semibold"
+            onClick={() => setIsOpen(false)}
+          >
+            Get started
+          </Link>
+        </div>
+      </div>
+    </nav>
+  )
 }
 
 export default Navbar
