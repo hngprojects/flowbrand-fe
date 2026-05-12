@@ -8,13 +8,13 @@ export default function ContactUsView() {
   return (
     <main className="my-10">
       {/* Hero Section */}
-      <section className="bg-primary/20 relative mx-auto flex h-[409px] w-full max-w-[1440px] flex-col items-center justify-center gap-2 px-6 py-20 md:gap-5 md:px-12 lg:px-20">
+      <section className="bg-primary/20 relative mx-auto flex h-[409px] w-full flex-col items-center justify-center gap-2 px-6 py-20 md:gap-5 md:px-12 lg:px-20">
         <h1 className="text-foreground mb-3 text-center text-[24px] font-semibold md:text-[40px]">
           We would love to work with you
         </h1>
         <p className="mx-auto max-w-[650px] text-center text-[14px] text-[#565D69] md:text-[18px]">
           Have a question, need support, or just want to learn more about
-          FlowBrand? Reach out—we&apos;d love to hear from you.
+          FlowBrand? Reach out, we&apos;d love to hear from you.
         </p>
 
         <Image
