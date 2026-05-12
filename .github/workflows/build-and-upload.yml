@@ -4,6 +4,7 @@ on:
   push:
     branches: [dev, staging, main]
 
+  workflow_dispatch:
 jobs:
   build:
     if: github.event.repository.fork == false
@@ -44,7 +45,6 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-        
 
       - name: Deploy to Dev
         if: github.ref == 'refs/heads/dev'
@@ -54,7 +54,10 @@ jobs:
             "cd /flowbrand/dev/frontend \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
-            && pm2 restart flowbrand-dev || pm2 start \"node_modules/.bin/next start -p 3002\" --name flowbrand-dev \
+            && pm2 describe flowbrand-fe-dev > /dev/null 2>&1 \
+              && pm2 restart flowbrand-fe-dev --update-env \
+              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-dev' --cwd /flowbrand/dev/frontend --node-args='--env-file=.env' -- start \
+            && pm2 save \
             && rm -f boilerplate.tar.gz"
 
       - name: Deploy to Staging
@@ -65,7 +68,10 @@ jobs:
             "cd /flowbrand/staging/frontend \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
-            && pm2 restart flowbrand-staging || pm2 start \"node_modules/.bin/next start -p 3000\" --name flowbrand-staging \
+            && pm2 describe flowbrand-fe-staging > /dev/null 2>&1 \
+              && pm2 restart flowbrand-fe-staging --update-env \
+              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-staging' --cwd /flowbrand/staging/frontend --node-args='--env-file=.env' -- start \
+            && pm2 save \
             && rm -f boilerplate.tar.gz"
 
       - name: Deploy to Production
@@ -76,7 +82,10 @@ jobs:
             "cd /flowbrand/production/frontend \
             && tar -xzf boilerplate.tar.gz \
             && pnpm install --prod --frozen-lockfile \
-            && pm2 restart flowbrand-production || pm2 start \"node_modules/.bin/next start -p 3001\" --name flowbrand-production \
+            && pm2 describe flowbrand-fe-production > /dev/null 2>&1 \
+              && pm2 restart flowbrand-fe-production --update-env \
+              || pm2 start node_modules/next/dist/bin/next --name 'flowbrand-fe-production' --cwd /flowbrand/production/frontend --node-args='--env-file=.env' -- start \
+            && pm2 save \
             && rm -f boilerplate.tar.gz"
 
       - name: Delete local archive

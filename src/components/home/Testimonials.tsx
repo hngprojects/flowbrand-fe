@@ -142,7 +142,7 @@ function TestimonialRow({
 
 export default function Testimonials() {
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
+    <section className="mx-auto w-full py-16">
       <div className="flex flex-col items-center justify-center text-center">
         <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
           <div className="bg-badge-fg h-4 w-4 rounded-full"></div>

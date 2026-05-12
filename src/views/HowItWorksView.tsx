@@ -33,7 +33,7 @@ const HowItWorksView = () => {
 
   return (
     <main className="overflow-hidden">
-      <section className="bg-primary/20 relative mx-auto flex min-h-[400px] w-full max-w-[1440px] flex-col items-center justify-center gap-2 px-6 py-20 md:gap-5 md:px-12 lg:px-20">
+      <section className="bg-primary/20 relative mx-auto flex min-h-[400px] w-full flex-col items-center justify-center gap-2 px-6 py-20 md:gap-5 md:px-12 lg:px-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -45,7 +45,7 @@ const HowItWorksView = () => {
           </h1>
           <p className="mx-auto max-w-[650px] text-center text-[16px] text-[#565D69] md:text-[18px]">
             FlowBrand takes you from understanding your business to running a
-            fully structured marketing Strategy—step by step.
+            fully structured marketing Strategy step by step.
           </p>
         </motion.div>
 
