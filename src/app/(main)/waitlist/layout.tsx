@@ -18,7 +18,7 @@ export default function LandingLayout({
       <WaitlistNavbar />
       <div className="flex-1">{children}</div>
 
-      <div className="2sm:mt-[-20px] sm:mt-[-50px] md:hidden lg:hidden">
+      <div className="sm:mt-[-50px] md:hidden lg:hidden">
         <Image src={VectorMobile} alt="vector stroke mobile" />
       </div>
       <div className="hidden md:block lg:block">
