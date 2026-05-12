@@ -48,8 +48,7 @@ const row2: Testimonial[] = [
     alt: 'Glory Nkene testimonial',
   },
   {
-    quote:
-      'This helped me stop wasting time on things that were not working. Now I focus on what actually brings in customers.',
+    quote: `This helped stop wasting time on things that weren't working. Now i focus on what actually brings in customers.`,
     name: 'Ameerah Raji',
     image: ellipse2,
     alt: 'Ameerah Raji testimonial',
@@ -73,7 +72,7 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
         {items.map((t, index) => (
           <Card
             key={index}
-            className="flex min-h-[247px] w-[80vw] max-w-[506px] flex-shrink-0 flex-col justify-evenly gap-10 px-8 py-[23.5px] text-left sm:w-[506px]"
+            className="flex min-h-[168px] w-[492px] flex-col justify-evenly gap-6 rounded-2xl px-6 py-6 text-left sm:min-h-[247px] sm:px-8 sm:py-8 lg:w-[506px]"
           >
             <p className="w-full text-[20px] leading-[130%]">“{t.quote}”</p>
             <div className="flex items-center justify-center gap-2">
@@ -93,9 +92,11 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
   )
 }
 
+// max-w-[1440px] lg:px-20 px-6 md:px-12
+
 export default function Testimonials() {
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
+    <section className="mx-auto w-full py-16">
       <div className="flex flex-col items-center justify-center text-center">
         <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
           <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
