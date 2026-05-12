@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   const api = createFetchUtil({ baseUrl: baseurl })
 
   try {
-    const res = await api<LoginResponse>('/auth/google', {
+    const res = await api<LoginResponse>('/api/v1/auth/google', {
       method: 'POST',
       body: { id_token: id_token },
     })
