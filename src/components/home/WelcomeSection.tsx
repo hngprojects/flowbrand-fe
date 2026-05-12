@@ -9,13 +9,11 @@ import Image from 'next/image'
  */
 const WelcomeSection = () => {
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
-      <div className="p-7 md:p-[24px] lg:p-20">
-        {/* Header Content */}
-        <div className="mb-12 flex flex-col items-start justify-between gap-10 md:mb-16 lg:flex-row lg:items-end">
-          {/* Left Column */}
-          <div className="w-full lg:w-[60%]">
-            <span className="mb-6 block align-middle text-[18px] leading-[1.5] font-medium tracking-normal text-[#2E60BE]">
+    <section className="w-full">
+      <div className="landing-layout flex flex-col gap-12 md:gap-16">
+        <div className="flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-end">
+          <div className="flex w-full flex-col gap-6 lg:w-[60%]">
+            <span className="align-middle text-[18px] leading-[1.5] font-medium tracking-normal text-[#2E60BE]">
               Welcome to Flowbrand
             </span>
             <h2 className="align-middle text-[24px] leading-[1.1] font-medium tracking-normal md:text-[48px]">
@@ -24,7 +22,6 @@ const WelcomeSection = () => {
             </h2>
           </div>
 
-          {/* Right Column */}
           <div className="w-full lg:w-[35%]">
             <p className="align-middle text-base leading-[1.75] font-normal tracking-normal text-[#565D69]">
               We built Flowbrand because we kept seeing the same thing:
@@ -35,7 +32,6 @@ const WelcomeSection = () => {
           </div>
         </div>
 
-        {/* Image Section */}
         <div className="relative w-full overflow-hidden">
           <Image
             src="/images/dark-skin-girl-1.jpg"

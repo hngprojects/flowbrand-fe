@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '../../node_modules/tw-animate-css/dist/tw-animate.css';
+@tailwind components;
 
 @custom-variant dark (&:is(.dark *));
 
@@ -76,5 +77,15 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /**
+   * Landing page layout shell: max width, centering, horizontal + vertical padding.
+   * Use on the inner wrapper inside a full-bleed <section>.
+   */
+  .landing-layout {
+    @apply mx-auto w-full max-w-[1440px] px-4 py-10 lg:py-20;
   }
 }

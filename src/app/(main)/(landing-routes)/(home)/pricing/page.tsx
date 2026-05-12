@@ -111,7 +111,7 @@ export default function PricingPage() {
     <main className="min-h-screen bg-white dark:bg-black">
       {/* Header Section */}
       <section className="w-full py-16 sm:py-20">
-        <div className="mx-auto max-w-[1440px] px-6 text-center md:px-12 lg:px-20">
+        <div className="landing-layout text-center">
           <h1 className="mb-2 text-4xl font-bold sm:text-5xl">
             Affordable Pricing for your{' '}
             <span className="text-accent">Business</span>
@@ -148,8 +148,8 @@ export default function PricingPage() {
       </section>
 
       {/* Pricing Cards */}
-      <section className="w-full py-12">
-        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
+      <section className="w-full">
+        <div className="landing-layout">
           <div className="grid gap-8 md:grid-cols-2">
             {/* Free Plan */}
             <div className="rounded-lg border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-950">
@@ -241,8 +241,8 @@ export default function PricingPage() {
       </section>
 
       {/* Comparison Table */}
-      <section className="w-full py-16">
-        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
+      <section className="w-full">
+        <div className="landing-layout">
           <h2 className="mb-12 text-center text-3xl font-bold">
             Compare Plans
           </h2>
@@ -282,8 +282,8 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="w-full py-16">
-        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
+      <section className="w-full">
+        <div className="landing-layout">
           <div className="mb-12 text-center">
             <div className="bg-accent mb-4 inline-block rounded-xl px-3 py-1 text-xs font-semibold text-white">
               FAQ

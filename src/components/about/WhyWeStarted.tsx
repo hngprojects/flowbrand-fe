@@ -3,9 +3,9 @@ import Image from 'next/image'
 export default function WhyWeStarted() {
   return (
     <section className="w-full bg-[#FCFDFF]">
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-6 py-14 md:flex-row md:items-center md:gap-10 md:px-12 md:py-20 lg:px-20">
+      <div className="landing-layout flex flex-col md:flex-row md:items-center">
         {/* Text — 45% */}
-        <div className="w-full flex-shrink-0 md:mt-8 md:w-[45%]">
+        <div className="w-full flex-shrink-0 md:mt-8 md:w-[50%]">
           <span className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-[#E58F172B] px-3 py-1 text-[11px] font-semibold tracking-wide text-[#E58F17] uppercase">
             <span className="inline-block h-3 w-3 rounded-full bg-[#E58F17]" />
             Our Story
@@ -27,11 +27,11 @@ export default function WhyWeStarted() {
         </div>
 
         {/* Image — 55% */}
-        <div className="w-full flex-shrink-0 md:w-[55%]">
+        <div className="w-full flex-shrink-0 md:w-[50%]">
           <Image
             src="/images/nkechi-desktop.png"
             alt="Nkechi at her provisions store"
-            width={600}
+            width={500}
             height={380}
             className="hidden h-[340px] w-full rounded-2xl object-cover md:block lg:h-[380px]"
           />

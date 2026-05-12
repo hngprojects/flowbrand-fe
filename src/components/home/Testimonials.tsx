@@ -69,7 +69,7 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
       className="w-full overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden"
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >
-      <div className="flex min-w-max gap-6 px-2">
+      <div className="flex min-w-max gap-6">
         {items.map((t, index) => (
           <Card
             key={index}
@@ -95,16 +95,18 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
 
 export default function Testimonials() {
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 lg:px-20">
-      <div className="flex flex-col items-center justify-center text-center">
-        <div className="bg-badge-bg mb-2 flex items-center gap-2 rounded-xl px-4 py-2">
-          <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
-          <SectionLabelPill>Testimonials</SectionLabelPill>
-        </div>
-        <h2 className="mb-8 text-4xl">Trusted by growing businesses</h2>
-        <div className="w-full space-y-8">
-          <TestimonialRow items={row1} />
-          <TestimonialRow items={row2} />
+    <section className="w-full">
+      <div className="landing-layout flex flex-col items-center text-center">
+        <div className="flex w-full flex-col items-center gap-8">
+          <div className="bg-badge-bg flex items-center gap-2 rounded-xl px-4 py-2">
+            <div className="bg-badge-fg h-4 w-4 rounded-full" aria-hidden />
+            <SectionLabelPill>Testimonials</SectionLabelPill>
+          </div>
+          <h2 className="text-4xl">Trusted by growing businesses</h2>
+          <div className="flex w-full flex-col gap-8">
+            <TestimonialRow items={row1} />
+            <TestimonialRow items={row2} />
+          </div>
         </div>
       </div>
     </section>

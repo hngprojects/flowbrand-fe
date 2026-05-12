@@ -26,7 +26,7 @@ const Navbar = ({
 
   return (
     <nav className="bg-background border-border font-inter sticky top-0 z-50 border-b">
-      <div className="mx-auto flex h-[83px] w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-18">
+      <div className="landing-layout flex h-[83px] w-full items-center justify-between py-0">
         <Link href="/">
           <span className="lg:hidden">
             <MobileLogoIcon />
@@ -63,12 +63,12 @@ const Navbar = ({
         <div className="hidden items-center gap-4 lg:flex">
           <Link
             href="/login"
-            className="text-foreground hover:text-primary flex h-[51px] items-center justify-center px-6 py-3 text-base font-medium transition-colors"
+            className="text-primary hover:text-primary/80 flex h-[51px] items-center justify-center px-6 py-3 text-base font-medium transition-colors"
           >
             Log In
           </Link>
           <Link
-            href="/get-started"
+            href="/register"
             className="bg-primary text-primary-foreground flex h-[51px] items-center justify-center rounded-[10px] px-6 py-3 font-semibold transition-opacity hover:opacity-90"
           >
             Get started

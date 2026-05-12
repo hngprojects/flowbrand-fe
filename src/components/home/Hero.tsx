@@ -10,11 +10,9 @@ import Link from 'next/link'
  */
 const HomeHero = () => {
   return (
-    <section className="w-full bg-[url('/images/cloud.png')] bg-cover bg-bottom bg-no-repeat">
-      {/* Content Container */}
-      <div className="mx-auto w-full max-w-[1440px] px-6 pt-0.5 pb-0 text-center md:px-12 lg:px-20 lg:pt-20">
-        {/* Badge with border */}
-        <div className="border-accent mx-auto mt-10 mb-6 flex w-fit items-center justify-center gap-2 rounded-xl border-2 px-4 py-2 lg:mt-[70px]">
+    <section className="w-full bg-[url('/images/cloud.png')] bg-cover bg-bottom bg-no-repeat md:pt-20">
+      <div className="landing-layout flex flex-col items-center gap-6 pb-0 text-center sm:gap-8 md:gap-10">
+        <div className="border-accent flex w-fit items-center justify-center gap-2 rounded-xl border-2 px-4 py-2">
           <span className="bg-accent text-accent-foreground rounded-xl px-3 py-1 text-[14px] sm:text-sm">
             Simply
           </span>
@@ -23,30 +21,26 @@ const HomeHero = () => {
           </span>
         </div>
 
-        {/* Main Heading */}
-        <h1 className="mb-4 text-center align-middle text-[32px] leading-none font-medium tracking-normal text-black sm:mb-6 md:text-[60px]">
+        <h1 className="text-center align-middle text-[32px] leading-none font-medium tracking-normal text-black md:text-[60px]">
           Grow your business with a{' '}
           <span className="md:block">
             smarter <span className="text-accent">Marketing Strategy</span>
           </span>
         </h1>
 
-        {/* Subtitle */}
-        <p className="mx-auto mb-8 max-w-2xl text-center align-middle text-[15px] leading-[1.5] font-normal tracking-normal text-gray-700 sm:mb-10 md:text-[18px]">
+        <p className="max-w-2xl text-center align-middle text-[15px] leading-[1.5] font-normal tracking-normal text-gray-700 md:text-[18px]">
           Manage your entire customer journey from first contact to repeat
           sales, without stress with everything you need in one place.
         </p>
 
-        {/* CTA Button */}
         <Link
           href="/register"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground mb-12 inline-block rounded-lg px-6 py-3 text-[16px] font-semibold transition-colors duration-200 sm:mb-16 sm:px-8 sm:py-4 sm:text-base md:text-[18px]"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground inline-block rounded-lg px-6 py-3 text-[16px] font-semibold transition-colors duration-200 sm:px-8 sm:py-4 sm:text-base md:text-[18px]"
         >
           Create a free account
         </Link>
 
-        {/* Desktop Image */}
-        <div className="flex w-full justify-center">
+        <div className="flex w-full justify-center pt-2 sm:pt-4">
           <Image
             src="/images/desktop.png"
             alt="Dashboard"

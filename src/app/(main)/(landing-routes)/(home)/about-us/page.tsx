@@ -4,7 +4,7 @@ import WhyWeStarted from '~/components/about/WhyWeStarted'
 import SimpleIdea from '~/components/about/SimpleIdea'
 // import WhoBuiltThis from '~/components/about/WhoBuiltThis'
 import Mission from '~/components/about/Mission'
-import CTASection from '~/components/about/CTASection'
+import Create from '~/components/home/Create'
 
 export default function AboutPage() {
   return (
@@ -15,7 +15,7 @@ export default function AboutPage() {
       <SimpleIdea />
       {/* <WhoBuiltThis /> */}
       <Mission />
-      <CTASection />
+      <Create />
     </main>
   )
 }
