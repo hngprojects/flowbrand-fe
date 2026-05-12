@@ -39,32 +39,34 @@ export default function ContactUsView() {
       {/* Content Section */}
       <section className="mx-auto mt-10 w-full max-w-[1440px] px-6 md:px-12 lg:px-20">
         {/* Email Card */}
-        <div className="flex items-center gap-5">
-          <div className="bg-accent/20 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-accent"
-            >
-              <rect width="20" height="16" x="2" y="4" rx="2" />
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-gray-900">Email us at</p>
-            <p className="text-sm text-[#1C3A73]">flowbrand@email.com</p>
+        <div className="flex flex-col items-start gap-5 space-y-16">
+          <div className="flex items-center gap-2">
+            <div className="bg-accent/20 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-accent"
+              >
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Email us at</p>
+              <p className="text-sm text-[#1C3A73]">flowbrand@email.com</p>
+            </div>
           </div>
 
           {/* Form */}
-          <div>
-            <h2 className="mb-1 text-lg font-semibold text-gray-900">
+          <div className="w-full">
+            <h2 className="mb-1 text-[24px] font-semibold text-[#030D1F]">
               Send us a message
             </h2>
             <p className="mb-6 text-sm text-gray-500">
@@ -73,7 +75,7 @@ export default function ContactUsView() {
             </p>
 
             <form className="mt-10 space-y-5">
-              <div className="space-y-1">
+              <div className="flex flex-col gap-2">
                 <Label
                   htmlFor="fullName"
                   className="text-[16px] font-semibold text-[#152D58]"
@@ -88,7 +90,7 @@ export default function ContactUsView() {
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="flex flex-col gap-2">
                 <Label
                   htmlFor="email"
                   className="text-[16px] font-semibold text-[#152D58]"
@@ -103,7 +105,7 @@ export default function ContactUsView() {
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="flex flex-col gap-2">
                 <Label
                   htmlFor="businessName"
                   className="text-[16px] font-semibold text-[#152D58]"
@@ -118,7 +120,7 @@ export default function ContactUsView() {
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="flex flex-col gap-2">
                 <Label
                   htmlFor="message"
                   className="text-[16px] font-semibold text-[#152D58]"

@@ -1,3 +1,6 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import Image, { type StaticImageData } from 'next/image'
 import { Card } from '../ui/card'
 import chef from '~public/images/chef.png'
@@ -37,6 +40,20 @@ const row1: Testimonial[] = [
     image: bright,
     alt: 'Bright Dawin testimonial',
   },
+  {
+    quote:
+      'This gave me structure. I no longer guess what to do next in my marketing, and i’ve already started seeing better engagement and more serious leads.',
+    name: 'Golda Falcon',
+    image: david,
+    alt: 'Golda Falcon testimonial',
+  },
+  {
+    quote:
+      '“I used to struggle with turning interest into actual paying customers. Now i have a proper flow that helps me follow up and close more deals”.',
+    name: 'Rita Johnson',
+    image: bright,
+    alt: 'Rita Johnson testimonial',
+  },
 ]
 
 const row2: Testimonial[] = [
@@ -61,19 +78,49 @@ const row2: Testimonial[] = [
     image: ellipse3,
     alt: 'Darwin Muri testimonial',
   },
+  {
+    quote:
+      'I have tried different strategies before, but this is the first time something actually feels simple and actionable.',
+    name: 'Jordan Coal',
+    image: ellipse1,
+    alt: 'Jordan Coal testimonial',
+  },
+  {
+    quote:
+      'My biggest win is consistency. I now show up with a plan, not just vibes and it’s paying off.',
+    name: 'Ray Sybil',
+    image: ellipse2,
+    alt: 'Ray Sybil testimonial',
+  },
 ]
 
-function TestimonialRow({ items }: { items: Testimonial[] }) {
+function TestimonialRow({
+  items,
+  direction = 'left',
+}: {
+  items: Testimonial[]
+  direction?: 'left' | 'right'
+}) {
+  // Duplicate items for seamless loop
+  const duplicatedItems = [...items, ...items]
+
   return (
-    <div
-      className="w-full overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden"
-      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-    >
-      <div className="flex min-w-max gap-6 px-2">
-        {items.map((t, index) => (
+    <div className="w-full overflow-hidden py-4">
+      <motion.div
+        className="flex min-w-max gap-6 px-2"
+        animate={{
+          x: direction === 'left' ? [0, '-50%'] : ['-50%', 0],
+        }}
+        transition={{
+          duration: 40,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+      >
+        {duplicatedItems.map((t, index) => (
           <Card
             key={index}
-            className="flex min-h-[247px] w-[80vw] max-w-[506px] flex-shrink-0 flex-col justify-evenly gap-10 px-8 py-[23.5px] text-left sm:w-[506px]"
+            className="flex min-h-[240px] w-[80vw] max-w-[506px] flex-shrink-0 flex-col justify-evenly gap-10 !rounded-2xl px-8 py-[23.5px] text-left sm:w-[506px]"
           >
             <p className="w-full text-[20px] leading-[130%]">“{t.quote}”</p>
             <div className="flex items-center justify-center gap-2">
@@ -88,7 +135,7 @@ function TestimonialRow({ items }: { items: Testimonial[] }) {
             </div>
           </Card>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }
@@ -101,10 +148,12 @@ export default function Testimonials() {
           <div className="bg-badge-fg h-4 w-4 rounded-full"></div>
           <SectionLabelPill>Testimonials</SectionLabelPill>
         </div>
-        <h2 className="mb-8 text-4xl">Trusted by growing businesses</h2>
+        <h2 className="mb-8 text-4xl font-medium tracking-tight text-[#0F172A] md:text-5xl">
+          Trusted by growing businesses
+        </h2>
         <div className="w-full space-y-8">
-          <TestimonialRow items={row1} />
-          <TestimonialRow items={row2} />
+          <TestimonialRow items={row1} direction="left" />
+          <TestimonialRow items={row2} direction="right" />
         </div>
       </div>
     </section>
