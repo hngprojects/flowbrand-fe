@@ -1,14 +1,12 @@
 import Image from 'next/image'
+import { SectionLabelPill } from '../ui/section-label-pill'
 
 const Features = () => {
   return (
     <section className="mx-auto w-full max-w-[1440px] px-6 py-4 md:px-12 lg:px-20">
       {/* Header */}
       <div className="mb-12 text-center">
-        <span className="mb-4 inline-block rounded-full bg-[#FEF3C7] px-3 py-1 text-sm font-semibold text-[#E58F17]">
-          <circle cx="113.27" cy="22.49" r="6" fill="#E58F17" />
-          Features
-        </span>
+        <SectionLabelPill>Features</SectionLabelPill>
         <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
           Everything you need to grow
         </h2>

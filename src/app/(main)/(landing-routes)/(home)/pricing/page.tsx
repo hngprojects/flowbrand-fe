@@ -104,7 +104,7 @@ export default function PricingPage() {
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="mb-2 text-4xl font-bold sm:text-5xl">
             Affordable Pricing for your{' '}
-            <span className="text-orange-500">Business</span>
+            <span className="text-accent">Business</span>
           </h1>
           <p className="mb-8 text-gray-600 dark:text-gray-400">
             Whether you&apos;re just figuring things out or ready to scale,
