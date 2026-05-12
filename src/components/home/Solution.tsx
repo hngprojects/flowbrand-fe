@@ -75,7 +75,7 @@ const Solution = () => {
 
   return (
     <section className="bg-white px-6 py-12">
-      <div className="mx-auto w-full max-w-[1440px] px-20">
+      <div className="mx-auto w-full max-w-[1440px] px-0 lg:px-20">
         {/* Header Content */}
         <div className="mb-16 text-center md:mb-20">
           <div className="bg-badge-bg mb-2 flex items-center justify-center gap-2 rounded-xl px-4 py-2">

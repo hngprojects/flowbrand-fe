@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { CheckCircle2 } from 'lucide-react'
+import Link from 'next/link'
 import Image from 'next/image'
 import Logo from '../../../public/images/logo-blue.png'
 
@@ -8,16 +9,18 @@ const AuthSplitLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
     <div className="bg-background flex min-h-screen w-full overflow-hidden">
       <aside className="bg-primary/10 relative hidden w-[708px] shrink-0 lg:block">
-        <div className="absolute top-[87px] left-[87px]">
-          <Image
-            src={Logo}
-            alt="FlowBrand"
-            width={116}
-            height={25}
-            className="object-contain"
-            priority
-          />
-        </div>
+        <Link href="/">
+          <div className="absolute top-[87px] left-[87px] hover:cursor-pointer">
+            <Image
+              src={Logo}
+              alt="FlowBrand"
+              width={116}
+              height={25}
+              className="object-contain"
+              priority
+            />
+          </div>
+        </Link>
 
         <div className="absolute top-1/2 left-[87px] w-[557px] -translate-y-1/2">
           <h1 className="text-[48px] leading-[53px] font-semibold text-[#152D58]">
